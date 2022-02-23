@@ -69,7 +69,7 @@ namespace TalentBlazor
                         //.CustomInstantiator(f => new JobApplication())
                         .RuleFor(j => j.ApplicationStatus,
                             ((faker, application) => faker.Random.Enum<JobApplicationStatus>()))
-                        .RuleFor(j => j.AppliedDate, (faker, application) => faker.Date.Soon())
+                        .RuleFor(j => j.AppliedDate, (faker, application) => faker.Date.Recent(21))
                         .RuleFor(j => j.CreatedDate, () => now)
                         .RuleFor(j => j.ModifiedDate, () => now)
                         .RuleFor(j => j.CreatedBy, () => "SYSTEM")
