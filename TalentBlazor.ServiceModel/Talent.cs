@@ -3,6 +3,7 @@ using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,13 +21,19 @@ public class Contact : AuditBase
 
     public int? SalaryExpectation { get; set; }
 
+    public string JobType { get; set; }
+    public int AvailabilityWeeks { get; set; }
+    public EmployementType PreferredWorkType { get; set; }
+    public string PreferredLocation { get; set; }
+
+
     public string Email { get; set; }
     public string Phone { get; set; }
 
     public string About { get; set; }
 
     [Reference]
-    public JobApplication Application { get; set; }
+    public List<JobApplication> Applications { get; set; }
 }
 
 public class Job : AuditBase
@@ -44,6 +51,7 @@ public class Job : AuditBase
     public int SalaryRangeUpper { get; set; }
 
     public EmployementType EmployementType { get; set; }
+    public string Company { get; set; }
     public string Location { get; set; }
 
     public DateTime Closing { get; set; }
@@ -100,6 +108,8 @@ public class JobApplicationEvent : AuditBase
     public int JobApplicationId { get; set; }
 
     public int? EmployeeUserId { get; set; }
+
+    public JobApplicationStatus? Status { get; set; }
 
     public string Description { get; set; }
 

@@ -41,6 +41,7 @@ namespace TalentBlazor
                         //.CustomInstantiator(f => new Job())
                         .RuleFor(j => j.Description, (faker, job1) => faker.Lorem.Paragraphs(3))
                         .RuleFor(j => j.Title, (faker, job1) => faker.Name.JobTitle())
+                        .RuleFor(j => j.Company, (faker, job1) => faker.Company.CompanyName())
                         .RuleFor(j => j.SalaryRangeLower, (faker, job1) => faker.Random.Int(90, 120) * 1000)
                         .RuleFor(j => j.SalaryRangeUpper, (faker, job1) => faker.Random.Int(125, 250) * 1000)
                         .RuleFor(j => j.EmployementType, (faker, job1) => faker.Random.Enum<EmployementType>())
@@ -59,6 +60,10 @@ namespace TalentBlazor
                             ((faker, contact1) => faker.Internet.Email(contact1.FirstName, contact1.LastName)))
                         .RuleFor(c => c.About, (faker, contact1) => faker.Lorem.Paragraphs(3))
                         .RuleFor(c => c.Phone, (faker, contact1) => faker.Phone.PhoneNumber())
+                        .RuleFor(c => c.JobType, (faker, contact1) => faker.Name.JobType())
+                        .RuleFor(c => c.AvailabilityWeeks, (faker, contact1) => faker.Random.Int(2,12))
+                        .RuleFor(c => c.PreferredLocation, (faker, contact1) => faker.Random.Int(1, 2) == 1 ? "Remote" : ($"{faker.Address.City()},{faker.Address.Country()}"))
+                        .RuleFor(c => c.PreferredWorkType, (faker, contact1) => faker.Random.Enum<EmployementType>())
                         .RuleFor(c => c.SalaryExpectation, (faker, contact1) => faker.Random.Int(92, 245) * 1000)
                         .RuleFor(c => c.CreatedDate, () => now)
                         .RuleFor(c => c.ModifiedDate, () => now)
@@ -168,12 +173,15 @@ namespace TalentBlazor
             var baseDate = (new DateTime(now.Year, now.Month, now.Day)) - TimeSpan.FromDays(3);
             var eventDate = baseDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
 
+            // TODO generate attachments here
+
             if (status >= JobApplicationStatus.InterviewCompleted)
             {
                 eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
                 appEvent.EmployeeUserId = FakerInstance.Random.Int(1, 4);
                 appEvent.Description = "Completed interview";
                 appEvent.EventDate = eventDate;
+                appEvent.Status = JobApplicationStatus.InterviewCompleted;
                 db.Insert(appEvent);
                 var interview = interviewFaker.Generate();
                 interview.JobApplicationId = jobApp.Id;
@@ -186,6 +194,7 @@ namespace TalentBlazor
                 eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
                 appEvent.EmployeeUserId = FakerInstance.Random.Int(1, 4);
                 appEvent.Description = "Advanced to interview";
+                appEvent.Status = JobApplicationStatus.Interview;
                 appEvent.EventDate = eventDate;
                 db.Insert(appEvent);
             }
@@ -196,6 +205,7 @@ namespace TalentBlazor
                 appEvent.EmployeeUserId = FakerInstance.Random.Int(1, 4);
                 appEvent.Description = "Completed phone screening";
                 appEvent.EventDate = eventDate;
+                appEvent.Status = JobApplicationStatus.PhoneScreeningCompleted;
                 db.Insert(appEvent);
                 var screen = phoneScreenFaker.Generate();
                 screen.JobApplicationId = jobApp.Id;
@@ -208,6 +218,7 @@ namespace TalentBlazor
                 eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
                 appEvent.EmployeeUserId = FakerInstance.Random.Int(1, 4);
                 appEvent.Description = "Advanced to phone screening";
+                appEvent.Status = JobApplicationStatus.PhoneScreening;
                 appEvent.EventDate = eventDate;
                 db.Insert(appEvent);
             }
@@ -217,6 +228,7 @@ namespace TalentBlazor
                 eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
                 appEvent.EmployeeUserId = FakerInstance.Random.Int(1, 4);
                 appEvent.Description = "Applied";
+                appEvent.Status = JobApplicationStatus.Applied;
                 appEvent.EventDate = eventDate;
                 db.Insert(appEvent);
             }
