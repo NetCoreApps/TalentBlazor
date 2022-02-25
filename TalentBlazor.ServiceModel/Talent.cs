@@ -107,7 +107,11 @@ public class JobApplicationEvent : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    public int? EmployeeUserId { get; set; }
+    [References(typeof(ApiAppUser))]
+    public int ApiAppUserId { get; set; }
+
+    [Reference]
+    public ApiAppUser AppUser { get; set; }
 
     public JobApplicationStatus? Status { get; set; }
 
@@ -127,7 +131,11 @@ public class PhoneScreen : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    public int EmployeeUserId { get; set; }
+    [References(typeof(ApiAppUser))]
+    public int ApiAppUserId { get; set; }
+
+    [Reference]
+    public ApiAppUser AppUser { get; set; }
 
     public string Notes { get; set; }
 }
@@ -142,7 +150,11 @@ public class Interview : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    public int EmployeeUserId { get; set; }
+    [References(typeof(ApiAppUser))]
+    public int ApiAppUserId { get; set; }
+
+    [Reference]
+    public ApiAppUser AppUser { get; set; }
 
     public string Notes { get; set; }
 }
@@ -156,6 +168,38 @@ public enum JobApplicationStatus
     InterviewCompleted,
     Offer,
     Disqualified
+}
+
+[Alias("AppUser")]
+public class ApiAppUser
+{
+    
+    public int Id { get; set; }
+    public string UserName { get; set; }
+    public string Email { get; set; }
+    public string PrimaryEmail { get; set; }
+    public string PhoneNumber { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string DisplayName { get; set; }
+    public string Company { get; set; }
+    public string Title { get; set; }
+    public string JobArea { get; set; }
+    public string Location { get; set; }
+    public int Salary { get; set; }
+    public string About { get; set; }
+
+    public string Department { get; set; }
+    public string? ProfileUrl { get; set; }
+}
+
+public enum Department
+{
+    None,
+    Marketing,
+    Accounts,
+    Legal,
+    HumanResources,
 }
 
 public class JobApplicationAttachment : AuditBase
@@ -328,7 +372,7 @@ public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
 [AutoApply(Behavior.AuditQuery)]
 public class QueryInterview : QueryDb<Interview>
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 }
 
 [Tag("Talent")]
@@ -339,7 +383,6 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    public int EmployeeUserId { get; set; }
 
     public string Notes { get; set; }
 }
@@ -355,4 +398,14 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
     public int EmployeeUserId { get; set; }
 
     public string Notes { get; set; }
+}
+
+public class QueryJobAppEvents : QueryDb<JobApplicationEvent>
+{
+    public int JobApplicationId { get; set; }
+}
+
+public class QueryAppUser : QueryDb<ApiAppUser>
+{
+    public int? JobApplicationId { get; set; }
 }

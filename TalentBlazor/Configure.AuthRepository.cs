@@ -5,23 +5,26 @@ using ServiceStack.Html;
 using ServiceStack.Auth;
 using ServiceStack.Configuration;
 using TalentBlazor.Client;
+using Bogus;
+using ServiceStack.DataAnnotations;
+using TalentBlazor.ServiceModel;
+using ServiceStack.OrmLite;
 
 [assembly: HostingStartup(typeof(TalentBlazor.ConfigureAuthRepository))]
 
 namespace TalentBlazor;
 
-public enum Department
-{
-    None,
-    Marketing,
-    Accounts,
-    Legal,
-    HumanResources,
-}
 
 // Custom User Table with extended Metadata properties
 public class AppUser : UserAuth
 {
+    public string Title { get; set; }
+    public string JobArea { get; set; }
+    public string Location { get; set; }
+    public string Team { get; set; }
+    public int Salary { get; set; }
+    public string About { get; set; }
+
     public Department Department { get; set; }
     public string? ProfileUrl { get; set; }
     public string? LastLoginIp { get; set; }
@@ -31,6 +34,8 @@ public class AppUser : UserAuth
 
     public DateTime? LastLoginDate { get; set; }
 }
+
+
 
 public class AppUserAuthEvents : AuthEvents
 {
@@ -59,9 +64,12 @@ public class ConfigureAuthRepository : IHostingStartup
         .ConfigureAppHost(appHost => {
             var authRepo = appHost.Resolve<IAuthRepository>();
             authRepo.InitSchema();
+            using var db = appHost.Resolve<IDbConnectionFactory>().OpenDbConnection();
             CreateUser(authRepo, "admin@email.com", "Admin User", "p@55wOrd", roles: new[] { RoleNames.Admin });
             CreateUser(authRepo, "manager@email.com", "The Manager", "p@55wOrd", roles: new[] { AppRoles.Employee, AppRoles.Manager });
             CreateUser(authRepo, "employee@email.com", "A Employee", "p@55wOrd", roles: new[] { AppRoles.Employee });
+            CreateUser(authRepo, "employee1@email.com", "A Employee 1", "p@55wOrd", roles: new[] { AppRoles.Employee });
+            CreateUser(authRepo, "employee2@email.com", "A Employee 2", "p@55wOrd", roles: new[] { AppRoles.Employee });
 
             // Removing unused UserName in Admin Users UI 
             appHost.Plugins.Add(new ServiceStack.Admin.AdminUsersFeature {
@@ -121,13 +129,27 @@ public class ConfigureAuthRepository : IHostingStartup
             appHost.AssertPlugin<AuthFeature>().AuthEvents.Add(new AppUserAuthEvents());
         });
 
+
+    private static Faker<AppUser> appUserFaker = new Faker<AppUser>()
+        .RuleFor(a => a.About, (faker) => faker.Lorem.Paragraph())
+        .RuleFor(a => a.Department, (faker) => faker.Random.Enum<Department>())
+        .RuleFor(a => a.BirthDate, (faker) => faker.Date.Between(new DateTime(1990, 1, 1), new DateTime(1950, 1, 1)))
+        .RuleFor(a => a.FirstName, (faker) => faker.Name.FirstName())
+        .RuleFor(a => a.LastName, (faker) => faker.Name.LastName())
+        .RuleFor(a => a.Title, (faker) => faker.Name.JobTitle())
+        .RuleFor(a => a.JobArea, (faker) => faker.Name.JobArea())
+        .RuleFor(a => a.Salary, (faker) => faker.Random.Int(90, 250) * 1000);
+        
+
     // Add initial Users to the configured Auth Repository
     public void CreateUser(IAuthRepository authRepo, string email, string name, string password, string[] roles)
     {
         if (authRepo.GetUserAuthByUserName(email) == null)
         {
-            var newAdmin = new AppUser { Email = email, DisplayName = name };
-            var user = authRepo.CreateUserAuth(newAdmin, password);
+            var newUser = appUserFaker.Generate();
+            newUser.Email = email;
+            newUser.DisplayName = name;
+            var user = authRepo.CreateUserAuth(newUser, password);
             authRepo.AssignRoles(user, roles);
         }
     }
