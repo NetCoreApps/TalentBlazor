@@ -400,11 +400,14 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
     public string Notes { get; set; }
 }
 
+[Tag("Talent")]
+[AutoApply(Behavior.AuditQuery)]
 public class QueryJobAppEvents : QueryDb<JobApplicationEvent>
 {
-    public int JobApplicationId { get; set; }
+    public int? JobApplicationId { get; set; }
 }
 
+[Tag("Talent")]
 public class QueryAppUser : QueryDb<ApiAppUser>
 {
     public int? JobApplicationId { get; set; }
