@@ -20,6 +20,26 @@ namespace TalentBlazor
             {
                 Debug.WriteLine("Faker seed: " + Randomizer.Seed);
 
+                OrmLiteConfig.InsertFilter = (dbCmd, row) =>
+                {
+                    if(row is PhoneScreen phoneScreen)
+                    {
+                        if (phoneScreen.CreatedBy == "SYSTEM")
+                            return;
+                        dbCmd.Connection.Insert(new JobApplicationEvent
+                        {
+                            JobApplicationId = phoneScreen.JobApplicationId,
+                            ApiAppUserId = phoneScreen.ApiAppUserId,
+                            CreatedBy = phoneScreen.CreatedBy,
+                            CreatedDate = phoneScreen.CreatedDate,
+                            ModifiedBy = phoneScreen.ModifiedBy,
+                            ModifiedDate = phoneScreen.ModifiedDate,
+                            Status = JobApplicationStatus.PhoneScreening,
+                            Description = "Advanced to phone screening"
+                        });
+                    }
+                };
+
                 // Create non-existing Table and add Seed Data Example
                 using var db = appHost.Resolve<IDbConnectionFactory>().Open();
                 var seedData = db.CreateTableIfNotExists<Contact>();
@@ -209,7 +229,6 @@ namespace TalentBlazor
                 db.Insert(appEvent);
                 var screen = phoneScreenFaker.Generate();
                 screen.JobApplicationId = jobApp.Id;
-                screen.BookingTime = eventDate;
                 db.Insert(screen);
             }
 

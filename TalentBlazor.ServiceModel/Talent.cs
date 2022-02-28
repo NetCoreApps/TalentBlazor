@@ -126,8 +126,6 @@ public class PhoneScreen : AuditBase
     [AutoIncrement, PrimaryKey]
     public int Id { get; set; }
 
-    public DateTime BookingTime { get; set; }
-
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
@@ -145,7 +143,7 @@ public class Interview : AuditBase
     [AutoIncrement, PrimaryKey]
     public int Id { get; set; }
 
-    public DateTime BookingTime { get; set; }
+    public DateTime BookingTime { get;set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
@@ -347,23 +345,18 @@ public class QueryPhoneScreen : QueryDb<PhoneScreen>
 [AutoApply(Behavior.AuditCreate)]
 public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
 {
-    [ValidateNotNull]
-    public DateTime BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    public int EmployeeUserId { get; set; }
-    public string Notes { get; set; }
+    public int ApiAppUserId { get; set; }
 }
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
 {
-    [ValidateNotNull]
-    public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    public int EmployeeUserId { get; set; }
+    public int ApiAppUserId { get; set; }
 
     public string Notes { get; set; }
 }
@@ -383,6 +376,7 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
+    public int ApiAppUserId { get; set; }
 
     public string Notes { get; set; }
 }
@@ -395,7 +389,7 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
     public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    public int EmployeeUserId { get; set; }
+    public int ApiAppUserId { get; set; }
 
     public string Notes { get; set; }
 }
@@ -410,5 +404,7 @@ public class QueryJobAppEvents : QueryDb<JobApplicationEvent>
 [Tag("Talent")]
 public class QueryAppUser : QueryDb<ApiAppUser>
 {
-    public int? JobApplicationId { get; set; }
+    public string? EmailContains { get; set; }
+    public string? FirstNameContains { get; set; }
+    public string? LastNameContains { get; set; }
 }

@@ -138,8 +138,21 @@ public class ConfigureAuthRepository : IHostingStartup
         .RuleFor(a => a.LastName, (faker) => faker.Name.LastName())
         .RuleFor(a => a.Title, (faker) => faker.Name.JobTitle())
         .RuleFor(a => a.JobArea, (faker) => faker.Name.JobArea())
+        .RuleFor(a => a.PhoneNumber, (faker) => faker.Phone.PhoneNumber())
         .RuleFor(a => a.Salary, (faker) => faker.Random.Int(90, 250) * 1000);
-        
+
+
+    private static List<string> appUserProfileUrls = new List<string>
+    {
+        "/profiles/appusers/photo-1438761681033-6461ffad8d80.jpg",
+        "/profiles/appusers/photo-1472099645785-5658abf4ff4e.jpg",
+        "/profiles/appusers/photo-1500917293891-ef795e70e1f6.jpg",
+        "/profiles/appusers/photo-1506794778202-cad84cf45f1d.jpg",
+        "/profiles/appusers/photo-1517070208541-6ddc4d3efbcb.jpg",
+        "/profiles/appusers/photo-1463453091185-61582044d556.jpg"
+    };
+
+    static int usersCreatedCount = 0;
 
     // Add initial Users to the configured Auth Repository
     public void CreateUser(IAuthRepository authRepo, string email, string name, string password, string[] roles)
@@ -149,8 +162,10 @@ public class ConfigureAuthRepository : IHostingStartup
             var newUser = appUserFaker.Generate();
             newUser.Email = email;
             newUser.DisplayName = name;
+            newUser.ProfileUrl = usersCreatedCount < 6 ? appUserProfileUrls[usersCreatedCount] : "";
             var user = authRepo.CreateUserAuth(newUser, password);
             authRepo.AssignRoles(user, roles);
+            usersCreatedCount++;
         }
     }
 }
