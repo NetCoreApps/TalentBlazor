@@ -7,6 +7,7 @@ using ServiceStack.DataAnnotations;
 
 namespace TalentBlazor.ServiceModel;
 
+[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' fill-rule='evenodd' d='M8 4h8V2h2v2h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1V2h2v2ZM5 8v12h14V8H5Zm2 3h2v2H7v-2Zm4 0h2v2h-2v-2Zm4 0h2v2h-2v-2Zm0 4h2v2h-2v-2Zm-4 0h2v2h-2v-2Zm-4 0h2v2H7v-2Z'/></svg>")]
 [Description("Booking Details")]
 [Notes("Captures a Persons Name & Room Booking information")]
 public class Booking : AuditBase
@@ -16,7 +17,9 @@ public class Booking : AuditBase
     public string Name { get; set; }
     public RoomType RoomType { get; set; }
     public int RoomNumber { get; set; }
+    [IntlRelativeTime]
     public DateTime BookingStartDate { get; set; }
+    [IntlDateTime(DateStyle.Long)]
     public DateTime? BookingEndDate { get; set; }
     public decimal Cost { get; set; }
     public string? Notes { get; set; }
