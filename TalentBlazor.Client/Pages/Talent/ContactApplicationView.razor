@@ -709,6 +709,7 @@
 
     void OnEmployeeSelectionChanged(ApiAppUser val)
     {
+        Console.WriteLine($"Api user selection changed: {val.Email}");
         employeeSelection = val;
     }
 
@@ -726,8 +727,19 @@
 
     async Task submitPhoneScreenBooking()
     {
+        await createPhoneScreenBooking();
+
+    }
+
+    async Task createJobApplicationEvent()
+    {
+        //var createJobAppEvent = new CreateEve
+    }
+
+    async Task<bool> createPhoneScreenBooking()
+    {
         if (employeeSelection == null)
-            return;
+            return false;
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
         createPhone.ApiAppUserId = employeeSelection.Id;
@@ -736,9 +748,13 @@
         {
             resetInterview();
             await refreshData();
+            showAdvancePhoneScreen = false;
+            return true;
         }
         else
             errorStatus = api.Error;
+
+        return false;
     }
 
     async Task submitPhoneScreenCompleted()

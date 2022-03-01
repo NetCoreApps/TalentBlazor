@@ -1,18 +1,18 @@
 ﻿@using TalentBlazor.ServiceModel
 @inject IJSRuntime JsRuntime
 
-<div>
+<div >
     <label for="employeeSearchBox" class="block text-sm font-medium text-gray-700 mt-4 mb-2">@(ControlTitle)</label>
     <div class="@(selectedResult != null ? "" : "shadow-2xl") mx-auto max-w-3xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white ring-1 ring-black ring-opacity-5 transition-all">
         <div class="relative">
             
-            <!-- Heroicon name: solid/search -->
             @if (selectedResult == null)
             {
+                <!-- Heroicon name: solid/search -->
                 <svg class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
-                <input type="text" @onfocus="onSearchFocus" @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="onSearchTermChanged" name="employeeSearchBox" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." role="combobox" aria-expanded="false" aria-controls="options" />
+                <input @onfocusout="onSearchBlur" @onfocus="onSearchFocus" type="text" @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="onSearchTermChanged" name="employeeSearchBox" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." role="combobox" aria-expanded="false" aria-controls="options" />
             }
             else
             {
@@ -29,7 +29,7 @@
             }
         </div>
 
-        <div class="flex divide-x divide-gray-100 @((filtered().Count() == 0 || hasMadeSearch == false) ? "hidden" : "")">
+        <div class="flex divide-x divide-gray-100 @((searchHasFocus == false) ? "hidden" : "")">
             <!-- Preview Visible: "sm:h-96" -->
             <div class="max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4 sm:h-96">
                 <!-- Results, show/hide based on command palette state. -->
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Empty state, show/hide based on command palette state -->
-        <div class="py-14 px-6 text-center text-sm sm:px-14 @(hasMadeSearch == true && filtered().Count() == 0 ? "" : "hidden")">
+        <div class="py-14 px-6 text-center text-sm sm:px-14 @(searchHasFocus == true && filtered().Count() == 0 ? "" : "hidden")">
             <!-- Heroicon name: outline/users -->
             <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -141,9 +141,20 @@
         hasMadeSearch = true;
     }
 
+    private bool searchHasFocus = false;
+
+    async Task onSearchBlur(FocusEventArgs args)
+    {
+        Console.WriteLine($"onSearchBlur: {args.Type}");
+        await Task.Delay(100);
+        searchHasFocus = false;
+    }
+
     private void onSearchFocus(FocusEventArgs args)
     {
+        Console.WriteLine($"onSearchFocus: {args.Type}");
         hasMadeSearch = true;
+        searchHasFocus = true;
     }
 
     void updateActive(ApiAppUser user)

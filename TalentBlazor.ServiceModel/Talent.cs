@@ -402,6 +402,30 @@ public class QueryJobAppEvents : QueryDb<JobApplicationEvent>
 }
 
 [Tag("Talent")]
+[AutoApply(Behavior.AuditCreate)]
+public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>, 
+    IReturn<JobApplicationEvent>
+{
+
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditModify)]
+public class UpdateJobApplicationEvent : IUpdateDb<JobApplicationEvent>,
+    IReturn<JobApplicationEvent>
+{
+
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditSoftDelete)]
+public class DeleteJobApplicationEvent : IDeleteDb<JobApplicationEvent>,
+    IReturn<JobApplicationEvent>, IReturnVoid
+{
+
+}
+
+[Tag("Talent")]
 public class QueryAppUser : QueryDb<ApiAppUser>
 {
     public string? EmailContains { get; set; }

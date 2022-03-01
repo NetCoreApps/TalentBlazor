@@ -20,26 +20,6 @@ namespace TalentBlazor
             {
                 Debug.WriteLine("Faker seed: " + Randomizer.Seed);
 
-                OrmLiteConfig.InsertFilter = (dbCmd, row) =>
-                {
-                    if(row is PhoneScreen phoneScreen)
-                    {
-                        if (phoneScreen.CreatedBy == "SYSTEM")
-                            return;
-                        dbCmd.Connection.Insert(new JobApplicationEvent
-                        {
-                            JobApplicationId = phoneScreen.JobApplicationId,
-                            ApiAppUserId = phoneScreen.ApiAppUserId,
-                            CreatedBy = phoneScreen.CreatedBy,
-                            CreatedDate = phoneScreen.CreatedDate,
-                            ModifiedBy = phoneScreen.ModifiedBy,
-                            ModifiedDate = phoneScreen.ModifiedDate,
-                            Status = JobApplicationStatus.PhoneScreening,
-                            Description = "Advanced to phone screening"
-                        });
-                    }
-                };
-
                 // Create non-existing Table and add Seed Data Example
                 using var db = appHost.Resolve<IDbConnectionFactory>().Open();
                 var seedData = db.CreateTableIfNotExists<Contact>();
@@ -52,9 +32,20 @@ namespace TalentBlazor
 
                 if (seedData)
                 {
-                    var wwwrootDir = "~/wwwroot".MapProjectPath();
+                    var wwwrootDir = "";
+                    string[] profilePhotos = Array.Empty<string>();
 
-                    var profilePhotos = Directory.GetFiles("~/wwwroot/profiles".MapProjectPath());
+                    if (appHost.IsDevelopmentEnvironment())
+                    {
+                        wwwrootDir = "~/wwwroot".MapProjectPath();
+                        profilePhotos = Directory.GetFiles(Path.Join(wwwrootDir, "profiles"));
+                    }
+                    else
+                    {
+                        wwwrootDir = Path.Join(AppContext.BaseDirectory, "wwwroot");
+                        profilePhotos = Directory.GetFiles(Path.Join(wwwrootDir, "profiles"));
+                    }
+                   
 
                     var now = DateTime.UtcNow;
                     var jobFaker = new Faker<Job>()
