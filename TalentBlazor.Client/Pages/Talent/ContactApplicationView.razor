@@ -499,11 +499,7 @@
                         <form class="space-y-6" @onsubmit:preventDefault>
                             <div>
                                 <div class="mt-1">
-                                    <DateTimeInput @bind-Value="bookingDate" name="bookingTime" rows="3" class="" placeholder="The candidate demonstrated..."></DateTimeInput>
-                                </div>
-                                <div class="mt-3">
-                                    <label for="appt" class="block text-sm font-medium text-gray-700">Time</label>
-                                    <input type="time" @bind-value="bookingTime" @bind-value:event="oninput" id="appt" name="appt" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300">
+                                    <DateTimeLocalInput @bind-Value="bookingDate" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
                                 </div>
                                 <div class="mt-1">
                                     <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
@@ -515,7 +511,7 @@
             </div>
             <div class="pt-8 flex justify-end">
                 <button type="button" @onclick="() => showBookInterview = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="async () => await submitInterviewBooking()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                <button type="button" @onclick="clickCreateInterviewBooking" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
             </div>
         </div>
     </div>
@@ -766,7 +762,12 @@
         return false;
     }
 
-    async Task submitInterviewBooking()
+    async Task clickCreateInterviewBooking(MouseEventArgs e)
+    {
+        await createInterviewBooking();
+    }
+
+    async Task createInterviewBooking()
     {
         var createInterview = new CreateInterview();
         createInterview.JobApplicationId = JobAppId;

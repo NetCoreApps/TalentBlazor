@@ -96,7 +96,6 @@ namespace TalentBlazor
 
                     for (var i = 0; i < profilePhotos.Length; i++)
                     {
-                        using var seedDb = appHost.Resolve<IDbConnectionFactory>().OpenDbConnection();
                         var contact = contactFaker.Generate();
                         contact.ProfileUrl = "/" + Path.GetRelativePath(wwwrootDir, profilePhotos[i])?.ReplaceAll("\\", "/");
                         contact.Id = 0;
@@ -104,8 +103,8 @@ namespace TalentBlazor
                         var job = jobFaker.Generate();
                         job.Id = 0;
 
-                        contact.Id = (int)seedDb.Insert(contact, selectIdentity: true);
-                        job.Id = (int)seedDb.Insert(job, selectIdentity: true);
+                        contact.Id = (int)db.Insert(contact, selectIdentity: true);
+                        job.Id = (int)db.Insert(job, selectIdentity: true);
 
                         contacts.Add(contact);
                         jobs.Add(job);
@@ -119,14 +118,13 @@ namespace TalentBlazor
                         var lastIndex = 0;
                         foreach (var index in uniqueJobIndexes)
                         {
-                            using var seedDb = appHost.Resolve<IDbConnectionFactory>().OpenDbConnection();
                             var job = jobs[index];
                             var jobApplication = jobAppFaker.Generate();
                             jobApplication.JobId = job.Id;
                             jobApplication.ContactId = contact.Id;
                             jobApplication.Id = 0;
 
-                            jobApplication.Id = (int)seedDb.Insert(jobApplication, selectIdentity: true);
+                            jobApplication.Id = (int)db.Insert(jobApplication, selectIdentity: true);
                             jobApplication.Applicant = contact;
                             jobApplication.Position = job;
 
@@ -197,6 +195,7 @@ namespace TalentBlazor
                 var interview = interviewFaker.Generate();
                 interview.JobApplicationId = jobApp.Id;
                 interview.BookingTime = eventDate;
+                interview.ApiAppUserId = FakerInstance.Random.Int(1, 5);
                 db.Insert(interview);
             }
 
@@ -220,6 +219,7 @@ namespace TalentBlazor
                 db.Insert(appEvent);
                 var screen = phoneScreenFaker.Generate();
                 screen.JobApplicationId = jobApp.Id;
+                screen.ApiAppUserId = FakerInstance.Random.Int(1, 5);
                 db.Insert(screen);
             }
 

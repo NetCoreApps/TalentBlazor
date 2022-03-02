@@ -82,5 +82,75 @@ namespace TalentBlazor.ServiceInterface
             var phoneScreenResult = Db.SingleById<PhoneScreen>(request.Id);
             return phoneScreenResult;
         }
+
+        public object Post(CreateInterview request)
+        {
+            long interviewId = 0;
+            using (var transaction = Db.OpenTransaction())
+            {
+                var now = DateTime.UtcNow;
+                var interview = request.ConvertTo<Interview>();
+                interview.CreatedBy = this.GetSession().UserAuthId;
+                interview.CreatedDate = now;
+                interview.ModifiedBy = this.GetSession().UserAuthId;
+                interview.ModifiedDate = now;
+                interviewId = Db.Insert(interview, selectIdentity: true);
+                var jobAppId = request.JobApplicationId;
+                var userId = request.ApiAppUserId;
+                var jobAppEvent = new JobApplicationEvent
+                {
+                    ApiAppUserId = userId,
+                    JobApplicationId = jobAppId,
+                    Status = JobApplicationStatus.Interview,
+                    CreatedBy = this.GetSession().UserAuthId,
+                    ModifiedBy = this.GetSession().UserAuthId,
+                    Description = "Advanced to interview",
+                    EventDate = now,
+                    CreatedDate = now,
+                    ModifiedDate = now
+                };
+                Db.Insert(jobAppEvent, selectIdentity: true);
+                var jobApp = Db.SingleById<JobApplication>(jobAppId);
+                jobApp.ApplicationStatus = JobApplicationStatus.Interview;
+                Db.Save(jobApp);
+                transaction.Commit();
+            }
+
+            var interviewResult = Db.SingleById<Interview>(interviewId);
+            return interviewResult;
+        }
+
+        public object Put(UpdateInterview request)
+        {
+            using (var transaction = Db.OpenTransaction())
+            {
+                var now = DateTime.UtcNow;
+                var interview = request.ConvertTo<Interview>();
+                interview.ModifiedBy = this.GetSession().UserAuthId;
+                interview.ModifiedDate = now;
+                var jobAppId = request.JobApplicationId;
+                var userId = request.ApiAppUserId;
+                var jobAppEvent = new JobApplicationEvent
+                {
+                    ApiAppUserId = userId,
+                    JobApplicationId = jobAppId,
+                    Status = JobApplicationStatus.InterviewCompleted,
+                    CreatedBy = this.GetSession().UserAuthId,
+                    ModifiedBy = this.GetSession().UserAuthId,
+                    Description = "Completed interview",
+                    EventDate = now,
+                    CreatedDate = now,
+                    ModifiedDate = now
+                };
+                Db.Insert(jobAppEvent, selectIdentity: true);
+                var jobApp = Db.SingleById<JobApplication>(jobAppId);
+                jobApp.ApplicationStatus = JobApplicationStatus.InterviewCompleted;
+                Db.Save(jobApp);
+                transaction.Commit();
+            }
+
+            var interviewResult = Db.SingleById<Interview>(request.Id);
+            return interviewResult;
+        }
     }
 }
