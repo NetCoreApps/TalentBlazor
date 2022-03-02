@@ -221,15 +221,15 @@
     int currentPage = 0;
     int perPage = 5;
 
-    Dictionary<EmployementType, string> employmentTypeMapping = new()
+    Dictionary<EmploymentType, string> employmentTypeMapping = new()
         {
-            { EmployementType.FullTime, "Full-time" },
-            { EmployementType.PartTime, "Part-time" },
-            { EmployementType.Contract, "Contract" },
-            { EmployementType.Casual, "Casual" }
+            { EmploymentType.FullTime, "Full-time" },
+            { EmploymentType.PartTime, "Part-time" },
+            { EmploymentType.Contract, "Contract" },
+            { EmploymentType.Casual, "Casual" }
         };
 
-    EmployementType filter = EmployementType.FullTime;
+    EmploymentType filter = EmploymentType.FullTime;
 
     int contactJobAppsCount(Contact contact, JobApplicationStatus status)
     {

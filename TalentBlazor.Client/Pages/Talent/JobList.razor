@@ -27,49 +27,49 @@
             <label for="tabs" class="sr-only">Select a tab</label>
             <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
             <select id="tabs" name="tabs" @bind="filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
-                <option value="@EmployementType.FullTime">Full-time</option>
+                <option value="@EmploymentType.FullTime">Full-time</option>
 
-                <option value="@EmployementType.PartTime">Part-time</option>
+                <option value="@EmploymentType.PartTime">Part-time</option>
 
-                <option value="@EmployementType.Contract">Contract</option>
+                <option value="@EmploymentType.Contract">Contract</option>
 
-                <option value="@EmployementType.Casual">Casual</option>
+                <option value="@EmploymentType.Casual">Casual</option>
             </select>
         </div>
         <div class="hidden sm:block">
             <div class="border-b border-gray-200">
                 <nav class="mt-2 -mb-px flex space-x-8" aria-label="Tabs">
                     <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
-                    <a href="" @onclick="(e) => changeFilter(EmployementType.FullTime)" @onclick:preventDefault class="@(filter == EmployementType.FullTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => changeFilter(EmploymentType.FullTime)" @onclick:preventDefault class="@(filter == EmploymentType.FullTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Full-time
 
                         <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.FullTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                            @(jobCount(EmployementType.FullTime))
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmploymentType.FullTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                            @(jobCount(EmploymentType.FullTime))
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => changeFilter(EmployementType.PartTime)" @onclick:preventDefault class="@(filter == EmployementType.PartTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => changeFilter(EmploymentType.PartTime)" @onclick:preventDefault class="@(filter == EmploymentType.PartTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Part-time
 
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.PartTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                            @(jobCount(EmployementType.PartTime))
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmploymentType.PartTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                            @(jobCount(EmploymentType.PartTime))
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => changeFilter(EmployementType.Contract)" @onclick:preventDefault class="@(filter == EmployementType.Contract ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => changeFilter(EmploymentType.Contract)" @onclick:preventDefault class="@(filter == EmploymentType.Contract ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Contract
 
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Contract ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                            @(jobCount(EmployementType.Contract))
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmploymentType.Contract ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                            @(jobCount(EmploymentType.Contract))
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => changeFilter(EmployementType.Casual)" @onclick:preventDefault class="@(filter == EmployementType.Casual ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => changeFilter(EmploymentType.Casual)" @onclick:preventDefault class="@(filter == EmploymentType.Casual ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Casual
                         <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Casual ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                            @(jobCount(EmployementType.Casual))
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmploymentType.Casual ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                            @(jobCount(EmploymentType.Casual))
                         </span>
                     </a>
                 </nav>
@@ -78,7 +78,7 @@
         <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="bg-white shadow overflow-hidden sm:rounded-md">
             <ul role="list" class="divide-y divide-gray-200">
-                @foreach (var job in jobs.Where(x => x.EmployementType == filter).Skip((currentPage) * perPage).Take(perPage))
+                @foreach (var job in jobs.Where(x => x.EmploymentType == filter).Skip((currentPage) * perPage).Take(perPage))
                 {
                     <li>
                         <a href="/jobs/@(job.Id)/applications" class="block hover:bg-gray-50">
@@ -86,7 +86,7 @@
                                 <div class="flex items-center justify-between">
                                     <p class="text-sm font-medium text-indigo-600 truncate">@job.Title</p>
                                     <div class="ml-2 flex-shrink-0 flex">
-                                        <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">@(employmentTypeMapping[job.EmployementType])</p>
+                                        <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">@(employmentTypeMapping[job.EmploymentType])</p>
                                     </div>
                                 </div>
                                 <div class="mt-2 sm:flex sm:justify-between">
@@ -212,22 +212,22 @@
     int currentPage = 0;
     int perPage = 5;
 
-    Dictionary<EmployementType, string> employmentTypeMapping = new()
+    Dictionary<EmploymentType, string> employmentTypeMapping = new()
         {
-            { EmployementType.FullTime, "Full-time" },
-            { EmployementType.PartTime, "Part-time" },
-            { EmployementType.Contract, "Contract" },
-            { EmployementType.Casual, "Casual" }
+            { EmploymentType.FullTime, "Full-time" },
+            { EmploymentType.PartTime, "Part-time" },
+            { EmploymentType.Contract, "Contract" },
+            { EmploymentType.Casual, "Casual" }
         };
 
-    EmployementType filter = EmployementType.FullTime;
+    EmploymentType filter = EmploymentType.FullTime;
 
-    int jobCount(EmployementType employementType)
+    int jobCount(EmploymentType employmentType)
     {
-        return jobs.Count(x => x.EmployementType == employementType);
+        return jobs.Count(x => x.EmploymentType == employmentType);
     }
 
-    void changeFilter(EmployementType newFilter)
+    void changeFilter(EmploymentType newFilter)
     {
         filter = newFilter;
         var jobNum = jobCount(filter);
@@ -238,22 +238,22 @@
     {
         switch (filter)
         {
-            case EmployementType.FullTime:
-                return jobs.Where(x => x.EmployementType == EmployementType.FullTime);
-            case EmployementType.PartTime:
-                return jobs.Where(x => x.EmployementType == EmployementType.PartTime);
-            case EmployementType.Contract:
-                return jobs.Where(x => x.EmployementType == EmployementType.Contract);
-            case EmployementType.Casual:
-                return jobs.Where(x => x.EmployementType == EmployementType.Casual);
+            case EmploymentType.FullTime:
+                return jobs.Where(x => x.EmploymentType == EmploymentType.FullTime);
+            case EmploymentType.PartTime:
+                return jobs.Where(x => x.EmploymentType == EmploymentType.PartTime);
+            case EmploymentType.Contract:
+                return jobs.Where(x => x.EmploymentType == EmploymentType.Contract);
+            case EmploymentType.Casual:
+                return jobs.Where(x => x.EmploymentType == EmploymentType.Casual);
         }
         return jobs;
     }
 
     int numberOfPages()
     {
-        var minPages = (int)Math.Floor((decimal)(jobs.Count(x => x.EmployementType == filter) / perPage));
-        var remainderPage = ((jobs.Count(x => x.EmployementType == filter) % perPage > 0) ? 1 : 0);
+        var minPages = (int)Math.Floor((decimal)(jobs.Count(x => x.EmploymentType == filter) / perPage));
+        var remainderPage = ((jobs.Count(x => x.EmploymentType == filter) % perPage > 0) ? 1 : 0);
         return minPages + remainderPage;
     }
 

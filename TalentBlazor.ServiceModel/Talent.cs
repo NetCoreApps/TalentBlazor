@@ -28,7 +28,7 @@ public class Contact : AuditBase
 
     public string JobType { get; set; }
     public int AvailabilityWeeks { get; set; }
-    public EmployementType PreferredWorkType { get; set; }
+    public EmploymentType PreferredWorkType { get; set; }
     public string PreferredLocation { get; set; }
 
     public string Email { get; set; }
@@ -57,7 +57,7 @@ public class Job : AuditBase
     [IntlNumber(Currency = NumberCurrency.USD)]
     public int SalaryRangeUpper { get; set; }
 
-    public EmployementType EmployementType { get; set; }
+    public EmploymentType EmploymentType { get; set; }
     public string Company { get; set; }
     public string Location { get; set; }
 
@@ -65,7 +65,7 @@ public class Job : AuditBase
 
 }
 
-public enum EmployementType
+public enum EmploymentType
 {
     FullTime,
     PartTime,
@@ -368,6 +368,7 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
 [AutoApply(Behavior.AuditModify)]
 public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
 {
+    public int Id { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
     public int ApiAppUserId { get; set; }

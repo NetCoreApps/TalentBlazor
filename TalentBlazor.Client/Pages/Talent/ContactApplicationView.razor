@@ -400,7 +400,7 @@
             </div>
             <div class="pt-8 flex justify-end">
                 <button type="button" @onclick="() => showAdvancePhoneScreen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="async () => await submitPhoneScreenBooking()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                <button type="button" @onclick="clickAdvancePhoneScreen" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
             </div>
         </div>
     </div>
@@ -454,7 +454,7 @@
             </div>
             <div class="pt-8 flex justify-end">
                 <button type="button" @onclick="() => showCompletePhoneScreen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="async () => await submitPhoneScreenCompleted()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                <button type="button" @onclick="clickPhoneScreenCompleted" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
             </div>
         </div>
     </div>
@@ -601,6 +601,10 @@
         {
             BookingTime = DateTime.UtcNow
         };
+    PhoneScreen phoneScreenRequest = new()
+        {
+            Notes = ""
+        };
 
     DateTime? bookingDate = DateTime.UtcNow.Date;
     TimeOnly? bookingTime = TimeOnly.FromDateTime(DateTime.UtcNow);
@@ -617,6 +621,12 @@
         interviewRequest.BookingTime = DateTime.UtcNow;
         bookingDate = DateTime.UtcNow.Date;
         bookingTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+        employeeSelection = null;
+    }
+
+    void resetPhoneScreen()
+    {
+        phoneScreenRequest = new() { Notes = "" };
         employeeSelection = null;
     }
 
@@ -701,15 +711,15 @@
             errorStatus = api.Error;
     }
 
-    async Task submitPhoneScreenBooking()
+
+    async Task clickAdvancePhoneScreen(MouseEventArgs e)
     {
         await createPhoneScreenBooking();
-
     }
 
-    async Task createJobApplicationEvent()
+    async Task clickPhoneScreenCompleted(MouseEventArgs e)
     {
-        //var createJobAppEvent = new CreateEve
+        await updatePhoneScreenCompleted();
     }
 
     async Task<bool> createPhoneScreenBooking()
@@ -722,7 +732,7 @@
         var api = await ApiAsync(createPhone);
         if (api.Succeeded)
         {
-            resetInterview();
+            resetPhoneScreen();
             await refreshData();
             showAdvancePhoneScreen = false;
             return true;
@@ -733,20 +743,27 @@
         return false;
     }
 
-    async Task submitPhoneScreenCompleted()
+    async Task<bool> updatePhoneScreenCompleted()
     {
+        if (employeeSelection == null)
+            return false;
         var updatePhone = new UpdatePhoneScreen();
         updatePhone.JobApplicationId = JobAppId;
-        updatePhone.ApiAppUserId = interviewRequest.ApiAppUserId;
-        updatePhone.Notes = interviewRequest.Notes;
+        updatePhone.ApiAppUserId = employeeSelection.Id;
+        updatePhone.Notes = phoneScreenRequest.Notes;
+        updatePhone.Id = jobApp.PhoneScreen.Id;
         var api = await ApiAsync(updatePhone);
         if (api.Succeeded)
         {
-            resetInterview();
+            resetPhoneScreen();
             await refreshData();
+            showCompletePhoneScreen = false;
+            return true;
         }
         else
             errorStatus = api.Error;
+
+        return false;
     }
 
     async Task submitInterviewBooking()
