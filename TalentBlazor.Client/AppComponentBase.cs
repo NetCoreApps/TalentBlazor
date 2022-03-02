@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -12,6 +13,7 @@ namespace TalentBlazor.Client;
 /// </summary>
 public abstract class AppComponentBase : ServiceStack.Blazor.BlazorComponentBase, IHasJsonApiClient
 {
+    
 }
 
 /// <summary>

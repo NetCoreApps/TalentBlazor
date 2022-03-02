@@ -19,7 +19,7 @@
                 <div class="py-4 px-4 flex">
                     <img class="h-10 w-10 rounded-full" src="@(selectedResult.ProfileUrl)" alt="">
                     <div class="ml-3 flex-grow-1">
-                        <p class="text-sm font-medium text-gray-900">@(selectedResult.FirstName + " " + selectedResult.LastName)</p>
+                        <p class="text-sm font-medium text-gray-900">@(selectedResult.DisplayName)</p>
                         <p class="text-sm text-gray-500">@(selectedResult.Email)</p>
                     </div>
                     <div class="flex-shrink-1">
@@ -39,7 +39,7 @@
                         var u = user;
                         <li @onmouseover="(e) => updateActive(u)" @onclick="(e) => selectUser(u)" class="group flex cursor-default select-none items-center rounded-md p-2 hover:bg-gray-100" id="option-1" role="option" tabindex="-1">
                             <img src="@user.ProfileUrl" alt="" class="h-6 w-6 flex-none rounded-full">
-                            <span class="ml-3 flex-auto truncate">@(user.FirstName + " " + user.LastName)</span>
+                            <span class="ml-3 flex-auto truncate">@(user.DisplayName)</span>
                             <!-- Not Active: "hidden" -->
                             <!-- Heroicon name: solid/chevron-right -->
                         <svg class="ml-3 hidden h-5 w-5 flex-none text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -56,7 +56,7 @@
                 <div class="hidden h-96 w-1/2 flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
                     <div class="flex-none p-6 text-center">
                         <img src="@(currentActive.ProfileUrl)" alt="" class="mx-auto h-16 w-16 rounded-full">
-                        <h2 class="mt-3 font-semibold text-gray-900">@(currentActive.FirstName + " " + currentActive.LastName)</h2>
+                        <h2 class="mt-3 font-semibold text-gray-900">@(currentActive.DisplayName)</h2>
                         <p class="text-sm leading-6 text-gray-500">@(currentActive.Title)</p>
                     </div>
                     <div class="flex flex-auto flex-col justify-between p-6">

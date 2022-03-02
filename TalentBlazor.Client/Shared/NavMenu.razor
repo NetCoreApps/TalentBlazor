@@ -1,46 +1,40 @@
 @inject ServiceStackStateProvider AuthStateProvider;
 @inject NavigationManager NavigationManager;
 
-<div class="nav-menu top-row navbar navbar-dark">
-    <a class="navbar-brand ps-4" href="">TalentBlazor</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+<nav class="px-3 mt-6">
+    <div class="space-y-1">
+        <!-- Current: "", Default: "text-gray-700 hover:text-gray-900 hover:bg-gray-50" -->
+        <NavLink href="/" ActiveClass="bg-gray-200 text-gray-900" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md" aria-current="page" Match="NavLinkMatch.All">
+            <!--
+              Heroicon name: outline/home
 
-<div class="@CssUtils.ClassNames("nav-menu", collapseNavMenu ? "collapse" : "")" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/contacts">
-                <span class="oi oi-person" aria-hidden="true"></span> Contacts
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/jobs">
-                <span class="oi oi-briefcase" aria-hidden="true"></span> Jobs
-            </NavLink>
-        </li>
-        <AuthorizeView>
-            <Authorized>
-            <li class="nav-item px-3">
-                <a href="javascript:void" class="nav-link" @onclick="logout"><span class="oi oi-account-logout" aria-hidden="true"></span>Logout</a>
-            </li>
-            </Authorized>
-            <NotAuthorized>
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="@LoginUrl">
-                    <span class="oi oi-account-login" aria-hidden="true"></span> Login
-                </NavLink>
-            </li>
-            </NotAuthorized>
-        </AuthorizeView>
-    </ul>
-</div>
+              Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500"
+            -->
+            <svg class="text-gray-500 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Home
+        </NavLink>
+
+        <NavLink href="/jobs" ActiveClass="bg-gray-200 text-gray-900" class="text-gray-700 hover:text-gray-900 hover:bg-gray-50 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+             <!-- Heroicon name: solid/briefcase -->
+            <svg class="flex-shrink-0 mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+            </svg>
+            Jobs
+        </NavLink>
+
+        <NavLink href="/contacts" ActiveClass="bg-gray-200 text-gray-900" class="text-gray-700 hover:text-gray-900 hover:bg-gray-50 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+            <!-- Heroicon name: outline/user-group -->
+            <svg class="mr-3 flex-shrink-0 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Contacts
+        </NavLink>
+    </div>
+</nav>
+
 
 @code {
     bool collapseNavMenu = true;

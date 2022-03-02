@@ -18,6 +18,8 @@ public class Contact : AuditBase
     public string FirstName { get; set; }
     public string LastName { get; set; }
 
+    public string DisplayName { get => FirstName + " " + LastName; }
+
     [Format("icon")]
     public string ProfileUrl { get; set; }
 
