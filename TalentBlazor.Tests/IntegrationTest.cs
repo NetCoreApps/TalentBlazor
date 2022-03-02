@@ -13,8 +13,7 @@ public class IntegrationTest
 
     class AppHost : AppSelfHostBase
     {
-        public AppHost() : base(nameof(IntegrationTest), typeof(MyServices).Assembly) { }
-
+        public AppHost() : base(nameof(IntegrationTest), typeof(MyServices).Assembly) => License.Register();
         public override void Configure(Container container)
         {
         }

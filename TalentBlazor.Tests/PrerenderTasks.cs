@@ -53,7 +53,7 @@ public class PrerenderTasks
         Render<Client.Pages.Index>();
     }
 
-    [Test]
+    // [Test]
     public async Task PrerenderMarkdown()
     {
         var srcDir = WwrootDir.CombineWith("content").Replace('\\', '/');
