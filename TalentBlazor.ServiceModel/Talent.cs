@@ -2,10 +2,6 @@
 using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TalentBlazor.ServiceModel;
 
@@ -20,7 +16,7 @@ public class Contact : AuditBase
 
     public string DisplayName { get => FirstName + " " + LastName; }
 
-    [Format("icon")]
+    [Format(FormatMethods.IconRounded)]
     public string ProfileUrl { get; set; }
 
     [IntlNumber(Currency = NumberCurrency.USD)]
@@ -119,7 +115,7 @@ public class JobApplicationEvent : AuditBase
     [References(typeof(ApiAppUser))]
     public int ApiAppUserId { get; set; }
 
-    [Format("hidden")]
+    [Format(FormatMethods.Hidden)]
     [Reference]
     public ApiAppUser AppUser { get; set; }
 
@@ -143,7 +139,7 @@ public class PhoneScreen : AuditBase
     [References(typeof(ApiAppUser))]
     public int ApiAppUserId { get; set; }
 
-    [Format("hidden")]
+    [Format(FormatMethods.Hidden)]
     [Reference]
     public ApiAppUser AppUser { get; set; }
 
@@ -157,7 +153,7 @@ public class Interview : AuditBase
     public int Id { get; set; }
 
     [IntlRelativeTime]
-    public DateTime BookingTime { get;set; }
+    public DateTime BookingTime { get; set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
@@ -165,7 +161,7 @@ public class Interview : AuditBase
     [References(typeof(ApiAppUser))]
     public int ApiAppUserId { get; set; }
 
-    [Format("hidden")]
+    [Format(FormatMethods.Hidden)]
     [Reference]
     public ApiAppUser AppUser { get; set; }
 
@@ -186,7 +182,7 @@ public enum JobApplicationStatus
 [Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='currentColor' d='M10.277 2.084a.5.5 0 0 0-.554 0a15.05 15.05 0 0 1-6.294 2.421A.5.5 0 0 0 3 5v4.5c0 3.891 2.307 6.73 6.82 8.467a.5.5 0 0 0 .36 0C14.693 16.23 17 13.39 17 9.5V5a.5.5 0 0 0-.43-.495a15.05 15.05 0 0 1-6.293-2.421ZM10 9.5a2 2 0 1 1 0-4a2 2 0 0 1 0 4Zm0 5c-2.5 0-3.5-1.25-3.5-2.5A1.5 1.5 0 0 1 8 10.5h4a1.5 1.5 0 0 1 1.5 1.5c0 1.245-1 2.5-3.5 2.5Z'/></svg>")]
 [Alias("AppUser")]
 public class ApiAppUser
-{    
+{
     public int Id { get; set; }
     public string DisplayName { get; set; }
     public string FirstName { get; set; }
@@ -214,6 +210,13 @@ public enum Department
     HumanResources,
 }
 
+[Tag("Talent")]
+public class QueryJobApplicationAttachment : QueryDb<JobApplicationAttachment>
+{
+    public int? Id { get; set; }
+}
+
+[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'><path fill='currentColor' d='M0 4.5V0h1v4.5a1.5 1.5 0 1 0 3 0v-3a.5.5 0 0 0-1 0V5H2V1.5a1.5 1.5 0 1 1 3 0v3a2.5 2.5 0 0 1-5 0Z'/><path fill='currentColor' fill-rule='evenodd' d='M12.5 0H6v4.5A3.5 3.5 0 0 1 2.5 8H1v5.5A1.5 1.5 0 0 0 2.5 15h10a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 0ZM11 4H7v1h4V4Zm0 3H7v1h4V7Zm-7 3h7v1H4v-1Z' clip-rule='evenodd'/></svg>")]
 public class JobApplicationAttachment : AuditBase
 {
     [AutoIncrement]
@@ -352,7 +355,6 @@ public class DeleteJobApplication : IDeleteDb<JobApplication>, IReturnVoid
 [AutoApply(Behavior.AuditQuery)]
 public class QueryPhoneScreen : QueryDb<PhoneScreen>
 {
-
 }
 
 [Tag("Talent")]
@@ -420,10 +422,9 @@ public class QueryJobAppEvents : QueryDb<JobApplicationEvent>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditCreate)]
-public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>, 
+public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>,
     IReturn<JobApplicationEvent>
 {
-
 }
 
 [Tag("Talent")]
@@ -431,7 +432,6 @@ public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>,
 public class UpdateJobApplicationEvent : IUpdateDb<JobApplicationEvent>,
     IReturn<JobApplicationEvent>
 {
-
 }
 
 [Tag("Talent")]
@@ -439,7 +439,6 @@ public class UpdateJobApplicationEvent : IUpdateDb<JobApplicationEvent>,
 public class DeleteJobApplicationEvent : IDeleteDb<JobApplicationEvent>,
     IReturn<JobApplicationEvent>, IReturnVoid
 {
-
 }
 
 [Tag("Talent")]
