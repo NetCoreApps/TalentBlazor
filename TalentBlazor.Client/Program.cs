@@ -29,7 +29,6 @@ builder.Services.AddBlazorApiClient(builder.Configuration["ApiBaseUrl"] ?? build
 
 builder.Services.AddScoped<ServiceStackStateProvider>();
 builder.Services.AddSingleton<BreadCrumbStateContainer>();
-builder.Services.AddSingleton<StateContainer>();
 
 if (builder.HostEnvironment.IsDevelopment())
 {
