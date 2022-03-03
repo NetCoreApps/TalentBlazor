@@ -20,6 +20,7 @@ public static class ConfigureDbTalent
         db.CreateTableIfNotExists<PhoneScreen>();
         db.CreateTableIfNotExists<Interview>();
         db.CreateTableIfNotExists<JobApplicationAttachment>();
+        db.CreateTableIfNotExists<JobApplicationComment>();
 
         if (seedData)
         {
@@ -144,6 +145,15 @@ public static class ConfigureDbTalent
         .RuleFor(e => e.CreatedBy, () => "SYSTEM")
         .RuleFor(e => e.ModifiedBy, () => "SYSTEM");
 
+    private static Faker<JobApplicationComment> commentFaker = new Faker<JobApplicationComment>()
+        .RuleFor(c => c.Id, () => 0)
+        .RuleFor(c => c.ApiAppUserId, (f) => f.Random.Int(1, 5))
+        .RuleFor(c => c.Message, (f) => f.Lorem.Paragraph())
+        .RuleFor(c => c.CreatedDate, (f) => f.Date.Recent(5))
+        .RuleFor(c => c.ModifiedDate, () => DateTime.UtcNow)
+        .RuleFor(c => c.CreatedBy, () => "SYSTEM")
+        .RuleFor(c => c.ModifiedBy, () => "SYSTEM");
+
     private static readonly Faker FakerInstance = new();
 
     public static void PopulateJobApplicationEvents(this IDbConnection db, JobApplication jobApp)
@@ -237,5 +247,15 @@ public static class ConfigureDbTalent
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
         }
+
+        var numOfComments = FakerInstance.Random.Int(1, 5);
+        for (var i = 0;  i < numOfComments; i++)
+        {
+            var comment = commentFaker.Generate();
+            comment.JobApplicationId = jobApp.Id;
+            db.Insert(comment);
+        }
     }
+
+
 }

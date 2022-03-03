@@ -69,6 +69,24 @@ public enum EmploymentType
     Contract
 }
 
+[Icon(Svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" role=\"img\" width=\"1em\" height=\"1em\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4c32.7 12.3 69 19.4 107.4 19.4c141.4 0 256-93.1 256-208S397.4 32 256 32zM128 272c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z\"/></svg>")]
+public class JobApplicationComment : AuditBase
+{
+    [AutoIncrement]
+    public int Id { get; set; }
+
+    public string Message { get; set; }
+
+    [References(typeof(ApiAppUser))]
+    public int ApiAppUserId { get; set; }
+
+    [Reference]
+    public ApiAppUser ApiAppUser { get; set; }
+
+    [References(typeof(JobApplication))]
+    public int JobApplicationId { get; set; }
+}
+
 [Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M18 19H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1M12 7a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4a1 1 0 0 1 1 1a1 1 0 0 1-1 1a1 1 0 0 1-1-1a1 1 0 0 1 1-1m7 0h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z'/></svg>")]
 public class JobApplication : AuditBase
 {
@@ -85,6 +103,9 @@ public class JobApplication : AuditBase
 
     [Reference]
     public Contact Applicant { get; set; }
+
+    [Reference]
+    public List<JobApplicationComment> Comments { get; set; }
 
     public DateTime AppliedDate { get; set; }
 
@@ -355,6 +376,8 @@ public class DeleteJobApplication : IDeleteDb<JobApplication>, IReturnVoid
 [AutoApply(Behavior.AuditQuery)]
 public class QueryPhoneScreen : QueryDb<PhoneScreen>
 {
+    public int? Id { get; set; }
+    public int? JobApplicationId { get; set; }
 }
 
 [Tag("Talent")]
@@ -385,6 +408,7 @@ public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
 public class QueryInterview : QueryDb<Interview>
 {
     public int? Id { get; set; }
+    public int? JobApplicationId { get; set; }
 }
 
 [Tag("Talent")]
@@ -445,4 +469,44 @@ public class QueryAppUser : QueryDb<ApiAppUser>
     public string? EmailContains { get; set; }
     public string? FirstNameContains { get; set; }
     public string? LastNameContains { get; set; }
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditQuery)]
+public class QueryJobApplicationComments : QueryDb<JobApplicationComment>
+{
+    public int? JobApplicationId { get; set; }
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditCreate)]
+[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+public class CreateJobApplicationComment : ICreateDb<JobApplicationComment>, IReturn<JobApplicationComment>
+{
+    [ValidateNotEmpty]
+    public string Message { get; set; }
+    [ValidateNotEmpty]
+    public int JobApplicationId { get; set; }
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditModify)]
+[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+public class UpdateJobApplicationComment : IUpdateDb<JobApplicationComment>, IReturn<JobApplicationComment>
+{
+    [ValidateNotEmpty]
+    public int Id { get; set; }
+    [ValidateNotEmpty]
+    public string Message { get; set; }
+    [ValidateNotEmpty]
+    public int JobApplicationId { get; set; }
+}
+
+[Tag("Talent")]
+[AutoApply(Behavior.AuditSoftDelete)]
+[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+public class DeleteJobApplicationComment : IDeleteDb<JobApplicationComment>, IReturnVoid
+{
+    [ValidateNotEmpty]
+    public int Id { get; set; }
 }
