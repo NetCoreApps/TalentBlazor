@@ -11,30 +11,32 @@
 
 <h1 class="fs-2 mb-3">Sign In</h1>
 
-<form @onsubmit="submit" class="max-w-xl">
-<CascadingValue Value=@api.Error>
-    <ErrorSummary Except=@VisibleFields />
-
-    <div class="mb-3 form-floating">
-        <TextInput @bind-Value="request.UserName" spellcheck="false" Help="Email address" />
-    </div>
-    <div class="mb-3 form-floating">
-        <TextInput type="password" @bind-Value="request.Password" spellcheck="false" />
-    </div>
-
-    <div class="mb-3">
-        <button type="submit" class="btn btn-primary">Login</button>
-        <NavLink href="/signup" class="btn btn-outline-primary">Register New User</NavLink>
-    </div>
-</CascadingValue>
+<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col" @onsubmit="submit">
+    <CascadingValue Value=@api.Error>
+        <ErrorSummary />
+        <div>
+            <div class="mb-4">
+                <TextInput @bind-Value="request.UserName" spellcheck="false" Help="Email address" />
+            </div>
+            <div class="mb-6">
+                <TextInput type="password" @bind-Value="request.Password" spellcheck="false" />
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </CascadingValue>
 </form>
-
-<div class="mt-5 flex">
-    <span class="me-2">Quick Links:</span>
-    <button class="btn btn-outline-secondary mb-1" @onclick='_ => SetUser("admin@email.com", "p@55wOrd")'>admin@email.com</button>
-    <button class="btn btn-outline-secondary mb-1" @onclick='_ => SetUser("manager@email.com", "p@55wOrd")'>manager@email.com</button>
-    <button class="btn btn-outline-secondary mb-1" @onclick='_ => SetUser("employee@email.com", "p@55wOrd")'>employee@email.com</button>
-    <button class="btn btn-outline-secondary mb-1" @onclick='_ => SetUser("new@user.com", "p@55wOrd")'>new@user.com</button>
+    <h3>Quick Links:</h3>
+<div class="mt-5">
+    <span class="relative z-0 flex shadow-sm rounded-md">
+        <button type="button" class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("admin@email.com", "p@55wOrd")'>admin@email.com</button>
+        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("manager@email.com", "p@55wOrd")'>manager@email.com</button>
+        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("employee@email.com", "p@55wOrd")'>employee@email.com</button>
+        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("new@user.com", "p@55wOrd")'>new@user.com</button>
+    </span>
 </div>
 
 <div class="mt-4">
@@ -42,7 +44,7 @@
 </div>
 
 @code {
-    string[] VisibleFields => new[]{ nameof(Authenticate.UserName), nameof(Authenticate.Password) };
+    string[] VisibleFields => new[] { nameof(Authenticate.UserName), nameof(Authenticate.Password) };
 
     ApiResult<AuthenticateResponse> api = new();
 

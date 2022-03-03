@@ -30,7 +30,7 @@
               <!-- Active: "bg-gray-100", Not Active: "" -->
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-2">Logout</a>
+              <a href="" @onclick="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-2">Logout</a>
             </div>
         
         </Authorized>
@@ -41,10 +41,10 @@
  
         </Authorized>
         <Authorizing>
-            <NavLink class="btn btn-outline-primary" href=@LoginUrl>Login</NavLink>
+            <NavLink class="" href=@LoginUrl>Login</NavLink>
         </Authorizing>
         <NotAuthorized>
-            <NavLink class="btn btn-outline-primary" href=@LoginUrl>Login</NavLink>
+            <NavLink class="" href=@LoginUrl>Login</NavLink>
         </NotAuthorized>
     </AuthorizeView>
 </div>
@@ -55,6 +55,12 @@
     string? LoginUrl { get; set; }
 
     void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+
+    protected override Task OnParametersSetAsync()
+    {
+        LoginUrl = NavigationManager.GetLoginUrl();
+        return Task.CompletedTask;
+    }
 
     async Task logout()
     {
