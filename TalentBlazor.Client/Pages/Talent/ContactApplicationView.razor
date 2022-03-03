@@ -84,7 +84,7 @@
         <form class="space-y-6" @onsubmit:preventDefault>
             <div>
                 <div class="mt-1">
-                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
+                    <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
                 </div>
             </div>
             <ErrorSummary Status="@phoneScreenResult.Error" />
@@ -117,7 +117,7 @@
                     <DateTimeLocalInput @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
                 </div>
                 <div class="mt-1">
-                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
+                    <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
                 </div>
             </div>
             <ErrorSummary Status="@interviewResult.Error" />
@@ -153,12 +153,12 @@
 
     JobApplication jobApp = new();
     List<JobApplicationEvent> jobAppEvents = new();
-    List<ApiAppUser> apiAppUsers = new();
+    List<AppUser> appUsers = new();
 
     PhoneScreen phoneScreen = new();
     Interview interview = new();
 
-    ApiAppUser? employeeSelection;
+    AppUser? employeeSelection;
 
     string? selectedResult;
 
@@ -269,7 +269,7 @@
     {
         await refreshJobApp();
         await refreshJobAppEvents();
-        if (apiAppUsers.Count == 0)
+        if (appUsers.Count == 0)
             await getAppUsers();
         await refreshPhoneScreen();
         await refreshInterview();
@@ -321,12 +321,12 @@
     {
         var api = await ApiAsync(new QueryAppUser());
         if (api.Succeeded)
-            apiAppUsers = api.Response!.Results;
+            appUsers = api.Response!.Results;
         else
             errorStatus = api.Error;
     }
 
-    void OnEmployeeSelectionChanged(ApiAppUser val)
+    void OnEmployeeSelectionChanged(AppUser val)
     {
         Console.WriteLine($"Api user selection changed: {val.Email}");
         employeeSelection = val;
@@ -348,7 +348,7 @@
     {
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
-        createPhone.ApiAppUserId = employeeSelection?.Id ?? 0;
+        createPhone.AppUserId = employeeSelection?.Id ?? 0;
         phoneScreenResult = await ApiAsync(createPhone);
         if (phoneScreenResult.Succeeded)
         {
@@ -387,7 +387,7 @@
     {
         var createInterview = new CreateInterview();
         createInterview.JobApplicationId = JobAppId;
-        createInterview.ApiAppUserId = employeeSelection?.Id ?? 0;
+        createInterview.AppUserId = employeeSelection?.Id ?? 0;
         createInterview.BookingTime = interviewBookingTime;
         interviewResult = await ApiAsync(createInterview);
         if (interviewResult.Succeeded)
