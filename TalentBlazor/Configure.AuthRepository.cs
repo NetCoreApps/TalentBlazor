@@ -29,18 +29,9 @@ public class AppUserAuthEvents : AuthEvents
     }
 }
 
-public record SeedUser(string Email, string Name, string Password = "p@55wOrd", string[]? Roles = null);
 
 public class ConfigureAuthRepository : IHostingStartup
 {
-    List<SeedUser> seedUsers = new List<SeedUser>() {
-        new("admin@email.com", "Admin User", Roles: new[] { RoleNames.Admin }),
-        new("manager@email.com", "The Manager", Roles: new[] { AppRoles.Employee, AppRoles.Manager }),
-        new("employee@email.com", "A Employee", Roles: new[] { AppRoles.Employee }),
-        new("employee1@email.com", "Employee 2", Roles: new[] { AppRoles.Employee }),
-        new("employee2@email.com", "Employee 3", Roles: new[] { AppRoles.Employee }),
-    };
-
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices(services => services.AddSingleton<IAuthRepository>(c =>
             new OrmLiteAuthRepository<AppUser, UserAuthDetails>(c.Resolve<IDbConnectionFactory>()) {
@@ -51,7 +42,7 @@ public class ConfigureAuthRepository : IHostingStartup
             authRepo.InitSchema();
             using var db = appHost.Resolve<IDbConnectionFactory>().OpenDbConnection();
 
-            seedUsers.ForEach(user => CreateUser(authRepo, user));
+            CreateUsers(authRepo);
 
             // Removing unused UserName in Admin Users UI 
             appHost.Plugins.Add(new ServiceStack.Admin.AdminUsersFeature {
@@ -111,20 +102,28 @@ public class ConfigureAuthRepository : IHostingStartup
             appHost.AssertPlugin<AuthFeature>().AuthEvents.Add(new AppUserAuthEvents());
         });
 
-
     private static Faker<AppUser> appUserFaker = new Faker<AppUser>()
-        .RuleFor(a => a.About, (faker) => faker.Lorem.Paragraph())
-        .RuleFor(a => a.Department, (faker) => faker.Random.Enum<Department>())
-        .RuleFor(a => a.BirthDate, (faker) => faker.Date.Between(new DateTime(1990, 1, 1), new DateTime(1950, 1, 1)))
-        .RuleFor(a => a.FirstName, (faker) => faker.Name.FirstName())
-        .RuleFor(a => a.LastName, (faker) => faker.Name.LastName())
-        .RuleFor(a => a.Title, (faker) => faker.Name.JobTitle())
-        .RuleFor(a => a.JobArea, (faker) => faker.Name.JobArea())
-        .RuleFor(a => a.PhoneNumber, (faker) => faker.Phone.PhoneNumber())
-        .RuleFor(a => a.Salary, (faker) => faker.Random.Int(90, 250) * 1000);
-
+        .RuleFor(a => a.About, faker => faker.Lorem.Paragraph())
+        .RuleFor(a => a.Department, faker => faker.Random.Enum<Department>())
+        .RuleFor(a => a.BirthDate, faker => faker.Date.Between(new DateTime(1990, 1, 1), new DateTime(1950, 1, 1)))
+        .RuleFor(a => a.FirstName, faker => faker.Name.FirstName())
+        .RuleFor(a => a.LastName, faker => faker.Name.LastName())
+        .RuleFor(a => a.Title, faker => faker.Name.JobTitle())
+        .RuleFor(a => a.JobArea, faker => faker.Name.JobArea())
+        .RuleFor(a => a.PhoneNumber, faker => faker.Phone.PhoneNumber())
+        .RuleFor(a => a.Salary, faker => faker.Random.Int(90, 250) * 1000);
 
     // Add initial Users to the configured Auth Repository
+    public record SeedUser(string Email, string Name, string Password = "p@55wOrd", string[]? Roles = null);
+    public void CreateUsers(IAuthRepository authRepo) => new List<SeedUser>
+    {
+        new("admin@email.com", "Admin User", Roles: new[] { RoleNames.Admin }),
+        new("manager@email.com", "The Manager", Roles: new[] { AppRoles.Employee, AppRoles.Manager }),
+        new("employee@email.com", "A Employee", Roles: new[] { AppRoles.Employee }),
+        new("employee1@email.com", "Employee 2", Roles: new[] { AppRoles.Employee }),
+        new("employee2@email.com", "Employee 3", Roles: new[] { AppRoles.Employee }),
+    }.ForEach(user => CreateUser(authRepo, user));
+
     public void CreateUser(IAuthRepository authRepo, SeedUser user)
     {
         if (authRepo.GetUserAuthByUserName(user.Email) == null)
