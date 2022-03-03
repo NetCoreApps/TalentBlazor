@@ -223,369 +223,91 @@
         </div>
 
         <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-            <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
-                <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Timeline</h2>
-
-                <!-- Activity Feed -->
-                <div class="mt-6 flow-root">
-                    <ul role="list" class="-mb-8">
-
-                            @foreach (var e in jobAppEvents.OrderBy(x => x.EventDate))
-                            {
-                            <li>
-                                <div class="relative pb-8">
-                                        @if (jobApp.Events.OrderBy(x => x.EventDate).Last().Id != e.Id)
-                                        {
-                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                                        }
-
-                                    <div class="relative flex space-x-3">
-                                        <div>
-                                                @switch (e.Status)
-                                                {
-                                                    case JobApplicationStatus.Applied:
-                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-person text-white"></span>
-                                                    </span>
-                                                        break;
-                                                    case JobApplicationStatus.PhoneScreening:
-                                                    <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-thumb-up text-white pb-1 pl-1"></span>
-                                                    </span>
-                                                        break;
-                                                    case JobApplicationStatus.PhoneScreeningCompleted:
-                                                    <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-check text-white"></span>
-                                                    </span>
-                                                        break;
-                                                    case JobApplicationStatus.Interview:
-                                                    <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-thumb-up text-white pb-1 pl-1"></span>
-                                                    </span>
-                                                        break;
-                                                    case JobApplicationStatus.InterviewCompleted:
-                                                    <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-check text-white  pb-1 pl-1"></span>
-                                                    </span>
-                                                        break;
-                                                    case JobApplicationStatus.Disqualified:
-                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-red">
-                                                        <!-- Heroicon name: solid/user -->
-                                            <span class="oi oi-x text-white"></span>
-                                                    </span>
-                                                        break;
-                                                }
-
-                                        </div>
-                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                            <div>
-                                                    @switch (e.Status)
-                                                    {
-                                                        case JobApplicationStatus.Applied:
-                                                        <p class="text-sm text-gray-500">@(e.Description) to <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900">@jobApp.Position?.Title</a></p>
-                                                            break;
-                                                        case JobApplicationStatus.PhoneScreening:
-                                                        <p class="text-sm text-gray-500">@(e.Description) with <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900"></a>@(e.AppUser?.DisplayName)</p>
-                                                            break;
-                                                        case JobApplicationStatus.PhoneScreeningCompleted:
-                                                        <p class="text-sm text-gray-500">@(e.Description) with <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900">@(e.AppUser?.DisplayName)</a></p>
-                                                            break;
-                                                        case JobApplicationStatus.Interview:
-                                                        <p class="text-sm text-gray-500">@(e.Description) with <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900">@(e.AppUser?.DisplayName)</a></p>
-                                                            break;
-                                                        case JobApplicationStatus.InterviewCompleted:
-                                                        <p class="text-sm text-gray-500">@(e.Description) with <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900">@(e.AppUser?.DisplayName)</a></p>
-                                                            break;
-                                                        case JobApplicationStatus.Disqualified:
-                                                        <p class="text-sm text-gray-500">@(e.Description) by <a href="/jobs/@jobApp.JobId" class="font-medium text-gray-900">@(e.AppUser?.DisplayName)</a></p>
-                                                            break;
-                                                    }
-
-                                            </div>
-                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time datetime="@e?.EventDate.ToString("yyyy-MM-dd")">@e?.EventDate.ToString("MMM d")</time>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            }
-
-
-                    </ul>
-                </div>
-                <div class="mt-6 flex flex-col justify-stretch">
-                        @switch (jobApp.ApplicationStatus)
-                        {
-                            case JobApplicationStatus.Applied:
-                            <button type="button" @onclick="(e) => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.PhoneScreening:
-                            <button type="button" @onclick="(e) => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.PhoneScreeningCompleted:
-                            <button type="button" @onclick="(e) => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.Interview:
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.InterviewCompleted:
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.Offer:
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
-                                break;
-                            case JobApplicationStatus.Disqualified:
-                                break;
-                            default:
-                                break;
-                        }
-
-                </div>
-            </div>
+            <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="advanceApplication"
+                            OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>
         </section>
 </div>
 </main>
 
-<!-- Advance phonescreen -->
-<div class="fixed z-10 inset-0 overflow-y-auto @(showAdvancePhoneScreen == false ? "hidden" : "")" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!--
-        Background overlay, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0"
-        To: "opacity-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100"
-        To: "opacity-0"
-        -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100 translate-y-0 sm:scale-100"
-        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        -->
-        <div class="inline-block bg-white rounded-lg px-4 pt-2 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6 lg:max-w-3xl">
-            <div class="bg-white py-5 sm:rounded-lg sm:p-6">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Progress to Phone Screen</h3>
-                        <p class="mt-1 text-sm text-gray-500">The candidate will need an employee to perform a phone screening before proceeding.</p>
-                    </div>
-                    <div class="md:mt-0 md:col-span-2">
-                        <form class="space-y-6" @onsubmit:preventDefault>
-                            <div>
-                                <div class="mt-1">
-                                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!-- Advance to phonescreen -->
+<CascadingValue Value=@phoneScreenResult.Error>
+    <JobAppModal ModalTitle="Advance to phone screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                 OnSave="createPhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
+        <form class="space-y-6" @onsubmit:preventDefault>
+            <div>
+                <div class="mt-1">
+                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
                 </div>
             </div>
-            <div class="pt-8 flex justify-end">
-                <button type="button" @onclick="() => showAdvancePhoneScreen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="clickAdvancePhoneScreen" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
+            <ErrorSummary Status="@phoneScreenResult.Error" />
+        </form>
+    </JobAppModal>
+</CascadingValue>
 
-<!-- Advance phonescreen completed -->
-<div class="fixed z-10 inset-0 overflow-y-auto @(showCompletePhoneScreen == false ? "hidden" : "")" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!--
-        Background overlay, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0"
-        To: "opacity-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100"
-        To: "opacity-0"
-        -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100 translate-y-0 sm:scale-100"
-        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        -->
-        <div class="inline-block bg-white rounded-lg px-4 pt-2 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6 lg:max-w-3xl">
-            <div class="bg-white py-5 sm:rounded-lg sm:p-6">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Progress to Phone Screen</h3>
-                        <p class="mt-1 text-sm text-gray-500">The candidate will need an employee to perform a phone screening before proceeding.</p>
-                    </div>
-                    <div class="md:mt-0 md:col-span-2">
-                        <form class="space-y-6" @onsubmit:preventDefault>
-                            <div>
-                                <div class="mt-1">
-                                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screen Completed By"></EmployeeLookup>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--Complete Phone Screen-->
+<CascadingValue Value=@phoneScreenResult.Error>
+    <JobAppModal ModalTitle="Progress To Phone Screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                 OnSave="updatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
+        <form class="space-y-6" @onsubmit:preventDefault>
+            <div>
+                <div class="mt-1">
+                    <TextAreaInput @bind-Value="phoneScreenRequest.Notes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
                 </div>
             </div>
-            <div class="pt-8 flex justify-end">
-                <button type="button" @onclick="() => showCompletePhoneScreen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="clickPhoneScreenCompleted" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
+            <ErrorSummary Status="@phoneScreenResult.Error" />
+        </form>
+    </JobAppModal>
+</CascadingValue>
 
 <!-- Book interview -->
-<div class="fixed z-10 inset-0 overflow-y-auto @(showBookInterview == false ? "hidden" : "")" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!--
-        Background overlay, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0"
-        To: "opacity-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100"
-        To: "opacity-0"
-        -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100 translate-y-0 sm:scale-100"
-        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        -->
-        <div class="inline-block bg-white rounded-lg px-4 pt-2 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6 lg:max-w-3xl">
-            <div class="bg-white py-5 sm:rounded-lg sm:p-6">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Interview Booking</h3>
-                        <p class="mt-1 text-sm text-gray-500">Book interview with appropriate team member to evaluate the candidate.</p>
-                    </div>
-                    <div class="md:mt-0 md:col-span-2">
-                        <form class="space-y-6" @onsubmit:preventDefault>
-                            <div>
-                                <div class="mt-1">
-                                    <DateTimeLocalInput @bind-Value="bookingDate" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
-                                </div>
-                                <div class="mt-1">
-                                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<CascadingValue Value=@interviewResult.Error>
+    <JobAppModal ModalTitle="Interview Booking" ModalDescription="Book interview with appropriate team member to evaluate the candidate."
+                 OnSave="createInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
+        <form class="space-y-6" @onsubmit:preventDefault>
+            <div>
+                <div class="mt-1">
+                    <DateTimeLocalInput @bind-Value="interviewRequest.BookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
+                </div>
+                <div class="mt-1">
+                    <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
                 </div>
             </div>
-            <div class="pt-8 flex justify-end">
-                <button type="button" @onclick="() => showBookInterview = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="button" @onclick="clickCreateInterviewBooking" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+            <ErrorSummary Status="@interviewResult.Error" />
+        </form>
+    </JobAppModal>
+</CascadingValue>
 
 <!-- Complete interview -->
-<div class="fixed z-10 inset-0 overflow-y-auto @(showCompleteInterview == false ? "hidden" : "")" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!--
-        Background overlay, show/hide based on modal state.
 
-        Entering: "ease-out duration-300"
-        From: "opacity-0"
-        To: "opacity-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100"
-        To: "opacity-0"
-        -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-        From: "opacity-100 translate-y-0 sm:scale-100"
-        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        -->
-        <div class="inline-block bg-white rounded-lg px-4 pt-2 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6 lg:max-w-3xl">
-            <div class="bg-white py-5 sm:rounded-lg sm:p-6">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Interview Result</h3>
-                        <p class="mt-1 text-sm text-gray-500">Provide context of other team members for how the interview with the candidate went.</p>
-                    </div>
-                    <div class="md:mt-0 md:col-span-2">
-                        <form class="space-y-6" @onsubmit="submitInterviewCompleted" @onsubmit:preventDefault>
-                            <div>
-                                <label for="interviewNotes" class="block text-sm font-medium text-gray-700"> Notes </label>
-                                <div class="mt-1">
-                                    <TextAreaInput @bind-Value="interviewRequest.Notes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
+             OnSave="submitInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
+    <CascadingValue Value=@interviewResult.Error>
+        <form class="space-y-6" @onsubmit:preventDefault>
+            <div>
+                <div class="mt-1">
+                    <TextAreaInput @bind-Value="interviewRequest.Notes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
                 </div>
             </div>
-            <div class="pt-8 flex justify-end">
-                <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-                <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
+            <ErrorSummary Status="@interviewResult.Error" />
+        </form>
+    </CascadingValue>
+</JobAppModal>
+
+
 </div>
 
 @code {
-    JobApplication jobApp = new();
-    List<JobApplicationEvent> jobAppEvents = new();
-    List<ApiAppUser> apiAppUsers = new();
-
-    ApiAppUser? employeeSelection;
-
     [Parameter]
     public int JobId { get; set; }
 
     [Parameter]
     public int JobAppId { get; set; }
+
+    JobApplication jobApp = new();
+    List<JobApplicationEvent> jobAppEvents = new();
+    List<ApiAppUser> apiAppUsers = new();
+
+    ApiAppUser? employeeSelection;
 
     string? selectedResult;
 
@@ -602,8 +324,8 @@
             Notes = ""
         };
 
-    DateTime? bookingDate = DateTime.UtcNow.Date;
-    TimeOnly? bookingTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+    ApiResult<Interview> interviewResult = new();
+    ApiResult<PhoneScreen> phoneScreenResult = new();
 
     bool showBookInterview = false;
     bool showCompleteInterview = false;
@@ -613,22 +335,58 @@
 
     void resetInterview()
     {
-        interviewRequest = new();
-        interviewRequest.BookingTime = DateTime.UtcNow;
-        bookingDate = DateTime.UtcNow.Date;
-        bookingTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+        interviewRequest = new() { BookingTime = DateTime.UtcNow.Date, Notes = "" };
         employeeSelection = null;
+        interviewResult = new();
     }
 
     void resetPhoneScreen()
     {
         phoneScreenRequest = new() { Notes = "" };
         employeeSelection = null;
+        phoneScreenResult = new();
     }
 
     protected override async Task OnInitializedAsync()
     {
         await refreshData();
+    }
+
+    async Task advanceApplication(JobApplicationStatus status)
+    {
+        switch (status)
+        {
+            case JobApplicationStatus.Applied:
+                showAdvancePhoneScreen = true;
+                break;
+            case JobApplicationStatus.PhoneScreening:
+                showCompletePhoneScreen = true;
+                break;
+            case JobApplicationStatus.PhoneScreeningCompleted:
+                showBookInterview = true;
+                break;
+            case JobApplicationStatus.Interview:
+                showCompleteInterview = true;
+                break;
+            default:
+                break;
+        }
+    }
+
+    async Task disqualifyJobApplication(JobApplicationStatus status)
+    {
+        var api = await ApiAsync(new UpdateJobApplication
+            {
+                Id = jobApp.Id,
+                AppliedDate = jobApp.AppliedDate,
+                ContactId = jobApp.ContactId,
+                JobId = jobApp.JobId,
+                ApplicationStatus = JobApplicationStatus.Disqualified
+            });
+        if (api.Succeeded)
+            jobApp = api.Response!;
+        else
+            errorStatus = api.Error;
     }
 
     protected override Task OnParametersSetAsync()
@@ -707,26 +465,13 @@
             errorStatus = api.Error;
     }
 
-
-    async Task clickAdvancePhoneScreen(MouseEventArgs e)
-    {
-        await createPhoneScreenBooking();
-    }
-
-    async Task clickPhoneScreenCompleted(MouseEventArgs e)
-    {
-        await updatePhoneScreenCompleted();
-    }
-
     async Task<bool> createPhoneScreenBooking()
     {
-        if (employeeSelection == null)
-            return false;
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
-        createPhone.ApiAppUserId = employeeSelection.Id;
-        var api = await ApiAsync(createPhone);
-        if (api.Succeeded)
+        createPhone.ApiAppUserId = employeeSelection?.Id ?? 0;
+        phoneScreenResult = await ApiAsync(createPhone);
+        if (phoneScreenResult.Succeeded)
         {
             resetPhoneScreen();
             await refreshData();
@@ -734,22 +479,19 @@
             return true;
         }
         else
-            errorStatus = api.Error;
+            errorStatus = phoneScreenResult.Error;
 
         return false;
     }
 
     async Task<bool> updatePhoneScreenCompleted()
     {
-        if (employeeSelection == null)
-            return false;
         var updatePhone = new UpdatePhoneScreen();
-        updatePhone.JobApplicationId = JobAppId;
-        updatePhone.ApiAppUserId = employeeSelection.Id;
+        updatePhone.JobApplicationId = jobApp.Id;
         updatePhone.Notes = phoneScreenRequest.Notes;
         updatePhone.Id = jobApp.PhoneScreen.Id;
-        var api = await ApiAsync(updatePhone);
-        if (api.Succeeded)
+        phoneScreenResult = await ApiAsync(updatePhone);
+        if (phoneScreenResult.Succeeded)
         {
             resetPhoneScreen();
             await refreshData();
@@ -757,47 +499,48 @@
             return true;
         }
         else
-            errorStatus = api.Error;
+            errorStatus = phoneScreenResult.Error;
 
         return false;
     }
 
-    async Task clickCreateInterviewBooking(MouseEventArgs e)
-    {
-        await createInterviewBooking();
-    }
-
-    async Task createInterviewBooking()
+    async Task<bool> createInterviewBooking()
     {
         var createInterview = new CreateInterview();
         createInterview.JobApplicationId = JobAppId;
-        createInterview.ApiAppUserId = interviewRequest.ApiAppUserId;
+        createInterview.ApiAppUserId = employeeSelection?.Id ?? 0;
         createInterview.BookingTime = interviewRequest.BookingTime;
-        var api = await ApiAsync(createInterview);
-        if (api.Succeeded)
+        interviewResult = await ApiAsync(createInterview);
+        if (interviewResult.Succeeded)
         {
             resetInterview();
             await refreshData();
+            showBookInterview = false;
+            return true;
         }
         else
-            errorStatus = api.Error;
+            errorStatus = interviewResult.Error;
+        return false;
     }
 
-    async Task submitInterviewCompleted()
+    async Task<bool> submitInterviewCompleted()
     {
         var updateInterview = new UpdateInterview();
-        updateInterview.JobApplicationId = JobAppId;
-        updateInterview.ApiAppUserId = interviewRequest.ApiAppUserId;
-        updateInterview.BookingTime = interviewRequest.BookingTime;
+        updateInterview.Id = jobApp.Interview.Id;
+        updateInterview.JobApplicationId = jobApp.Id;
         updateInterview.Notes = interviewRequest.Notes;
-        var api = await ApiAsync(updateInterview);
-        if (api.Succeeded)
+        interviewResult = await ApiAsync(updateInterview);
+        if (interviewResult.Succeeded)
         {
             resetInterview();
             await refreshData();
+            showCompleteInterview = false;
+            return true;
         }
         else
-            errorStatus = api.Error;
+            errorStatus = interviewResult.Error;
+
+        return false;
     }
 
     Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()

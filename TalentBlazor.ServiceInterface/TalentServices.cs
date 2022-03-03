@@ -55,11 +55,13 @@ namespace TalentBlazor.ServiceInterface
             using (var transaction = Db.OpenTransaction())
             {
                 var now = DateTime.UtcNow;
-                var phoneScreen = request.ConvertTo<PhoneScreen>();
+                var phoneScreen = Db.SingleById<PhoneScreen>(request.Id);
                 phoneScreen.ModifiedBy = this.GetSession().UserAuthId;
                 phoneScreen.ModifiedDate = now;
+                phoneScreen.Notes = request.Notes;
+                Db.Save(phoneScreen);
                 var jobAppId = request.JobApplicationId;
-                var userId = request.ApiAppUserId;
+                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
                     ApiAppUserId = userId,
@@ -96,7 +98,7 @@ namespace TalentBlazor.ServiceInterface
                 interview.ModifiedDate = now;
                 interviewId = Db.Insert(interview, selectIdentity: true);
                 var jobAppId = request.JobApplicationId;
-                var userId = request.ApiAppUserId;
+                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
                     ApiAppUserId = userId,
@@ -125,11 +127,13 @@ namespace TalentBlazor.ServiceInterface
             using (var transaction = Db.OpenTransaction())
             {
                 var now = DateTime.UtcNow;
-                var interview = request.ConvertTo<Interview>();
+                var interview = Db.SingleById<Interview>(request.Id);
                 interview.ModifiedBy = this.GetSession().UserAuthId;
                 interview.ModifiedDate = now;
+                interview.Notes = request.Notes;
+                Db.Save(interview);
                 var jobAppId = request.JobApplicationId;
-                var userId = request.ApiAppUserId;
+                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
                     ApiAppUserId = userId,

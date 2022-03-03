@@ -1,0 +1,185 @@
+﻿@inherits AppComponentBase
+
+<div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+    <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Timeline</h2>
+    @if(JobApplication != null)
+    {
+         <!-- Activity Feed -->
+    <div class="mt-6 flow-root">
+        <ul role="list" class="-mb-8">
+
+            @foreach (var e in getJobEvents().OrderBy(x => x.EventDate))
+            {
+                <li>
+                    <div class="relative pb-8">
+                        @if (getJobEvents().OrderBy(x => x.EventDate).Last().Id != e.Id)
+                        {
+                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                        }
+
+                        <div class="relative flex space-x-3">
+                            <div>
+                                @switch (e.Status)
+                                {
+                                    case JobApplicationStatus.Applied:
+                                        <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-person text-white"></span>
+                                        </span>
+                                        break;
+                                    case JobApplicationStatus.PhoneScreening:
+                                        <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-thumb-up text-white pb-1 pl-1"></span>
+                                        </span>
+                                        break;
+                                    case JobApplicationStatus.PhoneScreeningCompleted:
+                                        <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-check text-white"></span>
+                                        </span>
+                                        break;
+                                    case JobApplicationStatus.Interview:
+                                        <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-thumb-up text-white pb-1 pl-1"></span>
+                                        </span>
+                                        break;
+                                    case JobApplicationStatus.InterviewCompleted:
+                                        <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-check text-white  pb-1 pl-1"></span>
+                                        </span>
+                                        break;
+                                    case JobApplicationStatus.Disqualified:
+                                        <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-red">
+                                            <!-- Heroicon name: solid/user -->
+                                <span class="oi oi-x text-white"></span>
+                                        </span>
+                                        break;
+                                }
+
+                            </div>
+                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                <div>
+                                    @switch (e.Status)
+                                    {
+                                        case JobApplicationStatus.Applied:
+                                            <p class="text-sm text-gray-500">@(e.Description) to <a href="/jobs/@JobApplication.JobId" class="font-medium text-gray-900">@JobApplication.Position?.Title</a></p>
+                                            break;
+                                        case JobApplicationStatus.PhoneScreening:
+                                        case JobApplicationStatus.PhoneScreeningCompleted:
+                                        case JobApplicationStatus.Interview:
+                                        case JobApplicationStatus.InterviewCompleted:
+                                        case JobApplicationStatus.Disqualified:
+                                            <p class="text-sm text-gray-500">@(e.Description) by <a href="/jobs/@JobApplication.JobId" class="font-medium text-gray-900">@(e.AppUser?.DisplayName)</a></p>
+                                            break;
+                                    }
+
+                                </div>
+                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                    <time datetime="@e?.EventDate.ToString("yyyy-MM-dd")">@e?.EventDate.ToString("MMM d")</time>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+
+
+        </ul>
+    </div>
+    <div class="mt-6 flex flex-col justify-stretch">
+        @switch (JobApplication.ApplicationStatus)
+        {
+            case JobApplicationStatus.Applied:
+            case JobApplicationStatus.PhoneScreening:
+            case JobApplicationStatus.PhoneScreeningCompleted:
+            case JobApplicationStatus.Interview:
+            case JobApplicationStatus.InterviewCompleted:
+                <button type="button" @onclick="(e) => AdvanceClick(JobApplication.ApplicationStatus)" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[JobApplication.ApplicationStatus + 1]</button>
+                break;
+            case JobApplicationStatus.Offer:
+                <button type="button" @onclick="(e) => DisqualifyClick(JobApplication.ApplicationStatus)" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
+                break;
+            case JobApplicationStatus.Disqualified:
+                break;
+            default:
+                break;
+        }
+
+    </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public JobApplication JobApplication { get; set; }
+
+    [Parameter]
+    public int JobApplicationId { get; set; }
+
+    [Parameter]
+    public EventCallback<JobApplicationStatus> OnAdvanceClick { get; set; }
+
+    [Parameter]
+    public EventCallback<JobApplicationStatus> OnDisqualifyClick { get; set; }
+
+
+    List<JobApplicationEvent> jobAppEvents;
+    ResponseStatus? errorStatus;
+
+    List<JobApplicationEvent> getJobEvents()
+    {
+        if(jobAppEvents == null)
+            return new List<JobApplicationEvent>();
+        return jobAppEvents;
+    }
+
+    async Task AdvanceClick(JobApplicationStatus status)
+    {
+        await OnAdvanceClick.InvokeAsync(status);
+        await refreshJobAppEvents();
+    }
+
+    async Task DisqualifyClick(JobApplicationStatus status)
+    {
+        await OnDisqualifyClick.InvokeAsync(status);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await refreshJobAppEvents();
+        await base.OnParametersSetAsync();
+    }
+
+    async Task refreshJobAppEvents()
+    {
+        var api = await ApiAsync(new QueryJobAppEvents
+            {
+                JobApplicationId = JobApplicationId
+            });
+        if (api.Succeeded)
+            jobAppEvents = api.Response!.Results;
+        else
+            errorStatus = api.Error;
+
+        this.StateHasChanged();
+    }
+
+    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
+        {
+            { JobApplicationStatus.Applied, "Applied" },
+            { JobApplicationStatus.Interview, "Interview" },
+            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+            { JobApplicationStatus.Offer, "Offer" },
+            { JobApplicationStatus.Disqualified, "Disqualified" }
+        };
+}

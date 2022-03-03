@@ -363,6 +363,7 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
 {
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
+    [ValidateNotEmpty(Message = "An employee to perform the phone screening must be selected.")]
     public int ApiAppUserId { get; set; }
 }
 
@@ -370,11 +371,12 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
 [AutoApply(Behavior.AuditModify)]
 public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
 {
+    [ValidateNotEmpty]
     public int Id { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    public int ApiAppUserId { get; set; }
 
+    [ValidateNotEmpty]
     public string Notes { get; set; }
 }
 
@@ -393,7 +395,7 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    [ValidateNotEmpty]
+    [ValidateNotEmpty(Message = "An employee to perform interview must be selected.")]
     public int ApiAppUserId { get; set; }
 }
 
@@ -403,13 +405,9 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
 {
     [ValidateNotEmpty]
     public int Id { get; set; }
-    [ValidateNotNull]
-    public DateTime? BookingTime { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
     [ValidateNotEmpty]
-    public int ApiAppUserId { get; set; }
-
     public string Notes { get; set; }
 }
 

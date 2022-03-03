@@ -187,6 +187,14 @@ public static class ConfigureDbTalent
             appEvent.Status = JobApplicationStatus.Interview;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
+            if(status == JobApplicationStatus.Interview)
+            {
+                var interview = interviewFaker.Generate();
+                interview.JobApplicationId = jobApp.Id;
+                interview.BookingTime = eventDate;
+                interview.ApiAppUserId = FakerInstance.Random.Int(1, 5);
+                db.Insert(interview);
+            }
         }
 
         if (status >= JobApplicationStatus.PhoneScreeningCompleted)
@@ -211,6 +219,13 @@ public static class ConfigureDbTalent
             appEvent.Status = JobApplicationStatus.PhoneScreening;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
+            if(status == JobApplicationStatus.PhoneScreening)
+            {
+                var screen = phoneScreenFaker.Generate();
+                screen.JobApplicationId = jobApp.Id;
+                screen.ApiAppUserId = FakerInstance.Random.Int(1, 5);
+                db.Insert(screen);
+            }
         }
 
         if (status >= JobApplicationStatus.Applied)
