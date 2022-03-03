@@ -14,10 +14,25 @@ public class AppUser : IUserAuth
     public string DisplayName { get; set; }
 
     [Index]
-    public string UserName { get; set; }
-    [Index]
     public string Email { get; set; }
 
+    // Custom Properties
+    [Format(FormatMethods.IconRounded)]
+    public string ProfileUrl { get; set; }
+
+    public Department Department { get; set; }
+    public string Title { get; set; }
+    public string JobArea { get; set; }
+    public string Location { get; set; }
+    public int Salary { get; set; }
+    public string About { get; set; }
+    public bool IsArchived { get; set; }
+    public DateTime? ArchivedDate { get; set; }
+    public DateTime? LastLoginDate { get; set; }
+    public string LastLoginIp { get; set; }
+
+    // UserAuth Properties
+    public string UserName { get; set; }
     public string PrimaryEmail { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -49,21 +64,6 @@ public class AppUser : IUserAuth
     public DateTime? LastLoginAttempt { get; set; }
     public DateTime? LockedDate { get; set; }
     public string RecoveryToken { get; set; }
-
-    // Custom Properties
-    public Department Department { get; set; }
-    public string ProfileUrl { get; set; }
-    public string LastLoginIp { get; set; }
-    public string Title { get; set; }
-    public string JobArea { get; set; }
-    public string Location { get; set; }
-    public int Salary { get; set; }
-    public string About { get; set; }
-
-    public bool IsArchived { get; set; }
-    public DateTime? ArchivedDate { get; set; }
-
-    public DateTime? LastLoginDate { get; set; }
 
     //Custom Reference Data
     public int? RefId { get; set; }
