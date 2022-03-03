@@ -117,12 +117,14 @@
     [Parameter]
     public int JobApplicationId { get; set; }
 
-    public PhoneScreen? PhoneScreen { get; set; }
+    [Parameter]
+    public PhoneScreen PhoneScreen { get; set; }
 
-    public Interview? Interview { get; set; }
+    [Parameter]
+    public Interview Interview { get; set; }
 
-    bool hasPhoneScreen = false;
-    bool hasInterview = false;
+    bool hasPhoneScreen => PhoneScreen?.Notes != null;
+    bool hasInterview => Interview?.Notes != null;
 
     List<JobApplicationComment> comments;
 
@@ -147,8 +149,6 @@
     async Task refreshData()
     {
         await refreshComments();
-        await refreshPhoneScreen();
-        await refreshInterview();
     }
 
     async Task refreshComments()
@@ -159,36 +159,6 @@
             });
         if (api.Succeeded)
             comments = api.Response!.Results;
-        else
-            errorStatus = api.Error;
-    }
-
-    async Task refreshPhoneScreen()
-    {
-        var api = await ApiAsync(new QueryPhoneScreen
-            {
-                JobApplicationId = JobApplicationId
-            });
-        if (api.Succeeded)
-        {
-            hasPhoneScreen = api.Response!.Results.Count > 0;
-            PhoneScreen = hasPhoneScreen ? api.Response!.Results[0] : new();
-        }
-        else
-            errorStatus = api.Error;
-    }
-
-    async Task refreshInterview()
-    {
-        var api = await ApiAsync(new QueryInterview
-            {
-                JobApplicationId = JobApplicationId
-            });
-        if (api.Succeeded)
-        {
-            hasInterview = api.Response!.Results.Count > 0;
-            Interview = hasInterview ? api.Response!.Results[0] : new();
-        }
         else
             errorStatus = api.Error;
     }

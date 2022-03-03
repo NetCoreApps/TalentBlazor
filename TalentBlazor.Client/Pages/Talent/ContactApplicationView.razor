@@ -120,7 +120,7 @@
             </section>
 
             <!-- Comments-->
-            <JobAppComments JobApplicationId="JobAppId" />
+            <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" />
         </div>
 
         <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
@@ -152,7 +152,7 @@
         <form class="space-y-6" @onsubmit:preventDefault>
             <div>
                 <div class="mt-1">
-                    <TextAreaInput @bind-Value="phoneScreenRequest.Notes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                    <TextAreaInput @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
                 </div>
             </div>
             <ErrorSummary Status="@phoneScreenResult.Error" />
@@ -167,7 +167,7 @@
         <form class="space-y-6" @onsubmit:preventDefault>
             <div>
                 <div class="mt-1">
-                    <DateTimeLocalInput @bind-Value="interviewRequest.BookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
+                    <DateTimeLocalInput @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
                 </div>
                 <div class="mt-1">
                     <EmployeeLookup Users="apiAppUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
@@ -186,7 +186,7 @@
         <form class="space-y-6" @onsubmit:preventDefault>
             <div>
                 <div class="mt-1">
-                    <TextAreaInput @bind-Value="interviewRequest.Notes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                    <TextAreaInput @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
                 </div>
             </div>
             <ErrorSummary Status="@interviewResult.Error" />
@@ -209,7 +209,7 @@
     List<ApiAppUser> apiAppUsers = new();
 
     PhoneScreen phoneScreen = new();
-    Interview interview = ();
+    Interview interview = new();
 
     ApiAppUser? employeeSelection;
 
@@ -219,14 +219,9 @@
 
     ResponseStatus? errorStatus;
 
-    Interview interviewRequest = new()
-        {
-            BookingTime = DateTime.UtcNow
-        };
-    PhoneScreen phoneScreenRequest = new()
-        {
-            Notes = ""
-        };
+    DateTime interviewBookingTime = DateTime.UtcNow.Date;
+    string interviewNotes = "";
+    string phoneScreenNotes = "";
 
     ApiResult<Interview> interviewResult = new();
     ApiResult<PhoneScreen> phoneScreenResult = new();
@@ -239,14 +234,15 @@
 
     void resetInterview()
     {
-        interviewRequest = new() { BookingTime = DateTime.UtcNow.Date, Notes = "" };
+        interviewBookingTime = DateTime.UtcNow.Date;
+        interviewNotes = "";
         employeeSelection = null;
         interviewResult = new();
     }
 
     void resetPhoneScreen()
     {
-        phoneScreenRequest = new() { Notes = "" };
+        phoneScreenNotes = "";
         employeeSelection = null;
         phoneScreenResult = new();
     }
@@ -328,6 +324,38 @@
         await refreshJobAppEvents();
         if (apiAppUsers.Count == 0)
             await getAppUsers();
+        await refreshPhoneScreen();
+        await refreshInterview();
+    }
+
+    async Task refreshPhoneScreen()
+    {
+        var api = await ApiAsync(new QueryPhoneScreen
+            {
+                JobApplicationId = JobAppId
+            });
+        if (api.Succeeded)
+        {
+            var hasPhoneScreen = api.Response!.Results.Count > 0;
+            phoneScreen = hasPhoneScreen ? api.Response!.Results[0] : new();
+        }
+        else
+            errorStatus = api.Error;
+    }
+
+    async Task refreshInterview()
+    {
+        var api = await ApiAsync(new QueryInterview
+            {
+                JobApplicationId = JobAppId
+            });
+        if (api.Succeeded)
+        {
+            var hasInterview = api.Response!.Results.Count > 0;
+            interview = hasInterview ? api.Response!.Results[0] : new();
+        }
+        else
+            errorStatus = api.Error;
     }
 
     async Task refreshJobApp()
@@ -392,7 +420,7 @@
     {
         var updatePhone = new UpdatePhoneScreen();
         updatePhone.JobApplicationId = jobApp.Id;
-        updatePhone.Notes = phoneScreenRequest.Notes;
+        updatePhone.Notes = phoneScreenNotes;
         updatePhone.Id = jobApp.PhoneScreen.Id;
         phoneScreenResult = await ApiAsync(updatePhone);
         if (phoneScreenResult.Succeeded)
@@ -413,7 +441,7 @@
         var createInterview = new CreateInterview();
         createInterview.JobApplicationId = JobAppId;
         createInterview.ApiAppUserId = employeeSelection?.Id ?? 0;
-        createInterview.BookingTime = interviewRequest.BookingTime;
+        createInterview.BookingTime = interviewBookingTime;
         interviewResult = await ApiAsync(createInterview);
         if (interviewResult.Succeeded)
         {
@@ -432,7 +460,7 @@
         var updateInterview = new UpdateInterview();
         updateInterview.Id = jobApp.Interview.Id;
         updateInterview.JobApplicationId = jobApp.Id;
-        updateInterview.Notes = interviewRequest.Notes;
+        updateInterview.Notes = interviewNotes;
         interviewResult = await ApiAsync(updateInterview);
         if (interviewResult.Succeeded)
         {
