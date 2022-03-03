@@ -77,11 +77,11 @@ public class JobApplicationComment : AuditBase
 
     public string Message { get; set; }
 
-    [References(typeof(ApiAppUser))]
-    public int ApiAppUserId { get; set; }
+    [References(typeof(AppUser))]
+    public int AppUserId { get; set; }
 
     [Reference]
-    public ApiAppUser ApiAppUser { get; set; }
+    public AppUser AppUser { get; set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
@@ -133,12 +133,12 @@ public class JobApplicationEvent : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(ApiAppUser))]
-    public int ApiAppUserId { get; set; }
+    [References(typeof(AppUser))]
+    public int AppUserId { get; set; }
 
     [Format(FormatMethods.Hidden)]
     [Reference]
-    public ApiAppUser AppUser { get; set; }
+    public AppUser AppUser { get; set; }
 
     public JobApplicationStatus? Status { get; set; }
 
@@ -157,13 +157,14 @@ public class PhoneScreen : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(ApiAppUser))]
-    public int ApiAppUserId { get; set; }
+    [References(typeof(AppUser))]
+    public int AppUserId { get; set; }
 
     [Format(FormatMethods.Hidden)]
     [Reference]
-    public ApiAppUser AppUser { get; set; }
+    public AppUser AppUser { get; set; }
 
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
 }
 
@@ -179,13 +180,14 @@ public class Interview : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(ApiAppUser))]
-    public int ApiAppUserId { get; set; }
+    [References(typeof(AppUser))]
+    public int AppUserId { get; set; }
 
     [Format(FormatMethods.Hidden)]
     [Reference]
-    public ApiAppUser AppUser { get; set; }
+    public AppUser AppUser { get; set; }
 
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
 }
 
@@ -198,37 +200,6 @@ public enum JobApplicationStatus
     InterviewCompleted,
     Offer,
     Disqualified
-}
-
-[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='currentColor' d='M10.277 2.084a.5.5 0 0 0-.554 0a15.05 15.05 0 0 1-6.294 2.421A.5.5 0 0 0 3 5v4.5c0 3.891 2.307 6.73 6.82 8.467a.5.5 0 0 0 .36 0C14.693 16.23 17 13.39 17 9.5V5a.5.5 0 0 0-.43-.495a15.05 15.05 0 0 1-6.293-2.421ZM10 9.5a2 2 0 1 1 0-4a2 2 0 0 1 0 4Zm0 5c-2.5 0-3.5-1.25-3.5-2.5A1.5 1.5 0 0 1 8 10.5h4a1.5 1.5 0 0 1 1.5 1.5c0 1.245-1 2.5-3.5 2.5Z'/></svg>")]
-[Alias("AppUser")]
-public class ApiAppUser
-{
-    public int Id { get; set; }
-    public string DisplayName { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string UserName { get; set; }
-    public string PrimaryEmail { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Company { get; set; }
-    public string Title { get; set; }
-    public string JobArea { get; set; }
-    public string Location { get; set; }
-    public int Salary { get; set; }
-    public string About { get; set; }
-    public string Department { get; set; }
-    public string? ProfileUrl { get; set; }
-}
-
-public enum Department
-{
-    None,
-    Marketing,
-    Accounts,
-    Legal,
-    HumanResources,
 }
 
 [Tag("Talent")]
@@ -268,6 +239,7 @@ public class CreateContact : ICreateDb<Contact>, IReturn<Contact>
     [ValidateNotEmpty]
     public string Email { get; set; }
     public string Phone { get; set; }
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string About { get; set; }
 }
 
@@ -283,6 +255,7 @@ public class UpdateContact : IUpdateDb<Contact>, IReturn<Contact>
     [ValidateNotEmpty]
     public string Email { get; set; }
     public string Phone { get; set; }
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string About { get; set; }
 }
 
@@ -307,10 +280,11 @@ public class QueryJob : QueryDb<Job>
 public class CreateJob : ICreateDb<Job>, IReturn<Job>
 {
     public string Title { get; set; }
-    public string Description { get; set; }
 
     public int SalaryRangeLower { get; set; }
     public int SalaryRangeUpper { get; set; }
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
+    public string Description { get; set; }
 }
 
 [Tag("Talent")]
@@ -319,10 +293,10 @@ public class UpdateJob : IUpdateDb<Job>, IReturn<Job>
 {
     public int Id { get; set; }
     public string Title { get; set; }
-    public string Description { get; set; }
-
     public int SalaryRangeLower { get; set; }
     public int SalaryRangeUpper { get; set; }
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
+    public string Description { get; set; }
 }
 
 [Tag("Talent")]
@@ -387,7 +361,7 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
     [ValidateNotEmpty(Message = "An employee to perform the phone screening must be selected.")]
-    public int ApiAppUserId { get; set; }
+    public int AppUserId { get; set; }
 }
 
 [Tag("Talent")]
@@ -400,6 +374,7 @@ public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
     public int JobApplicationId { get; set; }
 
     [ValidateNotEmpty]
+    [Input(Type="textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
 }
 
@@ -420,7 +395,7 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
     [ValidateNotEmpty(Message = "An employee to perform interview must be selected.")]
-    public int ApiAppUserId { get; set; }
+    public int AppUserId { get; set; }
 }
 
 [Tag("Talent")]
@@ -431,7 +406,9 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
     public int Id { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
+    
     [ValidateNotEmpty]
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
 }
 
@@ -464,7 +441,7 @@ public class DeleteJobApplicationEvent : IDeleteDb<JobApplicationEvent>,
 }
 
 [Tag("Talent")]
-public class QueryAppUser : QueryDb<ApiAppUser>
+public class QueryAppUser : QueryDb<AppUser>
 {
     public string? EmailContains { get; set; }
     public string? FirstNameContains { get; set; }
@@ -480,31 +457,33 @@ public class QueryJobApplicationComments : QueryDb<JobApplicationComment>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditCreate)]
-[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
 public class CreateJobApplicationComment : ICreateDb<JobApplicationComment>, IReturn<JobApplicationComment>
 {
     [ValidateNotEmpty]
-    public string Message { get; set; }
-    [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
+    [ValidateNotEmpty]
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
+    public string Message { get; set; }
 }
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
 public class UpdateJobApplicationComment : IUpdateDb<JobApplicationComment>, IReturn<JobApplicationComment>
 {
     [ValidateNotEmpty]
     public int Id { get; set; }
     [ValidateNotEmpty]
-    public string Message { get; set; }
-    [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
+    [ValidateNotEmpty]
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
+    public string Message { get; set; }
 }
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditSoftDelete)]
-[AutoPopulate(nameof(JobApplicationComment.ApiAppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
 public class DeleteJobApplicationComment : IDeleteDb<JobApplicationComment>, IReturnVoid
 {
     [ValidateNotEmpty]

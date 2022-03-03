@@ -26,10 +26,10 @@ namespace TalentBlazor.ServiceInterface
                 phoneScreen.ModifiedDate = now;
                 phoneScreenId = Db.Insert(phoneScreen, selectIdentity: true);
                 var jobAppId = request.JobApplicationId;
-                var userId = request.ApiAppUserId;
+                var userId = request.AppUserId;
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    ApiAppUserId = userId,
+                    AppUserId = userId,
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.PhoneScreening,
                     CreatedBy = this.GetSession().UserAuthId,
@@ -64,7 +64,7 @@ namespace TalentBlazor.ServiceInterface
                 var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    ApiAppUserId = userId,
+                    AppUserId = userId,
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.PhoneScreeningCompleted,
                     CreatedBy = this.GetSession().UserAuthId,
@@ -101,7 +101,7 @@ namespace TalentBlazor.ServiceInterface
                 var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    ApiAppUserId = userId,
+                    AppUserId = userId,
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.Interview,
                     CreatedBy = this.GetSession().UserAuthId,
@@ -136,7 +136,7 @@ namespace TalentBlazor.ServiceInterface
                 var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    ApiAppUserId = userId,
+                    AppUserId = userId,
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.InterviewCompleted,
                     CreatedBy = this.GetSession().UserAuthId,

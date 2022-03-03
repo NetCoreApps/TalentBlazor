@@ -88,7 +88,7 @@
 
 @code {
 
-    public ApiAppUser? EmployeeSelection
+    public AppUser? EmployeeSelection
     {
         get => selectedResult;
         set
@@ -104,17 +104,17 @@
 
 
     [Parameter]
-    public EventCallback<ApiAppUser> OnEmployeeSelection { get; set; }
+    public EventCallback<AppUser> OnEmployeeSelection { get; set; }
 
     [Parameter]
-    public List<ApiAppUser> Users { get; set; }
+    public List<AppUser> Users { get; set; }
 
     [Parameter]
     public string ControlTitle { get; set; }
 
-    ApiAppUser currentActive;
+    AppUser currentActive;
 
-    IEnumerable<ApiAppUser> filtered()
+    IEnumerable<AppUser> filtered()
     {
         if (searchTerm == null)
             return Users;
@@ -123,7 +123,7 @@
         x.Email.Contains(searchTerm));
     }
 
-    ApiAppUser getCurrentActive()
+    AppUser getCurrentActive()
     {
         var users = filtered();
         if (currentActive == null && users.Count() > 0)
@@ -131,7 +131,7 @@
         return currentActive;
     }
 
-    void hoverOnUser(ApiAppUser user)
+    void hoverOnUser(AppUser user)
     {
         currentActive = user;
     }
@@ -157,12 +157,12 @@
         searchHasFocus = true;
     }
 
-    void updateActive(ApiAppUser user)
+    void updateActive(AppUser user)
     {
         currentActive = user;
     }
 
-    void selectUser(ApiAppUser user)
+    void selectUser(AppUser user)
     {
         EmployeeSelection = user;
     }
@@ -173,7 +173,7 @@
     }
 
     [Parameter]
-    public ApiAppUser? selectedResult { get; set; }
+    public AppUser? selectedResult { get; set; }
 
     bool hasMadeSearch = false;
 
