@@ -8,7 +8,7 @@ namespace TalentBlazor;
 
 public class AppHost : AppHostBase, IHostingStartup
 {
-    public AppHost() : base("TalentBlazor", typeof(MyServices).Assembly) { }
+    public AppHost() : base("TalentBlazor", typeof(TalentServices).Assembly) { }
 
     public override void Configure(Container container)
     {
