@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager navManager;
 @inject BreadCrumbStateContainer breadCrumbContainer;
+@implements IDisposable
 
 <div class="w-full flex md:ml-0">
     <nav class="flex" aria-label="Breadcrumb">
@@ -42,6 +43,12 @@
     {
         navManager.LocationChanged += NavigationManager_LocationChanged;
         breadCrumbContainer.OnChange += OnBreadCrumbsChange;
+    }
+
+    public void Dispose()
+    {
+        navManager.LocationChanged -= NavigationManager_LocationChanged;
+        breadCrumbContainer.OnChange -= OnBreadCrumbsChange;
     }
 
     private void OnBreadCrumbsChange()
