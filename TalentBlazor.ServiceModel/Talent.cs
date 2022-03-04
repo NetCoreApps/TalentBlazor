@@ -5,19 +5,17 @@ using System.Collections.Generic;
 
 namespace TalentBlazor.ServiceModel;
 
-[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path fill='currentColor' d='M20 22H4v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2zm-8-9a6 6 0 1 1 0-12a6 6 0 0 1 0 12z'></path></svg>")]
+[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M5 3a3 3 0 1 1 6 0a3 3 0 0 1-6 0zm7.001 4h-.553l-3.111 6.316L9.5 7.5L8 6L6.5 7.5l1.163 5.816L4.552 7h-.554c-1.999 0-1.999 1.344-1.999 3v5h12v-5c0-1.656 0-3-1.999-3z'/></svg>")]
 public class Contact : AuditBase
 {
     [AutoIncrement]
     public int Id { get; set; }
 
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-
-    public string DisplayName { get => FirstName + " " + LastName; }
-
+    public string DisplayName => FirstName + " " + LastName;
     [Format(FormatMethods.IconRounded)]
     public string ProfileUrl { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 
     [IntlNumber(Currency = NumberCurrency.USD)]
     public int? SalaryExpectation { get; set; }
@@ -36,7 +34,7 @@ public class Contact : AuditBase
     public List<JobApplication> Applications { get; set; }
 }
 
-[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M5 3a3 3 0 1 1 6 0a3 3 0 0 1-6 0zm7.001 4h-.553l-3.111 6.316L9.5 7.5L8 6L6.5 7.5l1.163 5.816L4.552 7h-.554c-1.999 0-1.999 1.344-1.999 3v5h12v-5c0-1.656 0-3-1.999-3z'/></svg>")]
+[Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><path fill='currentColor' d='M13.11 2.293a1.5 1.5 0 0 1 1.78 0l9.497 7.005c1.124.83.598 2.578-.74 2.7H4.353c-1.338-.122-1.863-1.87-.74-2.7l9.498-7.005ZM14 8.999a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3Zm5.5 4h2.499v6h-2.5v-6Zm-2 6v-6H15v6h2.5ZM13 19v-6h-2.5v6H13Zm-4.499 0v-6h-2.5v6h2.5Zm-2.25 1a3.25 3.25 0 0 0-3.25 3.25v.5a.752.752 0 0 0 .75.751h20.497a.75.75 0 0 0 .75-.75v-.5a3.25 3.25 0 0 0-3.25-3.25H6.252Z'/></svg>")]
 public class Job : AuditBase
 {
     [AutoIncrement]
@@ -75,16 +73,15 @@ public class JobApplicationComment : AuditBase
     [AutoIncrement]
     public int Id { get; set; }
 
-    public string Message { get; set; }
-
     [References(typeof(AppUser))]
     public int AppUserId { get; set; }
 
-    [Reference]
+    [Reference, Format(FormatMethods.Hidden)]
     public AppUser AppUser { get; set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
+    public string Message { get; set; }
 }
 
 [Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M18 19H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1M12 7a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4a1 1 0 0 1 1 1a1 1 0 0 1-1 1a1 1 0 0 1-1-1a1 1 0 0 1 1-1m7 0h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z'/></svg>")]
@@ -136,8 +133,7 @@ public class JobApplicationEvent : AuditBase
     [References(typeof(AppUser))]
     public int AppUserId { get; set; }
 
-    [Format(FormatMethods.Hidden)]
-    [Reference]
+    [Reference, Format(FormatMethods.Hidden)]
     public AppUser AppUser { get; set; }
 
     public JobApplicationStatus? Status { get; set; }
@@ -154,15 +150,14 @@ public class PhoneScreen : AuditBase
     [AutoIncrement]
     public int Id { get; set; }
 
-    [References(typeof(JobApplication))]
-    public int JobApplicationId { get; set; }
-
     [References(typeof(AppUser))]
     public int AppUserId { get; set; }
 
-    [Format(FormatMethods.Hidden)]
-    [Reference]
+    [Reference, Format(FormatMethods.Hidden)]
     public AppUser AppUser { get; set; }
+
+    [References(typeof(JobApplication))]
+    public int JobApplicationId { get; set; }
 
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
@@ -183,8 +178,7 @@ public class Interview : AuditBase
     [References(typeof(AppUser))]
     public int AppUserId { get; set; }
 
-    [Format(FormatMethods.Hidden)]
-    [Reference]
+    [Reference, Format(FormatMethods.Hidden)]
     public AppUser AppUser { get; set; }
 
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
@@ -374,7 +368,7 @@ public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
     public int JobApplicationId { get; set; }
 
     [ValidateNotEmpty]
-    [Input(Type="textarea"), FieldCss(Field = "col-span-12 text-center")]
+    [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
 }
 
@@ -406,7 +400,7 @@ public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
     public int Id { get; set; }
     [ValidateNotEmpty]
     public int JobApplicationId { get; set; }
-    
+
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
