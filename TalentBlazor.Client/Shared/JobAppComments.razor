@@ -58,7 +58,7 @@
                 </div>
             }
             <div class="px-4 py-2 sm:px-6">
-                <h2 id="notes-title" class="text-lg font-medium text-gray-900">Notes</h2>
+                <h2 id="notes-title" class="text-lg font-medium text-gray-900">Comments</h2>
             </div>
             <div class="px-4 py-6 sm:px-6">
                 <ul role="list" class="space-y-8">
@@ -74,7 +74,7 @@
                                         <a href="#" class="font-medium text-gray-900">@(comment.AppUser.DisplayName)</a>
                                     </div>
                                     <div class="mt-1 text-sm text-gray-700">
-                                        <p>@comment.Message</p>
+                                        <p>@comment.Comment</p>
                                     </div>
                                     <div class="mt-2 text-sm space-x-2">
                                         <span class="text-gray-500 font-medium">@((DateTime.UtcNow - comment.CreatedDate).Days < 1 ? "Today" : ((DateTime.UtcNow - comment.CreatedDate).Days.ToString() +" days ago"))</span>
@@ -97,7 +97,7 @@
                             <CascadingValue Value=@errorStatus>
                                 <form @onsubmit="submit">
                                     <div>
-                                        <TextAreaInput @bind-Value="request.Message" rows="3" class="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Add a note"></TextAreaInput>
+                                        <TextAreaInput @bind-Value="request.Comment" name="Note" rows="3" class="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Add a comment"></TextAreaInput>
                                     </div>
                                     <div class="mt-3 flex items-center justify-between">
                                         <a href="#" class="group inline-flex items-start text-sm space-x-2 text-gray-500 hover:text-gray-900">
@@ -180,10 +180,13 @@
         var api = await ApiAsync(new CreateJobApplicationComment
             {
                 JobApplicationId = JobApplicationId,
-                Message = request.Message
+                Comment = request.Comment
             });
         if (api.Succeeded)
+        {
             await refreshComments();
+            request = new();
+        }
         else
             errorStatus = api.Error;
     }
