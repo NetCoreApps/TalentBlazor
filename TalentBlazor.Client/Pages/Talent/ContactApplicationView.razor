@@ -20,33 +20,36 @@
                 </div>
             </div>
             <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Disqualify</button>
-                @switch (jobApp.ApplicationStatus)
-                {
-                    case JobApplicationStatus.Applied:
-                        <button type="button" @onclick="() => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                        break;
-                    case JobApplicationStatus.PhoneScreening:
-                        <button type="button" @onclick="() => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                        break;
-                    case JobApplicationStatus.PhoneScreeningCompleted:
-                        <button type="button" @onclick="() => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                        break;
-                    case JobApplicationStatus.Interview:
-                        <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                        break;
-                    case JobApplicationStatus.InterviewCompleted:
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                        break;
-                    case JobApplicationStatus.Offer:
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
-                        break;
-                    case JobApplicationStatus.Disqualified:
-                        break;
-                    default:
-                        break;
-                }
-
+                <AuthorizeView>
+                    <Authorized>
+                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Disqualify</button>
+                        @switch (jobApp.ApplicationStatus)
+                        {
+                            case JobApplicationStatus.Applied:
+                                <button type="button" @onclick="() => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                                break;
+                            case JobApplicationStatus.PhoneScreening:
+                                <button type="button" @onclick="() => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                                break;
+                            case JobApplicationStatus.PhoneScreeningCompleted:
+                                <button type="button" @onclick="() => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                                break;
+                            case JobApplicationStatus.Interview:
+                                <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                                break;
+                            case JobApplicationStatus.InterviewCompleted:
+                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                                break;
+                            case JobApplicationStatus.Offer:
+                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
+                                break;
+                            case JobApplicationStatus.Disqualified:
+                                break;
+                            default:
+                                break;
+                        }
+                    </Authorized>
+                </AuthorizeView>
             </div>
         </div>
 
@@ -65,80 +68,80 @@
                     </div>
                 </section>
 
-            <!-- Comments-->
-            <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" />
+                <!-- Comments-->
+                <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" />
+            </div>
+
+            <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+                <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="advanceApplication"
+                                OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>
+            </section>
         </div>
+    </main>
 
-        <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-            <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="advanceApplication"
-                            OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>
-        </section>
-    </div>
-</main>
-
-<!-- Advance to phonescreen -->
-<CascadingValue Value=@phoneScreenResult.Error>
-    <JobAppModal ModalTitle="Advance to phone screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
-                 OnSave="createPhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
-        <form class="space-y-6" @onsubmit:preventDefault>
-            <div>
-                <div class="mt-1">
-                    <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
+    <!-- Advance to phonescreen -->
+    <CascadingValue Value=@phoneScreenResult.Error>
+        <JobAppModal ModalTitle="Advance to phone screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                     OnSave="createPhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
+                    </div>
                 </div>
-            </div>
-            <ErrorSummary Status="@phoneScreenResult.Error" />
-        </form>
-    </JobAppModal>
-</CascadingValue>
-
-<!--Complete Phone Screen-->
-<CascadingValue Value=@phoneScreenResult.Error>
-    <JobAppModal ModalTitle="Progress To Phone Screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
-                 OnSave="updatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
-        <form class="space-y-6" @onsubmit:preventDefault>
-            <div>
-                <div class="mt-1">
-                    <TextAreaInput @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
-                </div>
-            </div>
-            <ErrorSummary Status="@phoneScreenResult.Error" />
-        </form>
-    </JobAppModal>
-</CascadingValue>
-
-<!-- Book interview -->
-<CascadingValue Value=@interviewResult.Error>
-    <JobAppModal ModalTitle="Interview Booking" ModalDescription="Book interview with appropriate team member to evaluate the candidate."
-                 OnSave="createInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
-        <form class="space-y-6" @onsubmit:preventDefault>
-            <div>
-                <div class="mt-1">
-                    <DateTimeLocalInput @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
-                </div>
-                <div class="mt-1">
-                    <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
-                </div>
-            </div>
-            <ErrorSummary Status="@interviewResult.Error" />
-        </form>
-    </JobAppModal>
-</CascadingValue>
-
-<!-- Complete interview -->
-
-<JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
-             OnSave="submitInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
-    <CascadingValue Value=@interviewResult.Error>
-        <form class="space-y-6" @onsubmit:preventDefault>
-            <div>
-                <div class="mt-1">
-                    <TextAreaInput @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
-                </div>
-            </div>
-            <ErrorSummary Status="@interviewResult.Error" />
-        </form>
+                <ErrorSummary Status="@phoneScreenResult.Error" />
+            </form>
+        </JobAppModal>
     </CascadingValue>
-</JobAppModal>
+
+    <!--Complete Phone Screen-->
+    <CascadingValue Value=@phoneScreenResult.Error>
+        <JobAppModal ModalTitle="Progress To Phone Screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                     OnSave="updatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <TextAreaInput @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                    </div>
+                </div>
+                <ErrorSummary Status="@phoneScreenResult.Error" />
+            </form>
+        </JobAppModal>
+    </CascadingValue>
+
+    <!-- Book interview -->
+    <CascadingValue Value=@interviewResult.Error>
+        <JobAppModal ModalTitle="Interview Booking" ModalDescription="Book interview with appropriate team member to evaluate the candidate."
+                     OnSave="createInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <DateTimeLocalInput @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
+                    </div>
+                    <div class="mt-1">
+                        <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
+                    </div>
+                </div>
+                <ErrorSummary Status="@interviewResult.Error" />
+            </form>
+        </JobAppModal>
+    </CascadingValue>
+
+    <!-- Complete interview -->
+
+    <JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
+                 OnSave="submitInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
+        <CascadingValue Value=@interviewResult.Error>
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <TextAreaInput @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                    </div>
+                </div>
+                <ErrorSummary Status="@interviewResult.Error" />
+            </form>
+        </CascadingValue>
+    </JobAppModal>
 
 
 </div>
