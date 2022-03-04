@@ -1,6 +1,5 @@
 ﻿@page "/contacts"
 @inherits AppComponentBase
-@inject BreadCrumbStateContainer breadCrumbState;
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="bg-white overflow-hidden rounded-lg">
@@ -251,15 +250,6 @@
     protected override async Task OnInitializedAsync()
     {
         await refreshContacts();
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        breadCrumbState.BreadCrumbs = new List<BreadCrumb>
-        {
-            new BreadCrumb{ Name = "Contacts", Url = "/contacts"}
-        };
-        return base.OnParametersSetAsync();
     }
 
     async Task refreshContacts()

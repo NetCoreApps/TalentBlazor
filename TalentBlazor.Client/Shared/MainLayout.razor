@@ -1,8 +1,6 @@
 @inherits LayoutComponentBase
 @inject ServiceStackStateProvider AuthStateProvider;
 @inject NavigationManager NavigationManager;
-@inject BreadCrumbStateContainer breadCrumbsContainer;
-@implements IDisposable
 
 
 <div class="min-h-full">
@@ -143,16 +141,6 @@
     {
         LoginUrl = NavigationManager.GetLoginUrl();
         return base.OnParametersSetAsync();
-    }
-
-    protected override void OnInitialized()
-    {
-        breadCrumbsContainer.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        breadCrumbsContainer.OnChange -= StateHasChanged;
     }
 
     async Task logout()

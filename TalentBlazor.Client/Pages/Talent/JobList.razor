@@ -1,7 +1,5 @@
 ﻿@page "/jobs"
 @inherits AppComponentBase
-@inject BreadCrumbStateContainer breadCrumbState;
-
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="bg-white overflow-hidden rounded-lg">
@@ -254,15 +252,6 @@
         var minPages = (int)Math.Floor((decimal)(jobs.Count(x => x.EmploymentType == filter) / perPage));
         var remainderPage = ((jobs.Count(x => x.EmploymentType == filter) % perPage > 0) ? 1 : 0);
         return minPages + remainderPage;
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        breadCrumbState.BreadCrumbs = new List<BreadCrumb>
-        {
-            new BreadCrumb{ Name = "Jobs", Url = "/jobs"}
-        };
-        return base.OnParametersSetAsync();
     }
 
     protected override async Task OnInitializedAsync()

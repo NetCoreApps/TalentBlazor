@@ -28,7 +28,6 @@ builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredServic
 builder.Services.AddBlazorApiClient(builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress);
 
 builder.Services.AddScoped<ServiceStackStateProvider>();
-builder.Services.AddSingleton<BreadCrumbStateContainer>();
 
 if (builder.HostEnvironment.IsDevelopment())
 {

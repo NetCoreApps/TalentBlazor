@@ -1,6 +1,5 @@
 ﻿@page "/contacts/{ContactId:int}"
 @inherits AppComponentBase
-@inject BreadCrumbStateContainer breadCrumbs;
 
 <div class="bg-white overflow-hidden rounded-lg">
     <header class="px-4 py-2 sm:px-6 bg-gray-50">
@@ -157,25 +156,6 @@
     protected override async Task OnInitializedAsync()
     {
         await refreshContact();
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        var crumbs = new List<BreadCrumb>
-        {
-            new BreadCrumb
-            {
-                Name = "Contacts",
-                Url = "/contacts"
-            },
-            new BreadCrumb
-            {
-                Name = $"{contact.DisplayName}",
-                Url = $"/contacts/{ContactId}"
-            }
-        };
-        breadCrumbs.BreadCrumbs = crumbs;
-        return base.OnParametersSetAsync();
     }
 
     // For best UX: apply changes locally then revalidate with real server state

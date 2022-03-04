@@ -1,6 +1,5 @@
 ﻿@page "/jobs/{JobId:int}/applications/{JobAppId:int}"
 @inherits AppComponentBase
-@inject BreadCrumbStateContainer breadCrumbs;
 
 <div class="bg-gray-50 overflow-hidden rounded-lg">
     <header class="px-4 py-2 sm:px-6 bg-gray-50">
@@ -234,35 +233,6 @@
             jobApp = api.Response!;
         else
             errorStatus = api.Error;
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        var crumbs = new List<BreadCrumb>
-        {
-            new BreadCrumb
-            {
-                Name = "Jobs",
-                Url = "/jobs"
-            },
-            new BreadCrumb
-            {
-                Name = $"{jobApp.Position.Title}",
-                Url = $"/jobs/{JobId}"
-            },
-            new BreadCrumb
-            {
-                Name = "Applications",
-                Url = $"/jobs/{JobId}/applications"
-            },
-            new BreadCrumb
-            {
-                Name = $"{jobApp.Applicant.DisplayName}",
-                Url = $"/jobs/{JobId}/applications/{JobAppId}"
-            }
-        };
-        breadCrumbs.BreadCrumbs = crumbs;
-        return base.OnParametersSetAsync();
     }
 
     async Task refreshData()

@@ -1,6 +1,5 @@
 ﻿@page "/jobs/{JobId:int}/applications"
 @inherits AppComponentBase
-@inject BreadCrumbStateContainer breadCrumbs;
 
 <div class="bg-gray-50 overflow-hidden rounded-lg">
 
@@ -374,30 +373,6 @@
     }
 
     protected override async Task OnInitializedAsync() => await refreshJobApps();
-
-    protected override Task OnParametersSetAsync()
-    {
-        var crumbs = new List<BreadCrumb>
-        {
-            new BreadCrumb
-            {
-                Name = "Jobs",
-                Url = "/jobs"
-            },
-            new BreadCrumb
-            {
-                Name = $"{job.Title}",
-                Url = $"/jobs/{JobId}"
-            },
-            new BreadCrumb
-            {
-                Name = "Applications",
-                Url = $"/jobs/{JobId}/applications"
-            }
-        };
-        breadCrumbs.BreadCrumbs = crumbs;
-        return base.OnParametersSetAsync();
-    }
 
     int interviewApplicationCount()
     {
