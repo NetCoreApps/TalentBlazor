@@ -59,7 +59,7 @@
     protected override Task OnParametersSetAsync()
     {
         LoginUrl = NavigationManager.GetLoginUrl();
-        return Task.CompletedTask;
+        return base.OnParametersSetAsync();
     }
 
     async Task logout()
