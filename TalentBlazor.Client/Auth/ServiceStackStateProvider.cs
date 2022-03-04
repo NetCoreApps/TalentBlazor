@@ -24,6 +24,7 @@ public static class ClaimUtils
 
     public static string? GetUserId(this ClaimsPrincipal principal) => principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     public static string? GetDisplayName(this ClaimsPrincipal principal) => principal.FindFirst(ClaimTypes.Name)?.Value;
+    public static string? GetProfileUrl(this ClaimsPrincipal principal) => principal.FindFirst("ProfileUrl")?.Value;
     public static string? GetEmail(this ClaimsPrincipal principal) => principal.FindFirst(ClaimTypes.Email)?.Value;
     public static string[] GetRoles(this ClaimsPrincipal principal) => principal.Claims.Where(x => x.Type == ClaimTypes.Role)
         .Select(x => x.Value).ToArray();
@@ -71,7 +72,8 @@ public class ServiceStackStateProvider : AuthenticationStateProvider
             {
                 new Claim(ClaimTypes.NameIdentifier, authResponse.UserId),
                 new Claim(ClaimTypes.Name, authResponse.DisplayName),
-                new Claim(ClaimTypes.Email, authResponse.UserName)
+                new Claim(ClaimTypes.Email, authResponse.UserName),
+                new Claim(type: "ProfileUrl", value: authResponse.ProfileUrl)
             };
 
             // Add all App Roles to Admin Users to use [Authorize(Roles)]
