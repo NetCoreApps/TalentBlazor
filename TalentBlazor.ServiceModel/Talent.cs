@@ -56,7 +56,6 @@ public class Job : AuditBase
     public string Location { get; set; }
 
     public DateTime Closing { get; set; }
-
 }
 
 public enum EmploymentType
@@ -203,7 +202,7 @@ public class QueryJobApplicationAttachment : QueryDb<JobApplicationAttachment>
 }
 
 [Icon(Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'><path fill='currentColor' d='M0 4.5V0h1v4.5a1.5 1.5 0 1 0 3 0v-3a.5.5 0 0 0-1 0V5H2V1.5a1.5 1.5 0 1 1 3 0v3a2.5 2.5 0 0 1-5 0Z'/><path fill='currentColor' fill-rule='evenodd' d='M12.5 0H6v4.5A3.5 3.5 0 0 1 2.5 8H1v5.5A1.5 1.5 0 0 0 2.5 15h10a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 0ZM11 4H7v1h4V4Zm0 3H7v1h4V7Zm-7 3h7v1H4v-1Z' clip-rule='evenodd'/></svg>")]
-public class JobApplicationAttachment : AuditBase
+public class JobApplicationAttachment
 {
     [AutoIncrement]
     public int Id { get; set; }
@@ -212,7 +211,9 @@ public class JobApplicationAttachment : AuditBase
     public int JobApplicationId { get; set; }
 
     public string FileName { get; set; }
-    public string FileLocation { get; set; }
+    public string FilePath { get; set; }
+    public string ContentType { get; set; }
+    public long ContentLength { get; set; }
 }
 
 [Tag("Talent")]
@@ -226,9 +227,9 @@ public class QueryContacts : QueryDb<Contact>
 [AutoApply(Behavior.AuditCreate)]
 public class CreateContact : ICreateDb<Contact>, IReturn<Contact>
 {
-    [ValidateNotEmpty] 
+    [ValidateNotEmpty]
     public string FirstName { get; set; } = string.Empty;
-    [ValidateNotEmpty] 
+    [ValidateNotEmpty]
     public string LastName { get; set; } = string.Empty;
     [Input(Type = "file"), UploadTo("profiles")]
     public string? ProfileUrl { get; set; }
@@ -239,7 +240,7 @@ public class CreateContact : ICreateDb<Contact>, IReturn<Contact>
     public EmploymentType PreferredWorkType { get; set; }
     [ValidateNotEmpty]
     public string PreferredLocation { get; set; } = string.Empty;
-    [ValidateNotEmpty] 
+    [ValidateNotEmpty]
     public string Email { get; set; } = string.Empty;
     public string? Phone { get; set; }
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
@@ -328,25 +329,34 @@ public class QueryJobApplication : QueryDb<JobApplication>
     public int? JobId { get; set; }
 }
 
+public interface IHasJobId
+{
+    public int JobId { get; }
+}
+
 [Tag("Talent")]
 [AutoApply(Behavior.AuditCreate)]
-public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplication>
+public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplication>, IHasJobId
 {
     public int JobId { get; set; }
     public int ContactId { get; set; }
     public DateTime AppliedDate { get; set; }
     public JobApplicationStatus ApplicationStatus { get; set; }
+    [Input(Type = "file"), UploadTo("applications")]
+    public List<JobApplicationAttachment> Attachments { get; set; }
 }
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateJobApplication : IUpdateDb<JobApplication>, IReturn<JobApplication>
+public class UpdateJobApplication : IUpdateDb<JobApplication>, IReturn<JobApplication>, IHasJobId
 {
     public int Id { get; set; }
     public int JobId { get; set; }
     public int ContactId { get; set; }
     public DateTime AppliedDate { get; set; }
     public JobApplicationStatus ApplicationStatus { get; set; }
+    [Input(Type = "file"), UploadTo("applications")]
+    public List<JobApplicationAttachment> Attachments { get; set; }
 }
 
 [Tag("Talent")]

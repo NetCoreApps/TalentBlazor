@@ -1,6 +1,9 @@
 using Funq;
 using ServiceStack;
+using ServiceStack.Configuration;
+using ServiceStack.IO;
 using TalentBlazor.ServiceInterface;
+using TalentBlazor.ServiceModel;
 
 [assembly: HostingStartup(typeof(TalentBlazor.AppHost))]
 
@@ -21,6 +24,18 @@ public class AppHost : AppHostBase, IHostingStartup
             "https://localhost:5001",
             "https://" + Environment.GetEnvironmentVariable("DEPLOY_CDN")
         }, allowCredentials: true));
+
+        var wwwrootVfs = VirtualFileSources.GetFileSystemVirtualFiles();
+        var appDataVfs = new FileSystemVirtualFiles(ContentRootDirectory.RealPath.CombineWith("App_Data").AssertDir());
+        Plugins.Add(new FilesUploadFeature(
+            new UploadLocation("profiles", wwwrootVfs, allowExtensions:FileExt.WebImages,
+                resolvePath: (req, fileName) => $"/profiles/{fileName}"),
+            new UploadLocation("users", wwwrootVfs, allowExtensions:FileExt.WebImages,
+                resolvePath: (req, fileName) => $"/profiles/users/{req.GetSession().UserAuthId}.{fileName.LastRightPart('.')}"),
+            new UploadLocation("applications", appDataVfs, maxFileCount: 3, maxFileBytes: 10_000_000,
+                resolvePath: (req, fileName) => $"/uploads/applications/{((IHasJobId)req.Dto).JobId}/{DateTime.UtcNow:yyyy/MM/dd}/{fileName}",
+                accessRole: RoleNames.AllowAnon)
+        ));
     }
 
     public void Configure(IWebHostBuilder builder) => builder

@@ -18,6 +18,7 @@ public class AppUser : IUserAuth
 
     // Custom Properties
     [Format(FormatMethods.IconRounded)]
+    [Input(Type = "file"), UploadTo("users")]
     public string ProfileUrl { get; set; }
 
     public Department Department { get; set; }
