@@ -29,7 +29,6 @@ public class AppUserAuthEvents : AuthEvents
     }
 }
 
-
 public class ConfigureAuthRepository : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
@@ -132,7 +131,7 @@ public class ConfigureAuthRepository : IHostingStartup
             newUser.Email = user.Email;
             newUser.DisplayName = user.Name;
             var dbUser = (AppUser)authRepo.CreateUserAuth(newUser, user.Password);
-            newUser.ProfileUrl = $"/profiles/appusers/{newUser.Id}.jpg";
+            newUser.ProfileUrl = $"/profiles/users/{newUser.Id}.jpg";
             authRepo.UpdateUserAuth(dbUser, newUser);
             authRepo.AssignRoles(newUser, user.Roles);
         }

@@ -256,6 +256,4 @@ public static class ConfigureDbTalent
             db.Insert(comment);
         }
     }
-
-
 }
