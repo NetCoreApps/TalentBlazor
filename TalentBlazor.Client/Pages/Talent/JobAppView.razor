@@ -1,9 +1,9 @@
 ﻿@page "/jobs/{JobId:int}/applications"
 @inherits AppComponentBase
 
-<div class="bg-gray-50 overflow-hidden rounded-lg">
+<div class="overflow-hidden rounded-lg">
 
-    <header class="px-4 py-2 sm:px-6 bg-gray-50">
+    <header class="px-4 py-2 sm:px-6">
 
         <!-- Content goes here -->
         <div>
@@ -65,7 +65,7 @@
 
                 <!-- Dropdown -->
                 <span class="ml-3 relative sm:hidden">
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500" id="mobile-menu-button" aria-expanded="false" aria-haspopup="true">
+                    <button type="button" @onclick="() => collapseEditViewMenu = !collapseEditViewMenu" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500" id="mobile-menu-button" aria-expanded="false" aria-haspopup="true">
                         More
                         <!-- Heroicon name: solid/chevron-down -->
                         <svg class="-mr-1 ml-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -83,23 +83,23 @@
                         From: "transform opacity-100 scale-100"
                         To: "transform opacity-0 scale-95"
                     -->
-                    <div class="origin-top-right absolute right-0 mt-2 -mr-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="mobile-menu-button" tabindex="-1">
+                    <div class="@(collapseEditViewMenu == true ? "hidden" : "") origin-top-left absolute mt-2 -mr-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="mobile-menu-button" tabindex="-1">
                         <!-- Active: "bg-gray-100", Not Active: "" -->
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="mobile-menu-item-0">Edit</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="mobile-menu-item-1">View</a>
+                        <a href="/jobs/@(job.Id)/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="mobile-menu-item-0">Edit</a>
+                        <a href="/jobs/@(job.Id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="mobile-menu-item-1">View</a>
                     </div>
                 </span>
             </div>
         </div>
     </header>
 
-    <main class="px-4 pt-8 sm:px-6 bg-white">
+    <main class="px-4 pt-8 sm:px-6">
         <h2 class="text-lg font-medium fw-normal text-gray-900">Candidates</h2>
         <!-- Tabs -->
         <div class="sm:hidden">
             <label for="tabs" class="sr-only">Select a tab</label>
             <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
-            <select id="tabs" name="tabs" @bind="filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+            <select id="tabs" name="tabs" @bind="Filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
                 <option value="@JobApplicationFilter.Applied">Applied</option>
 
                 <option value="@JobApplicationFilter.PhoneScreening">Phone Screening</option>
@@ -115,42 +115,42 @@
             <div class="border-b border-gray-200">
                 <nav class="mt-2 -mb-px flex space-x-8" aria-label="Tabs">
                     <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
-                    <a href="" @onclick="(e) => filter = JobApplicationFilter.Applied" @onclick:preventDefault class="@(filter == JobApplicationFilter.Applied ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => Filter = JobApplicationFilter.Applied" @onclick:preventDefault class="@(Filter == JobApplicationFilter.Applied ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Applied
 
                         <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == JobApplicationFilter.Applied ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Applied ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
                             @(applicationCount(JobApplicationStatus.Applied))
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => filter = JobApplicationFilter.PhoneScreening" @onclick:preventDefault class="@(filter == JobApplicationFilter.PhoneScreening ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => Filter = JobApplicationFilter.PhoneScreening" @onclick:preventDefault class="@(Filter == JobApplicationFilter.PhoneScreening ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Phone Screening
 
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == JobApplicationFilter.PhoneScreening ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.PhoneScreening ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
                             @(phoneApplicationCount())
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => filter = JobApplicationFilter.Interview" @onclick:preventDefault class="@(filter == JobApplicationFilter.Interview ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => Filter = JobApplicationFilter.Interview" @onclick:preventDefault class="@(Filter == JobApplicationFilter.Interview ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Interview
 
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == JobApplicationFilter.Interview ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Interview ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
                             @(interviewApplicationCount())
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => filter = JobApplicationFilter.Offer" @onclick:preventDefault class="@(filter == JobApplicationFilter.Offer ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => Filter = JobApplicationFilter.Offer" @onclick:preventDefault class="@(Filter == JobApplicationFilter.Offer ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Offer
                         <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == JobApplicationFilter.Offer ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Offer ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
                             @(applicationCount(JobApplicationStatus.Offer))
                         </span>
                     </a>
 
-                    <a href="" @onclick="(e) => filter = JobApplicationFilter.Disqualified" @onclick:preventDefault class="@(filter == JobApplicationFilter.Disqualified ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <a href="" @onclick="(e) => Filter = JobApplicationFilter.Disqualified" @onclick:preventDefault class="@(Filter == JobApplicationFilter.Disqualified ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Disqualified
-                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == JobApplicationFilter.Disqualified ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+                        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Disqualified ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
                             @(applicationCount(JobApplicationStatus.Disqualified))
                         </span>
                     </a>
@@ -160,8 +160,8 @@
 
 
         <!-- Stacked list -->
-        <div class="bg-white ">
-            <ul role="list" class="border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul role="list" class="border-t px-6 border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
                 @foreach (var jobApp in filteredJobs().Skip((currentPage) * perPage).Take(perPage))
                 {
                     <li>
@@ -305,8 +305,23 @@
     List<JobApplication> jobApps = new();
     Job job = new();
     JobApplicationFilter filter = JobApplicationFilter.Interview;
+    JobApplicationFilter Filter
+    {
+        get
+        {
+            return filter;
+        }
+
+        set
+        {
+            filter = value;
+            currentPage = 0;
+        }
+    }
     int currentPage = 0;
     int perPage = 3;
+
+    bool collapseEditViewMenu = true;
 
     Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
         {
@@ -354,7 +369,7 @@
     {
         if (jobApps == null || jobApps.Count == 0)
             return jobApps;
-        switch (filter)
+        switch (Filter)
         {
             case JobApplicationFilter.Applied:
                 return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Applied);

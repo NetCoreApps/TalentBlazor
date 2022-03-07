@@ -1,0 +1,25 @@
+﻿@inherits AppAuthComponentBase
+@inject ServiceStackStateProvider AuthStateProvider;
+
+<div class="overflow-hidden rounded-lg">
+    <header class="px-4 py-2 sm:px-6">
+        
+    </header>
+    <main class="py-10">
+
+    </main>
+</div>
+
+@code {
+    ApiResult<AppMetadata> appMetadataApi = new();
+    AppMetadata appMetadata;
+
+    protected override async Task OnInitializedAsync()
+    {
+        appMetadataApi = await this.ApiAppMetadataAsync();
+        if(appMetadataApi.Succeeded)
+        {
+            appMetadata = appMetadataApi.Response!;
+        }
+    }
+}

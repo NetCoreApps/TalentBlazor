@@ -1,0 +1,97 @@
+﻿@page "/jobs/{JobId:int}"
+@inherits AppComponentBase
+
+<div class="overflow-hidden rounded-lg">
+    <main class="py-10">
+        @if(Job != null)
+        {
+            <div class="px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
+            <div class="flex items-center space-x-5">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">@(getJob().Title)</h1>
+                    <p class="text-sm font-medium text-gray-500"><a href="/jobs/@(getJob().Id)/applications" class="text-gray-900">@(getJob().Applications.Count) applicants</a> have applied since <time datetime="@(getJob().CreatedDate.ToString("yyyy-MM-dd"))">@(getJob().CreatedDate.ToString("MMMM d, yyyy"))</time></p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:px-6">
+            <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+                <!-- Description list-->
+                <section aria-labelledby="applicant-information-title">
+                    <div class="bg-white shadow sm:rounded-lg">
+                        <div class="px-4 py-5 sm:px-6">
+                            <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">Job Information</h2>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Details about the role</p>
+                        </div>
+                        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                            <div>
+                                <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Title</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Title)</dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Company</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Company)</dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().EmploymentType)</dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Closing</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Closing)</dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Location</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Location)</dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">$@(getJob().SalaryRangeLower/1000)k - $@(getJob().SalaryRangeUpper/1000)k</dd>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <dt class="text-sm font-medium text-gray-500">Description</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Description)</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+                    @*<JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="advanceApplication"
+                        OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>*@
+            </section>
+        </div>        
+        }
+
+    </main>
+</div>
+@code {
+    [Parameter]
+    public int JobId { get; set; }
+
+    ResponseStatus? errorStatus;
+    Job Job = null;
+
+    protected override async Task OnInitializedAsync() => await refreshData();
+
+    Job getJob()
+    {
+        return Job;
+    }
+
+    async Task refreshData()
+    {
+        var api = await ApiAsync(new QueryJob
+            {
+                Id = JobId
+            });
+        if (api.Succeeded)
+            Job = api.Response!.Results[0];
+        else
+            errorStatus = api.Error;
+    }
+}
