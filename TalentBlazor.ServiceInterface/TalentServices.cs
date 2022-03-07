@@ -50,7 +50,7 @@ namespace TalentBlazor.ServiceInterface
             return phoneScreenResult;
         }
 
-        public object Put(UpdatePhoneScreen request)
+        public object Patch(UpdatePhoneScreen request)
         {
             using (var transaction = Db.OpenTransaction())
             {
@@ -58,7 +58,7 @@ namespace TalentBlazor.ServiceInterface
                 var phoneScreen = Db.SingleById<PhoneScreen>(request.Id);
                 phoneScreen.ModifiedBy = this.GetSession().UserAuthId;
                 phoneScreen.ModifiedDate = now;
-                phoneScreen.Notes = request.Notes;
+                phoneScreen.PopulateWithNonDefaultValues(request);
                 Db.Save(phoneScreen);
                 var jobAppId = request.JobApplicationId;
                 var userId = int.Parse(this.GetSession().UserAuthId);
@@ -122,7 +122,7 @@ namespace TalentBlazor.ServiceInterface
             return interviewResult;
         }
 
-        public object Put(UpdateInterview request)
+        public object Patch(UpdateInterview request)
         {
             using (var transaction = Db.OpenTransaction())
             {
@@ -130,7 +130,7 @@ namespace TalentBlazor.ServiceInterface
                 var interview = Db.SingleById<Interview>(request.Id);
                 interview.ModifiedBy = this.GetSession().UserAuthId;
                 interview.ModifiedDate = now;
-                interview.Notes = request.Notes;
+                interview.PopulateWithNonDefaultValues(request);
                 Db.Save(interview);
                 var jobAppId = request.JobApplicationId;
                 var userId = int.Parse(this.GetSession().UserAuthId);

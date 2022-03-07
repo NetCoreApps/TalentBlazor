@@ -249,7 +249,7 @@ public class CreateContact : ICreateDb<Contact>, IReturn<Contact>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateContact : IUpdateDb<Contact>, IReturn<Contact>
+public class UpdateContact : IPatchDb<Contact>, IReturn<Contact>
 {
     public int Id { get; set; }
     [ValidateNotEmpty]
@@ -301,7 +301,7 @@ public class CreateJob : ICreateDb<Job>, IReturn<Job>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateJob : IUpdateDb<Job>, IReturn<Job>
+public class UpdateJob : IPatchDb<Job>, IReturn<Job>
 {
     public int Id { get; set; }
     public string Title { get; set; }
@@ -348,7 +348,7 @@ public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplic
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateJobApplication : IUpdateDb<JobApplication>, IReturn<JobApplication>, IHasJobId
+public class UpdateJobApplication : IPatchDb<JobApplication>, IReturn<JobApplication>, IHasJobId
 {
     public int Id { get; set; }
     public int JobId { get; set; }
@@ -387,7 +387,7 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdatePhoneScreen : IUpdateDb<PhoneScreen>, IReturn<PhoneScreen>
+public class UpdatePhoneScreen : IPatchDb<PhoneScreen>, IReturn<PhoneScreen>
 {
     [ValidateNotEmpty]
     public int Id { get; set; }
@@ -421,7 +421,7 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateInterview : IUpdateDb<Interview>, IReturn<Interview>
+public class UpdateInterview : IPatchDb<Interview>, IReturn<Interview>
 {
     [ValidateNotEmpty]
     public int Id { get; set; }
@@ -449,7 +449,7 @@ public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>,
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateJobApplicationEvent : IUpdateDb<JobApplicationEvent>,
+public class UpdateJobApplicationEvent : IPatchDb<JobApplicationEvent>,
     IReturn<JobApplicationEvent>
 {
 }
@@ -492,7 +492,7 @@ public class CreateJobApplicationComment : ICreateDb<JobApplicationComment>, IRe
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
 [AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
-public class UpdateJobApplicationComment : IUpdateDb<JobApplicationComment>, IReturn<JobApplicationComment>
+public class UpdateJobApplicationComment : IPatchDb<JobApplicationComment>, IReturn<JobApplicationComment>
 {
     [ValidateNotEmpty]
     public int Id { get; set; }
