@@ -1,0 +1,110 @@
+﻿@typeparam T
+<form>
+    <fieldset>
+        @if(Model != null && !Model.IsEmpty())
+        {
+            @foreach (var prop in getFormOperationType().Request.Properties)
+            {
+                if (prop.Input != null && !prop.Input.Id.IsEmpty())
+                {
+                    <DynamicInput Input="prop.Input" Model="@Model" />
+                }
+                else
+                {
+                    var inputInfo = generateDefaultInputInfo(prop);
+                    <DynamicInput Input="inputInfo" Model="@Model" />
+                }
+            }
+        }
+    </fieldset>
+</form>
+
+@code {
+    Dictionary<string, object> Model { get; set; } = new();
+
+    [Parameter]
+    public T Data { get; set; }
+
+    [CascadingParameter]
+    AppMetadata AppMetadata { get; set; }
+
+    ApiUiInfo uiInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sync();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        sync();
+        return base.OnParametersSetAsync();
+    }
+
+    void sync()
+    {
+        Model = Data.ToObjectDictionary();
+    }
+
+    MetadataOperationType getFormOperationType()
+    {
+        var operation = AppMetadata.Api.Operations.FirstOrDefault(x => x != null && x.Request != null && x.Request.Name == typeof(T).Name);
+        if (operation == null)
+            throw new Exception($"Failed to resolve request DTO of type {typeof(T).FullName}");
+        return operation;
+    }
+
+    InputInfo generateDefaultInputInfo(MetadataPropertyType propType)
+    {
+        if (propType.Type == null)
+            return new InputInfo(propType.Name, "text");
+
+        if (typeToInputTypeMapping.ContainsKey(propType.Type))
+            return new InputInfo(propType.Name, typeToInputTypeMapping[propType.Type]);
+        else if (typesMap.ContainsKey(propType.Type))
+            return new InputInfo(propType.Name, typeToInputTypeMapping[typesMap[propType.Type]]);
+        else
+            return new InputInfo(propType.Name, "text");
+    }
+
+    readonly Dictionary<string, string> typeToInputTypeMapping = new()
+        {
+            { "bool", "checkbox" },
+
+            { "DateTime", "date" },
+            { "DateTimeOffset", "date" },
+            { "DateOnly", "date" },
+
+            { "TimeSpan", "time" },
+            { "TimeOnly", "time" },
+
+            { "short", "number" },
+            { "int", "number" },
+            { "long", "number" },
+            { "ushort", "number" },
+            { "uint", "number" },
+            { "ulong", "number" },
+            { "float", "number" },
+            { "double", "number" },
+            { "decimal", "number" },
+            { "string", "text" },
+            { "Guid", "text" },
+            { "Uri", "text" }
+        };
+
+    readonly Dictionary<string, string> typesMap = new()
+        {
+            { "Int16", "short" },
+            { "Int32", "int" },
+            { "Int64", "long" },
+            { "UInt16", "ushort" },
+            { "Unt32", "uint" },
+            { "UInt64", "ulong" },
+            { "Single", "float" },
+            { "Double", "double" },
+            { "Decimal", "decimal" },
+            { "String", "string" },
+            { "Boolean", "bool" }
+        };
+
+}

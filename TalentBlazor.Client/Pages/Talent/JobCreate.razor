@@ -1,23 +1,45 @@
 ﻿@inherits AppAuthComponentBase
 @inject ServiceStackStateProvider AuthStateProvider;
+@page "/jobs/{JobId:int}/edit"
 
 <div class="overflow-hidden rounded-lg">
     <header class="px-4 py-2 sm:px-6">
-        
     </header>
     <main class="py-10">
-
+        @if (appMetadata != null)
+        {
+            <CascadingValue Value="appMetadata">
+                <AutoQueryCreateForm Data="instance"></AutoQueryCreateForm>
+            </CascadingValue>
+            <button type="button" @onclick="click">Click</button>
+        }
     </main>
 </div>
 
 @code {
+    [Parameter]
+    public int JobId { get; set; }
+
     ApiResult<AppMetadata> appMetadataApi = new();
     AppMetadata appMetadata;
+    CreateJob instance = new()
+    {
+        Description = "Testing",
+        SalaryRangeLower = 50000,
+        SalaryRangeUpper = 100000,
+        Title = "Stuff"
+    };
+
+    async Task click(MouseEventArgs e)
+    {
+        instance.SalaryRangeLower += 1000;
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
         appMetadataApi = await this.ApiAppMetadataAsync();
-        if(appMetadataApi.Succeeded)
+        if (appMetadataApi.Succeeded)
         {
             appMetadata = appMetadataApi.Response!;
         }

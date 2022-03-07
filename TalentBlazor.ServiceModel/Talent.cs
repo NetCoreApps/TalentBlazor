@@ -297,6 +297,12 @@ public class CreateJob : ICreateDb<Job>, IReturn<Job>
     public int SalaryRangeUpper { get; set; }
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Description { get; set; }
+
+    public EmploymentType EmploymentType { get; set; }
+    public string Company { get; set; }
+    public string Location { get; set; }
+
+    public DateTime Closing { get; set; }
 }
 
 [Tag("Talent")]
