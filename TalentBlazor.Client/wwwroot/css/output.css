@@ -518,6 +518,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   pointer-events: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .static {
   position: static;
 }
@@ -1598,16 +1602,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-right: 0.25rem;
 }
 
-.pt-3 {
-  padding-top: 0.75rem;
-}
-
 .pr-10 {
   padding-right: 2.5rem;
 }
 
 .pr-3 {
   padding-right: 0.75rem;
+}
+
+.pt-3 {
+  padding-top: 0.75rem;
 }
 
 .pb-2 {
@@ -2182,6 +2186,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 
 @media (min-width: 640px) {
+  .sm\:visible {
+    visibility: visible;
+  }
+
   .sm\:col-span-1 {
     grid-column: span 1 / span 1;
   }
@@ -2440,6 +2448,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 
 @media (min-width: 768px) {
+  .md\:visible {
+    visibility: visible;
+  }
+
   .md\:order-2 {
     order: 2;
   }
@@ -2482,6 +2494,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .md\:flex {
     display: flex;
+  }
+
+  .md\:table-cell {
+    display: table-cell;
   }
 
   .md\:grid {
@@ -2530,6 +2546,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 
 @media (min-width: 1024px) {
+  .lg\:visible {
+    visibility: visible;
+  }
+
   .lg\:fixed {
     position: fixed;
   }
@@ -2571,6 +2591,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .lg\:flex {
     display: flex;
+  }
+
+  .lg\:table-cell {
+    display: table-cell;
   }
 
   .lg\:hidden {
@@ -2659,12 +2683,24 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 
 @media (min-width: 1280px) {
+  .xl\:visible {
+    visibility: visible;
+  }
+
   .xl\:mt-0 {
     margin-top: 0px;
   }
 
   .xl\:ml-4 {
     margin-left: 1rem;
+  }
+
+  .xl\:table-cell {
+    display: table-cell;
+  }
+
+  .xl\:h-0 {
+    height: 0px;
   }
 }
 
