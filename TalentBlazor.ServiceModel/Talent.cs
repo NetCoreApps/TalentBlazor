@@ -304,11 +304,11 @@ public class CreateJob : ICreateDb<Job>, IReturn<Job>
 public class UpdateJob : IPatchDb<Job>, IReturn<Job>
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public int SalaryRangeLower { get; set; }
-    public int SalaryRangeUpper { get; set; }
+    public string? Title { get; set; }
+    public int? SalaryRangeLower { get; set; }
+    public int? SalaryRangeUpper { get; set; }
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }
 
 [Tag("Talent")]
@@ -329,14 +329,9 @@ public class QueryJobApplication : QueryDb<JobApplication>
     public int? JobId { get; set; }
 }
 
-public interface IHasJobId
-{
-    public int JobId { get; }
-}
-
 [Tag("Talent")]
 [AutoApply(Behavior.AuditCreate)]
-public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplication>, IHasJobId
+public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplication>
 {
     public int JobId { get; set; }
     public int ContactId { get; set; }
@@ -348,15 +343,15 @@ public class CreateJobApplication : ICreateDb<JobApplication>, IReturn<JobApplic
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-public class UpdateJobApplication : IPatchDb<JobApplication>, IReturn<JobApplication>, IHasJobId
+public class UpdateJobApplication : IPatchDb<JobApplication>, IReturn<JobApplication>
 {
     public int Id { get; set; }
-    public int JobId { get; set; }
-    public int ContactId { get; set; }
-    public DateTime AppliedDate { get; set; }
+    public int? JobId { get; set; }
+    public int? ContactId { get; set; }
+    public DateTime? AppliedDate { get; set; }
     public JobApplicationStatus ApplicationStatus { get; set; }
     [Input(Type = "file"), UploadTo("applications")]
-    public List<JobApplicationAttachment> Attachments { get; set; }
+    public List<JobApplicationAttachment>? Attachments { get; set; }
 }
 
 [Tag("Talent")]
@@ -392,11 +387,11 @@ public class UpdatePhoneScreen : IPatchDb<PhoneScreen>, IReturn<PhoneScreen>
     [ValidateNotEmpty]
     public int Id { get; set; }
     [ValidateNotEmpty]
-    public int JobApplicationId { get; set; }
+    public int? JobApplicationId { get; set; }
 
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
-    public string Notes { get; set; }
+    public string? Notes { get; set; }
 }
 
 [Tag("Talent")]
@@ -426,11 +421,11 @@ public class UpdateInterview : IPatchDb<Interview>, IReturn<Interview>
     [ValidateNotEmpty]
     public int Id { get; set; }
     [ValidateNotEmpty]
-    public int JobApplicationId { get; set; }
+    public int? JobApplicationId { get; set; }
 
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
-    public string Notes { get; set; }
+    public string? Notes { get; set; }
 }
 
 [Tag("Talent")]
@@ -452,6 +447,13 @@ public class CreateJobApplicationEvent : ICreateDb<JobApplicationEvent>,
 public class UpdateJobApplicationEvent : IPatchDb<JobApplicationEvent>,
     IReturn<JobApplicationEvent>
 {
+    public int Id { get; set; }
+    public JobApplicationStatus? Status { get; set; }
+
+    public string? Description { get; set; }
+
+    public DateTime? EventDate { get; set; }
+
 }
 
 [Tag("Talent")]
@@ -497,7 +499,7 @@ public class UpdateJobApplicationComment : IPatchDb<JobApplicationComment>, IRet
     [ValidateNotEmpty]
     public int Id { get; set; }
     [ValidateNotEmpty]
-    public int JobApplicationId { get; set; }
+    public int? JobApplicationId { get; set; }
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string? Comment { get; set; }

@@ -60,7 +60,7 @@ namespace TalentBlazor.ServiceInterface
                 phoneScreen.ModifiedDate = now;
                 phoneScreen.PopulateWithNonDefaultValues(request);
                 Db.Save(phoneScreen);
-                var jobAppId = request.JobApplicationId;
+                var jobAppId = request.JobApplicationId.Value;
                 var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
@@ -132,7 +132,7 @@ namespace TalentBlazor.ServiceInterface
                 interview.ModifiedDate = now;
                 interview.PopulateWithNonDefaultValues(request);
                 Db.Save(interview);
-                var jobAppId = request.JobApplicationId;
+                var jobAppId = request.JobApplicationId.Value;
                 var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
