@@ -187,7 +187,9 @@ public class Interview : AuditBase
 public enum JobApplicationStatus
 {
     Applied,
+    [Description("Advanced to phone screening")]
     PhoneScreening,
+    [Description("Completed phone screening")]
     PhoneScreeningCompleted,
     Interview,
     InterviewCompleted,

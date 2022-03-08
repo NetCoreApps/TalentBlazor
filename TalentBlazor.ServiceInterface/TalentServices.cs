@@ -16,25 +16,19 @@ namespace TalentBlazor.ServiceInterface
         JobApplicationEvent CreateEvent(JobApplicationStatus status)
         {
             var userId = this.GetSession().UserAuthId;
-            var now = DateTime.UtcNow;
             return new JobApplicationEvent
             {
                 AppUserId = userId.ToInt(),
                 Status = status,
-                CreatedBy = userId,
-                ModifiedBy = userId,
                 Description = status.ToDescription(),
-                EventDate = now,
-                CreatedDate = now,
-                ModifiedDate = now
-            };
+            }.WithAudit(userId);
         }
 
         public object Post(CreatePhoneScreen request)
         {
             var jobApp = Db.SingleById<JobApplication>(request.JobApplicationId);
             jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreening;
-            jobApp.PhoneScreen = request.ConvertTo<PhoneScreen>();
+            jobApp.PhoneScreen = request.ConvertTo<PhoneScreen>().WithAudit(Request);
             jobApp.Events ??= new();
             jobApp.Events.Add(CreateEvent(JobApplicationStatus.PhoneScreening));
             Db.Save(jobApp, references:true);
@@ -45,7 +39,7 @@ namespace TalentBlazor.ServiceInterface
         {
             var jobApp = Db.LoadSingleById<JobApplication>(request.JobApplicationId);
             jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreening;
-            jobApp.PhoneScreen.PopulateWithNonDefaultValues(request);
+            jobApp.PhoneScreen.PopulateWithNonDefaultValues(request).WithAudit(Request);
             jobApp.Events ??= new();
             jobApp.Events.Add(CreateEvent(JobApplicationStatus.PhoneScreeningCompleted));
             Db.Save(jobApp, references:true);
