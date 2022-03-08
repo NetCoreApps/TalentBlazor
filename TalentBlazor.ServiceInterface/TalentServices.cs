@@ -13,6 +13,46 @@ namespace TalentBlazor.ServiceInterface
     {
         public IAutoQueryDb AutoQuery { get; set; }
 
+        JobApplicationEvent CreateEvent(JobApplicationStatus status)
+        {
+            var userId = this.GetSession().UserAuthId;
+            var now = DateTime.UtcNow;
+            return new JobApplicationEvent
+            {
+                AppUserId = userId.ToInt(),
+                Status = status,
+                CreatedBy = userId,
+                ModifiedBy = userId,
+                Description = status.ToDescription(),
+                EventDate = now,
+                CreatedDate = now,
+                ModifiedDate = now
+            };
+        }
+
+        public object Post(CreatePhoneScreen request)
+        {
+            var jobApp = Db.SingleById<JobApplication>(request.JobApplicationId);
+            jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreening;
+            jobApp.PhoneScreen = request.ConvertTo<PhoneScreen>();
+            jobApp.Events ??= new();
+            jobApp.Events.Add(CreateEvent(JobApplicationStatus.PhoneScreening));
+            Db.Save(jobApp, references:true);
+            return jobApp.PhoneScreen;
+        }
+
+        public object Patch(UpdatePhoneScreen request)
+        {
+            var jobApp = Db.LoadSingleById<JobApplication>(request.JobApplicationId);
+            jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreening;
+            jobApp.PhoneScreen.PopulateWithNonDefaultValues(request);
+            jobApp.Events ??= new();
+            jobApp.Events.Add(CreateEvent(JobApplicationStatus.PhoneScreeningCompleted));
+            Db.Save(jobApp, references:true);
+            return jobApp.PhoneScreen;
+        }
+
+        /*
         public object Post(CreatePhoneScreen request)
         {
             long phoneScreenId = 0;
@@ -84,6 +124,7 @@ namespace TalentBlazor.ServiceInterface
             var phoneScreenResult = Db.SingleById<PhoneScreen>(request.Id);
             return phoneScreenResult;
         }
+        */
 
         public object Post(CreateInterview request)
         {
