@@ -21,6 +21,7 @@ namespace TalentBlazor.ServiceInterface
                 AppUserId = userId.ToInt(),
                 Status = status,
                 Description = status.ToDescription(),
+                EventDate = DateTime.UtcNow,
             }.WithAudit(userId);
         }
 
@@ -38,7 +39,7 @@ namespace TalentBlazor.ServiceInterface
         public object Patch(UpdatePhoneScreen request)
         {
             var jobApp = Db.LoadSingleById<JobApplication>(request.JobApplicationId);
-            jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreening;
+            jobApp.ApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted;
             jobApp.PhoneScreen.PopulateWithNonDefaultValues(request).WithAudit(Request);
             jobApp.Events ??= new();
             jobApp.Events.Add(CreateEvent(JobApplicationStatus.PhoneScreeningCompleted));
