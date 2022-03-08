@@ -186,14 +186,19 @@ public class Interview : AuditBase
 
 public enum JobApplicationStatus
 {
+    [Description("Application was received")]
     Applied,
     [Description("Advanced to phone screening")]
     PhoneScreening,
     [Description("Completed phone screening")]
     PhoneScreeningCompleted,
+    [Description("Advanced to interview")]
     Interview,
+    [Description("Interview was completed")]
     InterviewCompleted,
+    [Description("Advanced to offer")]
     Offer,
+    [Description("Application was denied")]
     Disqualified
 }
 
