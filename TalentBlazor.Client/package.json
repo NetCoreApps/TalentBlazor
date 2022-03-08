@@ -1,9 +1,6 @@
 {
     "scripts": {
-        "tailwind": "cross-env NODE_ENV=development ./node_modules/tailwindcss/lib/cli.js -i ./Styles/input.css -o ./wwwroot/css/output.css --watch"
-    },
-    "devDependencies": {
-        "cross-env": "^7.0.3",
-        "tailwindcss": "^3.0.23"
+        "ui:dev": "npx tailwindcss -c tailwind.config.js -i index.css -o shared/css/ui.css --watch",
+        "ui:build": "npx tailwindcss -c tailwind.config.js -i index.css -o shared/css/ui.css --minify"
     }
 }
