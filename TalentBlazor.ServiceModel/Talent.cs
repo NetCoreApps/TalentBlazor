@@ -386,6 +386,8 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
     public int JobApplicationId { get; set; }
     [ValidateNotEmpty(Message = "An employee to perform the phone screening must be selected.")]
     public int AppUserId { get; set; }
+
+    public JobApplicationStatus JobApplicationStatus { get; set; }
 }
 
 [Tag("Talent")]
@@ -400,6 +402,8 @@ public class UpdatePhoneScreen : IPatchDb<PhoneScreen>, IReturn<PhoneScreen>
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string? Notes { get; set; }
+
+    public JobApplicationStatus? JobApplicationStatus { get; set; }
 }
 
 [Tag("Talent")]
@@ -420,6 +424,8 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     public int JobApplicationId { get; set; }
     [ValidateNotEmpty(Message = "An employee to perform interview must be selected.")]
     public int AppUserId { get; set; }
+
+    public JobApplicationStatus JobApplicationStatus { get; set; }
 }
 
 [Tag("Talent")]
@@ -434,6 +440,8 @@ public class UpdateInterview : IPatchDb<Interview>, IReturn<Interview>
     [ValidateNotEmpty]
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string? Notes { get; set; }
+
+    public JobApplicationStatus? JobApplicationStatus { get; set; }
 }
 
 [Tag("Talent")]

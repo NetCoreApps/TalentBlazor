@@ -130,7 +130,7 @@
     <!-- Complete interview -->
 
     <JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
-                 OnSave="submitInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
+                 OnSave="updateInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
         <CascadingValue Value=@interviewResult.Error>
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
@@ -322,6 +322,7 @@
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
         createPhone.AppUserId = employeeSelection?.Id ?? 0;
+        createPhone.JobApplicationStatus = JobApplicationStatus.PhoneScreening;
         phoneScreenResult = await ApiAsync(createPhone);
         if (phoneScreenResult.Succeeded)
         {
@@ -342,6 +343,7 @@
         updatePhone.JobApplicationId = jobApp.Id;
         updatePhone.Notes = phoneScreenNotes;
         updatePhone.Id = jobApp.PhoneScreen.Id;
+        updatePhone.JobApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted;
         phoneScreenResult = await ApiAsync(updatePhone);
         if (phoneScreenResult.Succeeded)
         {
@@ -362,6 +364,7 @@
         createInterview.JobApplicationId = JobAppId;
         createInterview.AppUserId = employeeSelection?.Id ?? 0;
         createInterview.BookingTime = interviewBookingTime;
+        createInterview.JobApplicationStatus = JobApplicationStatus.Interview;
         interviewResult = await ApiAsync(createInterview);
         if (interviewResult.Succeeded)
         {
@@ -375,12 +378,13 @@
         return false;
     }
 
-    async Task<bool> submitInterviewCompleted()
+    async Task<bool> updateInterviewCompleted()
     {
         var updateInterview = new UpdateInterview();
         updateInterview.Id = jobApp.Interview.Id;
         updateInterview.JobApplicationId = jobApp.Id;
         updateInterview.Notes = interviewNotes;
+        updateInterview.JobApplicationStatus = JobApplicationStatus.InterviewCompleted;
         interviewResult = await ApiAsync(updateInterview);
         if (interviewResult.Succeeded)
         {
