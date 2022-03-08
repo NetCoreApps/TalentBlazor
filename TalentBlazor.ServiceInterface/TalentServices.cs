@@ -30,9 +30,9 @@ namespace TalentBlazor.ServiceInterface
             var jobApp = Db.SingleById<JobApplication>(request.JobApplicationId);
             jobApp.PhoneScreen = request.ConvertTo<PhoneScreen>().WithAudit(Request);
             jobApp.Events ??= new();
-            if(jobApp.ApplicationStatus != request.JobApplicationStatus)
-                jobApp.Events.Add(CreateEvent(request.JobApplicationStatus));
-            jobApp.ApplicationStatus = request.JobApplicationStatus;
+            if(jobApp.ApplicationStatus != request.ApplicationStatus)
+                jobApp.Events.Add(CreateEvent(request.ApplicationStatus));
+            jobApp.ApplicationStatus = request.ApplicationStatus;
             Db.Save(jobApp, references:true);
             return jobApp.PhoneScreen;
         }
@@ -40,9 +40,9 @@ namespace TalentBlazor.ServiceInterface
         public object Patch(UpdatePhoneScreen request)
         {
             var jobApp = Db.LoadSingleById<JobApplication>(request.JobApplicationId);
-            var jobAppStatus = request.JobApplicationStatus ?? JobApplicationStatus.PhoneScreeningCompleted;
+            var jobAppStatus = request.ApplicationStatus ?? JobApplicationStatus.PhoneScreeningCompleted;
             jobApp.PhoneScreen.PopulateWithNonDefaultValues(request).WithAudit(Request);
-            if (jobApp.ApplicationStatus != request.JobApplicationStatus)
+            if (jobApp.ApplicationStatus != request.ApplicationStatus)
                 jobApp.Events.Add(CreateEvent(jobAppStatus));
             jobApp.ApplicationStatus = jobAppStatus;
             Db.Save(jobApp, references:true);
@@ -54,9 +54,9 @@ namespace TalentBlazor.ServiceInterface
             var jobApp = Db.SingleById<JobApplication>(request.JobApplicationId);
             jobApp.Interview = request.ConvertTo<Interview>().WithAudit(Request);
             jobApp.Events ??= new();
-            if (jobApp.ApplicationStatus != request.JobApplicationStatus)
-                jobApp.Events.Add(CreateEvent(request.JobApplicationStatus));
-            jobApp.ApplicationStatus = request.JobApplicationStatus;
+            if (jobApp.ApplicationStatus != request.ApplicationStatus)
+                jobApp.Events.Add(CreateEvent(request.ApplicationStatus));
+            jobApp.ApplicationStatus = request.ApplicationStatus;
             Db.Save(jobApp, references: true);
             return jobApp.Interview;
         }
@@ -64,9 +64,9 @@ namespace TalentBlazor.ServiceInterface
         public object Patch(UpdateInterview request)
         {
             var jobApp = Db.LoadSingleById<JobApplication>(request.JobApplicationId);
-            var jobAppStatus = request.JobApplicationStatus ?? JobApplicationStatus.InterviewCompleted;
+            var jobAppStatus = request.ApplicationStatus ?? JobApplicationStatus.InterviewCompleted;
             jobApp.Interview.PopulateWithNonDefaultValues(request).WithAudit(Request);
-            if (jobApp.ApplicationStatus != request.JobApplicationStatus)
+            if (jobApp.ApplicationStatus != request.ApplicationStatus)
                 jobApp.Events.Add(CreateEvent(jobAppStatus));
             jobApp.ApplicationStatus = jobAppStatus;
             Db.Save(jobApp, references: true);

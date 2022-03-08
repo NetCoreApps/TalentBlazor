@@ -322,7 +322,7 @@
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
         createPhone.AppUserId = employeeSelection?.Id ?? 0;
-        createPhone.JobApplicationStatus = JobApplicationStatus.PhoneScreening;
+        createPhone.ApplicationStatus = JobApplicationStatus.PhoneScreening;
         phoneScreenResult = await ApiAsync(createPhone);
         if (phoneScreenResult.Succeeded)
         {
@@ -343,7 +343,7 @@
         updatePhone.JobApplicationId = jobApp.Id;
         updatePhone.Notes = phoneScreenNotes;
         updatePhone.Id = jobApp.PhoneScreen.Id;
-        updatePhone.JobApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted;
+        updatePhone.ApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted;
         phoneScreenResult = await ApiAsync(updatePhone);
         if (phoneScreenResult.Succeeded)
         {
@@ -364,7 +364,7 @@
         createInterview.JobApplicationId = JobAppId;
         createInterview.AppUserId = employeeSelection?.Id ?? 0;
         createInterview.BookingTime = interviewBookingTime;
-        createInterview.JobApplicationStatus = JobApplicationStatus.Interview;
+        createInterview.ApplicationStatus = JobApplicationStatus.Interview;
         interviewResult = await ApiAsync(createInterview);
         if (interviewResult.Succeeded)
         {
@@ -384,7 +384,7 @@
         updateInterview.Id = jobApp.Interview.Id;
         updateInterview.JobApplicationId = jobApp.Id;
         updateInterview.Notes = interviewNotes;
-        updateInterview.JobApplicationStatus = JobApplicationStatus.InterviewCompleted;
+        updateInterview.ApplicationStatus = JobApplicationStatus.InterviewCompleted;
         interviewResult = await ApiAsync(updateInterview);
         if (interviewResult.Succeeded)
         {
