@@ -20,20 +20,20 @@ namespace TalentBlazor.ServiceInterface
             {
                 var now = DateTime.UtcNow;
                 var phoneScreen = request.ConvertTo<PhoneScreen>();
-                phoneScreen.CreatedBy = this.GetSession().UserAuthId;
+                var userId = this.GetSession().UserAuthId;
+                phoneScreen.CreatedBy = userId;
                 phoneScreen.CreatedDate = now;
-                phoneScreen.ModifiedBy = this.GetSession().UserAuthId;
+                phoneScreen.ModifiedBy = userId;
                 phoneScreen.ModifiedDate = now;
                 phoneScreenId = Db.Insert(phoneScreen, selectIdentity: true);
                 var jobAppId = request.JobApplicationId;
-                var userId = request.AppUserId;
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    AppUserId = userId,
+                    AppUserId = userId.ToInt(),
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.PhoneScreening,
-                    CreatedBy = this.GetSession().UserAuthId,
-                    ModifiedBy = this.GetSession().UserAuthId,
+                    CreatedBy = userId,
+                    ModifiedBy = userId,
                     Description = "Advanced to phone screening",
                     EventDate = now,
                     CreatedDate = now,
@@ -56,15 +56,15 @@ namespace TalentBlazor.ServiceInterface
             {
                 var now = DateTime.UtcNow;
                 var phoneScreen = Db.SingleById<PhoneScreen>(request.Id);
-                phoneScreen.ModifiedBy = this.GetSession().UserAuthId;
+                var userId = this.GetSession().UserAuthId;
+                phoneScreen.ModifiedBy = userId;
                 phoneScreen.ModifiedDate = now;
                 phoneScreen.PopulateWithNonDefaultValues(request);
                 Db.Save(phoneScreen);
                 var jobAppId = request.JobApplicationId.Value;
-                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    AppUserId = userId,
+                    AppUserId = userId.ToInt(),
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.PhoneScreeningCompleted,
                     CreatedBy = this.GetSession().UserAuthId,
@@ -92,16 +92,16 @@ namespace TalentBlazor.ServiceInterface
             {
                 var now = DateTime.UtcNow;
                 var interview = request.ConvertTo<Interview>();
-                interview.CreatedBy = this.GetSession().UserAuthId;
+                var userId = this.GetSession().UserAuthId;
+                interview.CreatedBy = userId;
                 interview.CreatedDate = now;
-                interview.ModifiedBy = this.GetSession().UserAuthId;
+                interview.ModifiedBy = userId;
                 interview.ModifiedDate = now;
                 interviewId = Db.Insert(interview, selectIdentity: true);
                 var jobAppId = request.JobApplicationId;
-                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    AppUserId = userId,
+                    AppUserId = userId.ToInt(),
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.Interview,
                     CreatedBy = this.GetSession().UserAuthId,
@@ -128,15 +128,15 @@ namespace TalentBlazor.ServiceInterface
             {
                 var now = DateTime.UtcNow;
                 var interview = Db.SingleById<Interview>(request.Id);
-                interview.ModifiedBy = this.GetSession().UserAuthId;
+                var userId = this.GetSession().UserAuthId;
+                interview.ModifiedBy = userId;
                 interview.ModifiedDate = now;
                 interview.PopulateWithNonDefaultValues(request);
                 Db.Save(interview);
                 var jobAppId = request.JobApplicationId.Value;
-                var userId = int.Parse(this.GetSession().UserAuthId);
                 var jobAppEvent = new JobApplicationEvent
                 {
-                    AppUserId = userId,
+                    AppUserId = userId.ToInt(),
                     JobApplicationId = jobAppId,
                     Status = JobApplicationStatus.InterviewCompleted,
                     CreatedBy = this.GetSession().UserAuthId,
