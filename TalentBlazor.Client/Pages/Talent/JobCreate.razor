@@ -1,17 +1,17 @@
 ﻿@inherits AppAuthComponentBase
 @inject ServiceStackStateProvider AuthStateProvider;
+@inject NavigationManager navigationManager;
 @page "/jobs/{JobId:int}/edit"
 
 <div class="overflow-hidden rounded-lg">
     <header class="px-4 py-2 sm:px-6">
     </header>
-    <main class="py-10">
+    <main class="py-8">
         @if (appMetadata != null)
         {
             <CascadingValue Value="appMetadata">
-                <AutoQueryCreateForm Data="instance"></AutoQueryCreateForm>
+                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="save" OnDone="done"></AutoQueryForm>
             </CascadingValue>
-            <button type="button" @onclick="click">Click</button>
         }
     </main>
 </div>
@@ -20,19 +20,26 @@
     [Parameter]
     public int JobId { get; set; }
 
+    ResponseStatus? errorStatus;
+
     ApiResult<AppMetadata> appMetadataApi = new();
     AppMetadata appMetadata;
-    CreateJob instance = new()
-    {
-        Description = "Testing",
-        SalaryRangeLower = 50000,
-        SalaryRangeUpper = 100000,
-        Title = "Stuff"
-    };
+    UpdateJob request = new();
+    Job job;
 
-    async Task click(MouseEventArgs e)
+    async Task save(UpdateJob req)
     {
-        instance.SalaryRangeLower += 1000;
+        //request = req;
+    }
+
+    async Task done(Job response)
+    {
+        navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
+    }
+
+    async Task OnCancel()
+    {
+        navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
     }
 
 
@@ -42,6 +49,21 @@
         if (appMetadataApi.Succeeded)
         {
             appMetadata = appMetadataApi.Response!;
+        }
+        else
+        {
+            errorStatus = appMetadataApi.Error;
+            return;
+        }
+        var api = await ApiAsync(new QueryJob { Id = JobId });
+        if(api.Succeeded)
+        {
+            job = api.Response!.Results[0];
+            request = job.ConvertTo<UpdateJob>();
+        }
+        else
+        {
+            errorStatus = appMetadataApi.Error;
         }
     }
 }
