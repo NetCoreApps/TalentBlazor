@@ -1,58 +1,68 @@
 ﻿@page "/jobs/{JobId:int}/applications/{JobAppId:int}"
 @inherits AppComponentBase
 
-<div class="overflow-hidden rounded-lg">
-    <header class="px-4 py-2 sm:px-6">
-    </header>
-    <main class="py-10">
-        <!-- Page header -->
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
-            <div class="flex items-center space-x-5">
-                <div class="flex-shrink-0">
-                    <div class="relative">
-                        <img class="h-16 w-16 rounded-full" src="@(jobApp.Applicant?.ProfileUrl)" alt="">
-                        <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
-                    </div>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">@(jobApp.Applicant?.DisplayName)</h1>
-                    <p class="text-sm font-medium text-gray-500">Applied for <a href="#" class="text-gray-900">@(jobApp.Position?.Title)</a> on <time datetime="@(jobApp.AppliedDate.ToString("yyyy-MM-dd"))">@(jobApp.AppliedDate.ToString("MMMM d, yyyy"))</time></p>
+<SetHeader>
+    <!-- Page header -->
+    <div class="flex-1 min-w-0">
+        <nav class="flex" aria-label="Breadcrumb">
+            <!-- Breadcrumbs-->
+        </nav>
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+            <!-- PersonInfo -->
+            <div class="flex-shrink-0">
+                <div class="relative">
+                    <img class="h-16 w-16 rounded-full" src="@(jobApp.Applicant?.ProfileUrl)" alt="">
+                    <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
                 </div>
             </div>
-            <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
-                <AuthorizeView>
-                    <Authorized>
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Disqualify</button>
-                        @switch (jobApp.ApplicationStatus)
-                        {
-                            case JobApplicationStatus.Applied:
-                                <button type="button" @onclick="() => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.PhoneScreening:
-                                <button type="button" @onclick="() => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.PhoneScreeningCompleted:
-                                <button type="button" @onclick="() => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.Interview:
-                                <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.InterviewCompleted:
-                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
-                                break;
-                            case JobApplicationStatus.Offer:
-                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
-                                break;
-                            case JobApplicationStatus.Disqualified:
-                                break;
-                            default:
-                                break;
-                        }
-                    </Authorized>
-                </AuthorizeView>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">@(jobApp.Applicant?.DisplayName)</h1>
+                <p class="text-sm font-medium text-gray-500">Applied for <a href="#" class="text-gray-900">@(jobApp.Position?.Title)</a> on <time datetime="@(jobApp.AppliedDate.ToString("yyyy-MM-dd"))">@(jobApp.AppliedDate.ToString("MMMM d, yyyy"))</time></p>
             </div>
         </div>
+    </div>
+    <div class="mt-6 flex xl:mt-0 xl:ml-4">
+        <!-- Actions -->
+        <AuthorizeView>
+            <Authorized>
+                <span class="sm:block">
+                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
+                </span>
+                <span class="sm:block ml-3">
+                    @switch (jobApp.ApplicationStatus)
+                {
+                    case JobApplicationStatus.Applied:
+                        <button type="button" @onclick="() => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                        break;
+                    case JobApplicationStatus.PhoneScreening:
+                        <button type="button" @onclick="() => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                        break;
+                    case JobApplicationStatus.PhoneScreeningCompleted:
+                        <button type="button" @onclick="() => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                        break;
+                    case JobApplicationStatus.Interview:
+                        <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                        break;
+                    case JobApplicationStatus.InterviewCompleted:
+                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                        break;
+                    case JobApplicationStatus.Offer:
+                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
+                        break;
+                    case JobApplicationStatus.Disqualified:
+                        break;
+                    default:
+                        break;
+                }
+                </span>               
+                
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</SetHeader>
 
+<div class="px-4 sm:px-0">
+    <div>
         <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
             <div class="space-y-6 lg:col-start-1 lg:col-span-2">
                 <!-- Description list-->
@@ -77,7 +87,7 @@
                                 OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>
             </section>
         </div>
-    </main>
+    </div>
 
     <!-- Advance to phonescreen -->
     <CascadingValue Value=@phoneScreenResult.Error>

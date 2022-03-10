@@ -28,6 +28,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredServic
 builder.Services.AddBlazorApiClient(builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress);
 
 builder.Services.AddScoped<ServiceStackStateProvider>();
+builder.Services.AddScoped<ILayoutService, LayoutService>();
 
 if (builder.HostEnvironment.IsDevelopment())
 {

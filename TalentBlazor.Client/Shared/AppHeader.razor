@@ -1,0 +1,21 @@
+﻿@LayoutService.Header
+
+
+@code {
+    [Inject]
+    public ILayoutService LayoutService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        LayoutService.PropertyChanged += LayoutService_PropertyChanged;
+        base.OnInitialized();
+    }
+
+    private void LayoutService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ILayoutService.Header))
+        {
+            StateHasChanged();
+        }
+    }
+}

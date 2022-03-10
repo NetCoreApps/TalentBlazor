@@ -1,5 +1,93 @@
-﻿<h3>JobEdit</h3>
+﻿@inherits AppComponentBase
+@inject NavigationManager navigationManager;
+@page "/jobs/{JobId:int}/edit"
+
+
+<SetHeader>
+    <!-- Page header -->
+    <div class="flex-1 min-w-0">
+        <nav class="flex" aria-label="Breadcrumb">
+            <!-- Breadcrumbs-->
+        </nav>
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
+            <div class="ml-4 mt-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Job Edit</h3>
+                <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
+            </div>
+            @if (job != null)
+            {
+                <div class="w-full mt-4">
+                    <h1 class="text-2xl font-bold text-gray-900">@(job.Title)</h1>
+                    <p class="text-sm font-medium text-gray-500"><a href="/jobs/@(job.Id)/applications" class="text-gray-900">@(job.Applications.Count) applicants</a> have applied since <time datetime="@(job.CreatedDate.ToString("yyyy-MM-dd"))">@(job.CreatedDate.ToString("MMMM d, yyyy"))</time></p>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="mt-6 flex xl:mt-0 xl:ml-4">
+        <!-- Actions -->
+
+    </div>
+</SetHeader>
+<main class="space-y-8 divide-y divide-gray-200">
+    <div class="space-y-8 divide-y divide-gray-200">
+        @if (appMetadata != null)
+        {
+            <CascadingValue Value="appMetadata">
+                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="save" OnDone="done"></AutoQueryForm>
+            </CascadingValue>
+        }
+    </div>
+</main>
+
 
 @code {
+    [Parameter]
+    public int JobId { get; set; }
 
+    ResponseStatus? errorStatus;
+
+    AppMetadata? appMetadata;
+    UpdateJob request = new();
+    Job? job;
+
+    async Task save(UpdateJob req)
+    {
+        //request = req;
+    }
+
+    async Task done(Job response)
+    {
+        navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
+    }
+
+    async Task OnCancel()
+    {
+        navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var appMetadataApi = await this.ApiAppMetadataAsync();
+        if (appMetadataApi.Succeeded)
+        {
+            appMetadata = appMetadataApi.Response!;
+        }
+        else
+        {
+            errorStatus = appMetadataApi.Error;
+            return;
+        }
+        var api = await ApiAsync(new QueryJob { Id = JobId });
+        if (api.Succeeded)
+        {
+            job = api.Response!.Results[0];
+            request = job.ConvertTo<UpdateJob>();
+        }
+        else
+        {
+            errorStatus = appMetadataApi.Error;
+        }
+    }
 }

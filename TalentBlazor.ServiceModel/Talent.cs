@@ -56,6 +56,11 @@ public class Job : AuditBase
     public string Location { get; set; }
 
     public DateTime Closing { get; set; }
+    
+    public Job()
+    {
+        Applications = new List<JobApplication>();
+    }
 }
 
 public enum EmploymentType
