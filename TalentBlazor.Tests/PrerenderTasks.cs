@@ -12,6 +12,8 @@ using NUnit.Framework;
 using Bunit;
 using static System.Console;
 using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
+using TalentBlazor.Client;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TalentBlazor.Tests;
 
@@ -35,6 +37,7 @@ public class PrerenderTasks
     void Render<T>(params ComponentParameter[] parameters) where T : IComponent
     {
         WriteLine($"Rendering: {typeof(T).FullName}...");
+        Context.Services.AddScoped<ILayoutService, LayoutService>();
         var component = Context.RenderComponent<T>(parameters);
         var route = typeof(T).GetCustomAttribute<RouteAttribute>()?.Template;
         if (string.IsNullOrEmpty(route))
