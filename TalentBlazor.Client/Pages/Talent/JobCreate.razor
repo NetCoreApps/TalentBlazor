@@ -8,6 +8,7 @@
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
+            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
             <div class="ml-4 mt-4">
@@ -39,6 +40,12 @@
 
     AppMetadata? appMetadata;
     CreateJob request = new();
+
+    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>
+    {
+        new Breadcrumb{Name="Jobs",Url="/jobs"},
+        new Breadcrumb{Name="Create",Url="/jobs/create"},
+    };
 
     async Task save(CreateJob req)
     {

@@ -6,6 +6,7 @@
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
+            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
 
         <div class="">
@@ -116,11 +117,24 @@
     public int ContactId { get; set; }
     Contact contact = new();
 
+    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+
     ResponseStatus? errorStatus;
 
     protected override async Task OnInitializedAsync()
     {
         await refreshContact();
+        setBreadcrumbs();
+    }
+
+    void setBreadcrumbs()
+    {
+        if(breadcrumbs.IsEmpty())
+            breadcrumbs = new List<Breadcrumb>
+            {
+                new Breadcrumb{Name="Contacts",Url="/contacts"},
+                new Breadcrumb{Name=$"{contact.DisplayName}", Url=$"/contacts/{contact.Id}"}
+            };
     }
 
     // For best UX: apply changes locally then revalidate with real server state

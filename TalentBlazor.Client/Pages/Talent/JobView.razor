@@ -6,6 +6,7 @@
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
+            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
 
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -20,65 +21,71 @@
 
     </div>
 </SetHeader>
-        @if (Job != null)
-        {
-            <div class="mt-8 grid grid-cols-1 gap-6 sm:px-6">
-                <div class="space-y-6 lg:col-start-1 lg:col-span-2">
-                    <!-- Description list-->
-                <section aria-labelledby="applicant-information-title">
-                        <div class="bg-white shadow sm:rounded-lg">
-                            <div class="px-4 py-5 sm:px-6">
-                                <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">Job Information</h2>
-                                <p class="mt-1 max-w-2xl text-sm text-gray-500">Details about the role</p>
-                            </div>
-                            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-                                <div>
-                                    <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                                        <div class="sm:col-span-1">
-                                        <dt class="text-sm font-medium text-gray-500">Title</dt>
-                                        <dd class="mt-1 text-sm text-gray-900">@(getJob().Title)</dd>
-                                </div>
+@if (Job != null)
+{
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:px-6">
+        <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+            <!-- Description list-->
+        <section aria-labelledby="applicant-information-title">
+                <div class="bg-white shadow sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">Job Information</h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">Details about the role</p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                        <div>
+                            <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
                                 <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">Company</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">@(getJob().Company)</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">@(getJob().EmploymentType)</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">Closing</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">@(getJob().Closing)</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">Location</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">@(getJob().Location)</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">$@(getJob().SalaryRangeLower/1000)k - $@(getJob().SalaryRangeUpper/1000)k</dd>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <dt class="text-sm font-medium text-gray-500">Description</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">@(getJob().Description)</dd>
-                                </div>
-                                </dl>
-                            </div>
+                                <dt class="text-sm font-medium text-gray-500">Title</dt>
+                                <dd class="mt-1 text-sm text-gray-900">@(getJob().Title)</dd>
                         </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Company</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@(getJob().Company)</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@(getJob().EmploymentType)</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Closing</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@(getJob().Closing)</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Location</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@(getJob().Location)</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
+                            <dd class="mt-1 text-sm text-gray-900">$@(getJob().SalaryRangeLower/1000)k - $@(getJob().SalaryRangeUpper/1000)k</dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Description</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@(getJob().Description)</dd>
+                        </div>
+                        </dl>
+                    </div>
                 </div>
-                </section>
-            </div>
-
+        </div>
+        </section>
     </div>
-        }
+
+                    </div>
+}
 @code {
     [Parameter]
     public int JobId { get; set; }
 
+    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+
     ResponseStatus? errorStatus;
     Job Job = null;
 
-    protected override async Task OnInitializedAsync() => await refreshData();
+    protected override async Task OnInitializedAsync() 
+    {
+        await refreshData();
+        setBreadcrumbs();
+    }
 
     Job getJob()
     {
@@ -95,5 +102,15 @@
             Job = api.Response!.Results[0];
         else
             errorStatus = api.Error;
+    }
+
+    void setBreadcrumbs()
+    {
+        if(breadcrumbs.IsEmpty())
+            breadcrumbs = new List<Breadcrumb>
+            {
+                new Breadcrumb{Name="Jobs",Url="/jobs"},
+                new Breadcrumb{Name=$"{Job.Title}", Url=$"/jobs/{Job.Id}"}
+            };
     }
 }

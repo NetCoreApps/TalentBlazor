@@ -8,6 +8,7 @@
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
+            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
             <div class="ml-4 mt-4">
@@ -50,6 +51,8 @@
     UpdateJob request = new();
     Job? job;
 
+    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+
     async Task save(UpdateJob req)
     {
         //request = req;
@@ -65,9 +68,24 @@
         navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
     }
 
-
+    void setBreadcrumbs()
+    {
+        if (breadcrumbs.IsEmpty())
+            breadcrumbs = new List<Breadcrumb>
+                {
+                    new Breadcrumb{Name="Jobs",Url="/jobs"},
+                    new Breadcrumb{Name=$"{job.Title}",Url=$"/jobs/{JobId}"},
+                    new Breadcrumb{Name=$"Edit",Url=$"/jobs/{JobId}/edit"},
+                };
+    }
 
     protected override async Task OnInitializedAsync()
+    {
+        await refreshData();
+        setBreadcrumbs();
+    }
+
+    async Task refreshData()
     {
         var appMetadataApi = await this.ApiAppMetadataAsync();
         if (appMetadataApi.Succeeded)

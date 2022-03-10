@@ -7,6 +7,7 @@
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
+            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
         <h1 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">@job.Title</h1>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -258,6 +259,7 @@
 
     List<JobApplication> jobApps = new();
     Job job = new();
+    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
     JobApplicationFilter filter = JobApplicationFilter.Interview;
     JobApplicationFilter Filter
     {
@@ -276,34 +278,6 @@
     int perPage = 3;
 
     bool collapseEditViewMenu = true;
-
-    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
-        {
-            { JobApplicationStatus.Applied, "Applied" },
-            { JobApplicationStatus.Interview, "Interview" },
-            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
-            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
-            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
-            { JobApplicationStatus.Offer, "Offer" },
-            { JobApplicationStatus.Disqualified, "Disqualified" }
-        };
-
-    Dictionary<EmploymentType, string> employmentTypeMapping = new()
-        {
-            { EmploymentType.FullTime, "Full-time" },
-            { EmploymentType.PartTime, "Part-time" },
-            { EmploymentType.Contract, "Contract" },
-            { EmploymentType.Casual, "Casual" }
-        };
-
-    enum JobApplicationFilter
-    {
-        Applied,
-        PhoneScreening,
-        Interview,
-        Offer,
-        Disqualified
-    }
 
     [Parameter]
     public int JobId { get; set; }
@@ -341,7 +315,11 @@
         return jobApps;
     }
 
-    protected override async Task OnInitializedAsync() => await refreshJobApps();
+    protected override async Task OnInitializedAsync()
+    {
+        await refreshJobApps();
+        setBreadcrumbs();
+    }
 
     int interviewApplicationCount()
     {
@@ -369,7 +347,6 @@
         return jobApps.Where(x => x.ApplicationStatus == status).Count();
     }
 
-    // For best UX: apply changes locally then revalidate with real server state
     async Task refreshJobApps()
     {
         var api = await ApiAsync(new QueryJob
@@ -389,5 +366,44 @@
             jobApps = jobAppsApi.Response!.Results;
         else
             errorStatus = api.Error;
+    }
+
+    void setBreadcrumbs()
+    {
+        if(breadcrumbs.IsEmpty())
+            breadcrumbs = new List<Breadcrumb>
+            {
+                new Breadcrumb{Name="Jobs",Url="/jobs"},
+                new Breadcrumb{Name=$"{job.Title}", Url=$"/jobs/{job.Id}"},
+                new Breadcrumb{Name=$"Applications", Url=$"/jobs/{job.Id}/applications"}
+            };
+    }
+
+    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
+        {
+            { JobApplicationStatus.Applied, "Applied" },
+            { JobApplicationStatus.Interview, "Interview" },
+            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+            { JobApplicationStatus.Offer, "Offer" },
+            { JobApplicationStatus.Disqualified, "Disqualified" }
+        };
+
+    Dictionary<EmploymentType, string> employmentTypeMapping = new()
+        {
+            { EmploymentType.FullTime, "Full-time" },
+            { EmploymentType.PartTime, "Part-time" },
+            { EmploymentType.Contract, "Contract" },
+            { EmploymentType.Casual, "Casual" }
+        };
+
+    enum JobApplicationFilter
+    {
+        Applied,
+        PhoneScreening,
+        Interview,
+        Offer,
+        Disqualified
     }
 }
