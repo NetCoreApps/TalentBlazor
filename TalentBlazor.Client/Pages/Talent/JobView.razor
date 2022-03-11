@@ -76,7 +76,7 @@
     [Parameter]
     public int JobId { get; set; }
 
-    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+    List<Breadcrumb> breadcrumbs = new();
 
     ResponseStatus? errorStatus;
     Job Job = null;

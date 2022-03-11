@@ -539,3 +539,15 @@ public class DeleteJobApplicationComment : IDeleteDb<JobApplicationComment>, IRe
     [ValidateNotEmpty]
     public int Id { get; set; }
 }
+
+[Tag("Talent")]
+public class TalentStats : IGet, IReturn<TalentStatsResponse>
+{
+}
+
+public class TalentStatsResponse
+{
+    public long TotalJobs { get; set; }
+    public long TotalContacts { get; set; }
+    public long TotalJobApplications { get; set; }
+}

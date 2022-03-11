@@ -1,176 +1,175 @@
 ﻿@page "/contacts"
 @inherits AppComponentBase
 
-<!-- This example requires Tailwind CSS v2.0+ -->
 
-    <SetHeader>
+<SetHeader>
     <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             <!-- Breadcrumbs-->
             <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
-        
+
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
-                            <div class="ml-4 mt-4">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Candidates</h3>
-                    <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
-                </div>
+            <div class="ml-4 mt-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Candidates</h3>
+                <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
+            </div>
         </div>
     </div>
 </SetHeader>
 
-    <main class="px-4 py-2 sm:p-6">
-        <!-- Tabs -->
-        @*        <div class="sm:hidden">
-            <label for="tabs" class="sr-only">Select a tab</label>
-            <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
-            <select id="tabs" name="tabs" @bind="filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
-            <option value="@EmployementType.FullTime">All</option>
+<main class="px-4 py-2 sm:p-6">
+    <!-- Tabs -->
+    @*        <div class="sm:hidden">
+        <label for="tabs" class="sr-only">Select a tab</label>
+        <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+        <select id="tabs" name="tabs" @bind="filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+        <option value="@EmployementType.FullTime">All</option>
 
-            <option value="@EmployementType.PartTime">Part-time</option>
+        <option value="@EmployementType.PartTime">Part-time</option>
 
-            <option value="@EmployementType.Contract">Contract</option>
+        <option value="@EmployementType.Contract">Contract</option>
 
-            <option value="@EmployementType.Casual">Casual</option>
-            </select>
-            </div>
-            <div class="hidden sm:block">
-            <div class="border-b border-gray-200">
-            <nav class="mt-2 -mb-px flex space-x-8" aria-label="Tabs">
-            <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
-            <a href="" @onclick="(e) => changeFilter(EmployementType.FullTime)" @onclick:preventDefault class="@(filter == EmployementType.FullTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Full-time
+        <option value="@EmployementType.Casual">Casual</option>
+        </select>
+        </div>
+        <div class="hidden sm:block">
+        <div class="border-b border-gray-200">
+        <nav class="mt-2 -mb-px flex space-x-8" aria-label="Tabs">
+        <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
+        <a href="" @onclick="(e) => changeFilter(EmployementType.FullTime)" @onclick:preventDefault class="@(filter == EmployementType.FullTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Full-time
 
-            <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-            <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.FullTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-            @(jobCount(EmployementType.FullTime))
-            </span>
-            </a>
+        <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
+        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.FullTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+        @(jobCount(EmployementType.FullTime))
+        </span>
+        </a>
 
-            <a href="" @onclick="(e) => changeFilter(EmployementType.PartTime)" @onclick:preventDefault class="@(filter == EmployementType.PartTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Part-time
+        <a href="" @onclick="(e) => changeFilter(EmployementType.PartTime)" @onclick:preventDefault class="@(filter == EmployementType.PartTime ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Part-time
 
-            <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.PartTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-            @(jobCount(EmployementType.PartTime))
-            </span>
-            </a>
+        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.PartTime ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+        @(jobCount(EmployementType.PartTime))
+        </span>
+        </a>
 
-            <a href="" @onclick="(e) => changeFilter(EmployementType.Contract)" @onclick:preventDefault class="@(filter == EmployementType.Contract ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Contract
+        <a href="" @onclick="(e) => changeFilter(EmployementType.Contract)" @onclick:preventDefault class="@(filter == EmployementType.Contract ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Contract
 
-            <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Contract ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-            @(jobCount(EmployementType.Contract))
-            </span>
-            </a>
+        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Contract ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+        @(jobCount(EmployementType.Contract))
+        </span>
+        </a>
 
-            <a href="" @onclick="(e) => changeFilter(EmployementType.Casual)" @onclick:preventDefault class="@(filter == EmployementType.Casual ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Casual
-            <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
-            <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Casual ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-            @(jobCount(EmployementType.Casual))
-            </span>
-            </a>
-            </nav>
-            </div>
-            </div>*@
+        <a href="" @onclick="(e) => changeFilter(EmployementType.Casual)" @onclick:preventDefault class="@(filter == EmployementType.Casual ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Casual
+        <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
+        <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(filter == EmployementType.Casual ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
+        @(jobCount(EmployementType.Casual))
+        </span>
+        </a>
+        </nav>
+        </div>
+        </div>*@
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
         <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-md">
-            <!-- This example requires Tailwind CSS v2.0+ -->
-            <div class="flex flex-col">
-                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+        <div class="flex flex-col">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Salary <span class="invisible xl:visible">Expectation</span></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Employement <span class="invisible xl:visible">Type</span></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">Location</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach (var contact in contacts.Skip((currentPage) * perPage).Take(perPage))
+                                {
+
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Salary <span class="invisible xl:visible">Expectation</span></th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Employement <span class="invisible xl:visible">Type</span></th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">Location</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach (var contact in contacts.Skip((currentPage) * perPage).Take(perPage))
-                                    {
 
-                                        <tr>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <a href="/contacts/@(contact.Id)">
-                                                    <div class="flex items-center">
-                                                        <div class="flex-shrink-0 h-10 w-10">
-                                                            <img class="h-10 w-10 rounded-full" src="@contact.ProfileUrl" alt="">
-                                                        </div>
-                                                        <div class="ml-4">
-                                                            <div class="text-sm font-medium text-gray-900">@(contact.DisplayName)</div>
-                                                            <div class="text-sm text-gray-500">@contact.JobType</div>
-                                                            <div class="text-sm text-gray-500">@contact.Email</div>
-                                                        </div>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <a href="/contacts/@(contact.Id)">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <img class="h-10 w-10 rounded-full" src="@contact.ProfileUrl" alt="">
                                                     </div>
-                                                </a>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                                                <div class="text-sm text-gray-900">$@(contact.SalaryExpectation/1000)k</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"> @employmentTypeMapping[contact.PreferredWorkType] </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500  hidden xl:table-cell">@contact.PreferredLocation</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500">
-                                                <a class="" href="/contacts/@(contact.Id)">
-                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-gray-900">@(contact.DisplayName)</div>
+                                                        <div class="text-sm text-gray-500">@contact.JobType</div>
+                                                        <div class="text-sm text-gray-500">@contact.Email</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                                            <div class="text-sm text-gray-900">$@(contact.SalaryExpectation/1000)k</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"> @employmentTypeMapping[contact.PreferredWorkType] </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500  hidden xl:table-cell">@contact.PreferredLocation</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            <a class="" href="/contacts/@(contact.Id)">
+                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
 
-                                    }
+                                }
 
 
-                                    <!-- More people... -->
-                                </tbody>
-                            </table>
-                        </div>
+                                <!-- More people... -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- This example requires Tailwind CSS v2.0+ -->
-        <!-- Pagination -->
-        <nav class="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0" aria-label="Pagination">
-            <div class="-mt-px w-0 flex-1 flex">
-                <a href="" @onclick="(e) => currentPage = currentPage == 0 ? 0 : currentPage - 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
-                    <!-- Heroicon name: solid/arrow-narrow-left -->
-                    <svg class="mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                    </svg>
-                    Previous
-                </a>
-            </div>
-            <div class="hidden md:-mt-px md:flex">
-                @for (var i = 0; i < numberOfPages(); i++)
-                {
-                    var tempint = i;
-                    <a href="" @onclick="(e) => currentPage = tempint" @onclick:preventDefault class="@(tempint == currentPage ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">@(i+1)</a>
-                }
+    </div>
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <!-- Pagination -->
+    <nav class="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0" aria-label="Pagination">
+        <div class="-mt-px w-0 flex-1 flex">
+            <a href="" @onclick="(e) => currentPage = currentPage == 0 ? 0 : currentPage - 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
+                <!-- Heroicon name: solid/arrow-narrow-left -->
+                <svg class="mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Previous
+            </a>
+        </div>
+        <div class="hidden md:-mt-px md:flex">
+            @for (var i = 0; i < numberOfPages(); i++)
+            {
+                var tempint = i;
+                <a href="" @onclick="(e) => currentPage = tempint" @onclick:preventDefault class="@(tempint == currentPage ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">@(i+1)</a>
+            }
 
-                <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
+            <!-- Current: "border-purple-500 text-purple-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200" -->
 
-            </div>
-            <div class="-mt-px w-0 flex-1 flex justify-end">
-                <a href="" @onclick="(e) => currentPage = currentPage == numberOfPages() - 1 ? currentPage : currentPage + 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
-                    Next
-                    <!-- Heroicon name: solid/arrow-narrow-right -->
-                    <svg class="ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </a>
-            </div>
-        </nav>
-    </main>
+        </div>
+        <div class="-mt-px w-0 flex-1 flex justify-end">
+            <a href="" @onclick="(e) => currentPage = currentPage == numberOfPages() - 1 ? currentPage : currentPage + 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
+                Next
+                <!-- Heroicon name: solid/arrow-narrow-right -->
+                <svg class="ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </nav>
+</main>
 
 @code {
     List<Contact> contacts = new();
@@ -178,7 +177,7 @@
     int currentPage = 0;
     int perPage = 5;
 
-    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>
+    List<Breadcrumb> breadcrumbs = new()
     {
         new Breadcrumb{Name="Contacts",Url="/contacts"}
     };

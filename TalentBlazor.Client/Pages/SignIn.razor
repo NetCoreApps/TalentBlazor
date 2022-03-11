@@ -9,68 +9,8 @@
     return;
 }
 
-<h1 class="fs-2 mb-3">Sign In</h1>
-
-<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col" @onsubmit="submit">
-    <CascadingValue Value=@api.Error>
-        <ErrorSummary />
-        <div>
-            <div class="mb-4">
-                <TextInput @bind-Value="request.UserName" spellcheck="false" Help="Email address" />
-            </div>
-            <div class="mb-6">
-                <TextInput type="password" @bind-Value="request.Password" spellcheck="false" />
-            </div>
-            <div class="flex items-center justify-between">
-                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Sign In
-                </button>
-            </div>
-        </div>
-    </CascadingValue>
-</form>
-    <h3>Quick Links:</h3>
-<div class="mt-5">
-    <span class="relative z-0 flex shadow-sm rounded-md">
-        <button type="button" class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("admin@email.com", "p@55wOrd")'>admin@email.com</button>
-        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("manager@email.com", "p@55wOrd")'>manager@email.com</button>
-        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("employee@email.com", "p@55wOrd")'>employee@email.com</button>
-        <button type="button" class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @onclick='_ => SetUser("new@user.com", "p@55wOrd")'>new@user.com</button>
-    </span>
-</div>
-
-<div class="mt-4">
-    <SrcLink href="https://github.com/NetCoreTemplates/blazor-wasm/blob/master/TalentBlazor.Client/Pages/SignIn.razor" IconSrc="/img/blazor.svg" />
-</div>
+<SigninBox />
 
 @code {
-    string[] VisibleFields => new[] { nameof(Authenticate.UserName), nameof(Authenticate.Password) };
 
-    ApiResult<AuthenticateResponse> api = new();
-
-    Authenticate request = new();
-
-    void SetUser(string email, string password)
-    {
-        request.UserName = email;
-        request.Password = password;
-    }
-
-    async Task submit()
-    {
-        api.ClearErrors();
-
-        if (request.UserName.IsNullOrEmpty())
-            api.AddFieldError(nameof(request.UserName), "Email is required");
-
-        if (request.Password.IsNullOrEmpty())
-            api.AddFieldError(nameof(request.Password), "Password is required");
-
-        if (api.Failed) return;
-
-        api = await provider.LoginAsync(request.UserName, request.Password);
-
-        if (api.Succeeded)
-            NavigationManager.NavigateTo(NavigationManager.GetReturnUrl(), true);
-    }
 } 

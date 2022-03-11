@@ -72,5 +72,19 @@ namespace TalentBlazor.ServiceInterface
             Db.Save(jobApp, references: true);
             return jobApp.Interview;
         }
+
+        public object Get(TalentStats request)
+        {
+            var jobsCount = Db.Count<Job>();
+            var contactCount = Db.Count<Contact>();
+            var jobAppsCount = Db.Count<JobApplication>();
+
+            return new TalentStatsResponse
+            {
+                TotalJobs = jobsCount,
+                TotalContacts = contactCount,
+                TotalJobApplications = jobAppsCount
+            };
+        }
     }
 }

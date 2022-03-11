@@ -51,7 +51,7 @@
     UpdateJob request = new();
     Job? job;
 
-    List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+    List<Breadcrumb> breadcrumbs = new();
 
     async Task save(UpdateJob req)
     {
