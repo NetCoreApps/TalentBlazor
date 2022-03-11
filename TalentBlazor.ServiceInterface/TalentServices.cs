@@ -73,6 +73,19 @@ namespace TalentBlazor.ServiceInterface
             return jobApp.Interview;
         }
 
+        public object Post(CreateJobOffer request)
+        {
+            var jobApp = Db.SingleById<JobApplication>(request.JobApplicationId);
+            jobApp.JobOffer = request.ConvertTo<JobOffer>().WithAudit(Request);
+            jobApp.JobOffer.AppUserId = GetSession().UserAuthId.ToInt();
+            jobApp.Events ??= new();
+            if (jobApp.ApplicationStatus != request.ApplicationStatus)
+                jobApp.Events.Add(CreateEvent(request.ApplicationStatus));
+            jobApp.ApplicationStatus = request.ApplicationStatus;
+            Db.Save(jobApp, references: true);
+            return jobApp.JobOffer;
+        }
+
         public object Get(TalentStats request)
         {
             var jobsCount = Db.Count<Job>();

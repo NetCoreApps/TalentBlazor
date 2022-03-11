@@ -45,7 +45,7 @@
                             <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
                             break;
                         case JobApplicationStatus.InterviewCompleted:
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            <button type="button" @onclick="() => showMakeOffer = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
                             break;
                         case JobApplicationStatus.Offer:
                             <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500">Recind Offer</button>
@@ -80,7 +80,7 @@
                 </section>
 
                 <!-- Comments-->
-                <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" />
+                <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" JobOffer="jobOffer" />
             </div>
 
             <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
@@ -154,6 +154,27 @@
         </CascadingValue>
     </JobAppModal>
 
+    <!-- Make Offer -->
+    @if(jobApp?.Position != null)
+    {
+        <JobAppModal ModalTitle="Make Offer" ModalDescription="Specify details about the job offer."
+                 OnSave="createOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
+        <CascadingValue Value=@offerResult.Error>
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <TextAreaInput @bind-Value="offerNotes" name="offerNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="We've decided to offer the candidate..."></TextAreaInput>
+                    </div>
+                    <div class="mt-1">
+                        <TextInput type="number" @bind-Value="offerSalary" step="1000" max="@jobApp.Position.SalaryRangeUpper" min="@jobApp.Position.SalaryRangeLower" name="offerSalary" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></TextInput>
+                    </div>
+                </div>
+                <ErrorSummary Status="@offerResult.Error" />
+            </form>
+        </CascadingValue>
+    </JobAppModal>
+    }
+    
 
 </div>
 
@@ -170,6 +191,7 @@
 
     PhoneScreen phoneScreen = new();
     Interview interview = new();
+    JobOffer jobOffer = new();
 
     AppUser? employeeSelection;
 
@@ -184,9 +206,12 @@
     DateTime interviewBookingTime = DateTime.UtcNow.Date;
     string interviewNotes = "";
     string phoneScreenNotes = "";
+    string offerNotes = "";
+    int offerSalary = 0;
 
     ApiResult<Interview> interviewResult = new();
     ApiResult<PhoneScreen> phoneScreenResult = new();
+    ApiResult<JobOffer> offerResult = new();
 
     bool showBookInterview = false;
     bool showCompleteInterview = false;
@@ -194,12 +219,23 @@
     bool showAdvancePhoneScreen = false;
     bool showCompletePhoneScreen = false;
 
+    bool showMakeOffer = false;
+    bool showDisqualify = false;
+
     void resetInterview()
     {
         interviewBookingTime = DateTime.UtcNow.Date;
         interviewNotes = "";
         employeeSelection = null;
         interviewResult = new();
+    }
+
+    void resetOffer()
+    {
+        offerNotes = "";
+        employeeSelection = null;
+        offerResult = new();
+        offerSalary = 0;
     }
 
     void resetPhoneScreen()
@@ -229,6 +265,9 @@
                 break;
             case JobApplicationStatus.Interview:
                 showCompleteInterview = true;
+                break;
+            case JobApplicationStatus.InterviewCompleted:
+                showMakeOffer = true;
                 break;
             default:
                 break;
@@ -260,6 +299,7 @@
             await getAppUsers();
         await refreshPhoneScreen();
         await refreshInterview();
+        await refreshJobOffer();
     }
 
     void setBreadcrumbs()
@@ -304,6 +344,21 @@
             errorStatus = api.Error;
     }
 
+    async Task refreshJobOffer()
+    {
+        var api = await ApiAsync(new QueryJobOffer
+            {
+                JobApplicationId = JobAppId
+            });
+        if (api.Succeeded)
+        {
+            var hasOffer = api.Response!.Results.Count > 0;
+            jobOffer = hasOffer ? api.Response!.Results[0] : new();
+        }
+        else
+            errorStatus = api.Error;
+    }
+
     async Task refreshJobApp()
     {
         var api = await ApiAsync(new QueryJobApplication
@@ -343,7 +398,7 @@
             errorStatus = api.Error;
     }
 
-    async Task<bool> createPhoneScreenBooking()
+    async Task createPhoneScreenBooking()
     {
         var createPhone = new CreatePhoneScreen();
         createPhone.JobApplicationId = JobAppId;
@@ -355,15 +410,12 @@
             resetPhoneScreen();
             await refreshData();
             showAdvancePhoneScreen = false;
-            return true;
         }
         else
             errorStatus = phoneScreenResult.Error;
-
-        return false;
     }
 
-    async Task<bool> updatePhoneScreenCompleted()
+    async Task updatePhoneScreenCompleted()
     {
         var updatePhone = new UpdatePhoneScreen();
         updatePhone.JobApplicationId = jobApp.Id;
@@ -376,15 +428,12 @@
             resetPhoneScreen();
             await refreshData();
             showCompletePhoneScreen = false;
-            return true;
         }
         else
             errorStatus = phoneScreenResult.Error;
-
-        return false;
     }
 
-    async Task<bool> createInterviewBooking()
+    async Task createInterviewBooking()
     {
         var createInterview = new CreateInterview();
         createInterview.JobApplicationId = JobAppId;
@@ -397,14 +446,12 @@
             resetInterview();
             await refreshData();
             showBookInterview = false;
-            return true;
         }
         else
             errorStatus = interviewResult.Error;
-        return false;
     }
 
-    async Task<bool> updateInterviewCompleted()
+    async Task updateInterviewCompleted()
     {
         var updateInterview = new UpdateInterview();
         updateInterview.Id = jobApp.Interview.Id;
@@ -417,12 +464,27 @@
             resetInterview();
             await refreshData();
             showCompleteInterview = false;
-            return true;
         }
         else
             errorStatus = interviewResult.Error;
+    }
 
-        return false;
+    async Task createOffer()
+    {
+        var createJobOffer = new CreateJobOffer();
+        createJobOffer.JobApplicationId = JobAppId;
+        createJobOffer.SalaryOffer = offerSalary;
+        createJobOffer.Notes = offerNotes;
+        createJobOffer.ApplicationStatus = JobApplicationStatus.Offer;
+        offerResult = await ApiAsync(createJobOffer);
+        if (offerResult.Succeeded)
+        {
+            resetOffer();
+            await refreshData();
+            showMakeOffer = false;
+        }
+        else
+            errorStatus = offerResult.Error;
     }
 
     Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
