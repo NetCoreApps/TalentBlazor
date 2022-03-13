@@ -1,34 +1,31 @@
 <section>
-    <h2 style="margin-top:4rem;text-align:center;font-weight:700;font-size:3rem">
+    <h2 class="mt-8 text-center font-bold text-5xl">
         Getting Started
     </h2>
     <div>
         <div>
-            <div class="d-flex flex-column mx-auto" style="width:380px">
+            <div class="flex flex-col mx-auto" style="width:380px">
 
-                <h4 class="my-4 text-center fs-5">Create New Project</h4>
-                <input type="text" @bind="project" @bind:event="oninput" autocomplete="off" spellcheck="false" placeholder="ProjectName"
-                       class="form-control form-control-lg mb-5" />
+                <h4 class="my-4 text-center text-xl">Download Talent Blazor</h4>
 
-                <div class="d-flex justify-content-center">
-                    <div>
-                        <a class="archive-url netcoretemplates_blazor text-decoration-none" href=@zipUrl("NetCoreTemplates/blazor-wasm")>
-                            <div class="bg-white px-4 py-4 me-4 mb-4 rounded-3 shadow text-center align-items-center justify-content-center hover:shadow-2xl" style="min-width:150px">
-                                <div class="text-center font-extrabold d-flex align-align-items-center justify-content-center mb-2">
-                                    <div>
-                                        <img src="/img/blazor.svg" style="width:3rem;height:3rem" />
-                                    </div>
+                <div class="flex justify-center text-center">
+                    <a class="hover:no-underline" 
+                        href=@zipUrl("NetCoreApps/TalentBlazor")>
+                        <div class="bg-white px-4 py-4 mr-4 mb-4 rounded-lg shadow-lg text-center items-center justify-center hover:shadow-2xl" 
+                             style="min-width:150px">
+                            <div class="text-center font-extrabold flex items-center justify-center mb-2">
+                                <div class="text-4xl py-5">
+                                    <img class="w-12 h-12" src="/img/blazor.svg" alt="Blazor Logo" />
                                 </div>
-                                <div class="fs-5 font-bold" style="color:rgb(55,65,81)">Blazor WASM</div>
-                                <div class="d-flex justify-content-center h-8"></div>
-                                <div class="archive-name p-2" style="color:rgb(37,99,235)">@projectZip</div>
                             </div>
-                        </a>
-                    </div>
+                            <div class="text-lg font-medium text-gray-700">Blazor WASM</div>
+                            <div class="text-base px-4 py-2 text-blue-600">@projectZip</div>
+                        </div>
+                    </a>
                 </div>
 
-                <blockquote class="blockquote text-center mt-4">
-                    Open with <a href="https://visualstudio.microsoft.com/vs/">Visual Studio 2022</a>
+                <blockquote class="blockquote text-center text-xl mt-4">
+                    Open with <a class="text-blue-900" href="https://visualstudio.microsoft.com/vs/">Visual Studio 2022</a>
                 </blockquote>
             </div>
         </div>
@@ -36,12 +33,8 @@
 </section>
 
 @code {
-    string project { get; set; } = "";
+    string projectZip => "TalentBlazor.zip";
 
-    string projectName => string.IsNullOrEmpty(project) ? "TalentBlazor" : project; 
-
-    string projectZip => projectName + ".zip";
-
-    string zipUrl(string template) =>
-         $"https://account.servicestack.net/archive/{template}?Name={projectName}";
+    string zipUrl(string repo) =>
+         $"https://github.com/{repo}/archive/refs/heads/main.zip";
 }
