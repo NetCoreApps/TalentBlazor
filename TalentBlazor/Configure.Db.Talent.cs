@@ -138,6 +138,15 @@ public static class ConfigureDbTalent
         .RuleFor(p => p.CreatedBy, () => "SYSTEM")
         .RuleFor(p => p.ModifiedBy, () => "SYSTEM");
 
+    private static Faker<JobOffer> jobOfferFaker = new Faker<JobOffer>()
+        .RuleFor(p => p.Id, () => 0)
+        .RuleFor(p => p.AppUserId, (faker, screen) => faker.Random.Int(1, 5))
+        .RuleFor(p => p.Notes, (faker, screen) => faker.Lorem.Paragraph())
+        .RuleFor(p => p.CreatedDate, () => DateTime.UtcNow)
+        .RuleFor(p => p.ModifiedDate, () => DateTime.UtcNow)
+        .RuleFor(p => p.CreatedBy, () => "SYSTEM")
+        .RuleFor(p => p.ModifiedBy, () => "SYSTEM");
+
     private static Faker<JobApplicationEvent> eventFaker = new Faker<JobApplicationEvent>()
         .RuleFor(e => e.Id, () => 0)
         .RuleFor(e => e.AppUserId, (f) => f.Random.Int(1, 5))
@@ -175,11 +184,26 @@ public static class ConfigureDbTalent
 
         // TODO generate attachments here
 
+        if(status >= JobApplicationStatus.Offer)
+        {
+            eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
+            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.Description = JobApplicationStatus.Offer.ToDescription();
+            appEvent.EventDate = eventDate;
+            appEvent.Status = JobApplicationStatus.Offer;
+            db.Insert(appEvent);
+            var offer = jobOfferFaker.Generate();
+            offer.JobApplicationId = jobApp.Id;
+            offer.SalaryOffer = FakerInstance.Random.Int(jobApp.Position.SalaryRangeLower,jobApp.Position.SalaryRangeUpper);
+            offer.AppUserId = FakerInstance.Random.Int(1, 5);
+            db.Insert(offer);
+        }
+
         if (status >= JobApplicationStatus.InterviewCompleted)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
-            appEvent.Description = "Completed interview";
+            appEvent.Description = JobApplicationStatus.InterviewCompleted.ToDescription();
             appEvent.EventDate = eventDate;
             appEvent.Status = JobApplicationStatus.InterviewCompleted;
             db.Insert(appEvent);
@@ -194,7 +218,7 @@ public static class ConfigureDbTalent
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
-            appEvent.Description = "Advanced to interview";
+            appEvent.Description = JobApplicationStatus.Interview.ToDescription();
             appEvent.Status = JobApplicationStatus.Interview;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
@@ -212,7 +236,7 @@ public static class ConfigureDbTalent
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
-            appEvent.Description = "Completed phone screening";
+            appEvent.Description = JobApplicationStatus.PhoneScreeningCompleted.ToDescription();
             appEvent.EventDate = eventDate;
             appEvent.Status = JobApplicationStatus.PhoneScreeningCompleted;
             db.Insert(appEvent);
@@ -226,7 +250,7 @@ public static class ConfigureDbTalent
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
-            appEvent.Description = "Advanced to phone screening";
+            appEvent.Description = JobApplicationStatus.PhoneScreening.ToDescription();
             appEvent.Status = JobApplicationStatus.PhoneScreening;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
@@ -243,7 +267,7 @@ public static class ConfigureDbTalent
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
-            appEvent.Description = "Applied";
+            appEvent.Description = JobApplicationStatus.Applied.ToDescription();
             appEvent.Status = JobApplicationStatus.Applied;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
