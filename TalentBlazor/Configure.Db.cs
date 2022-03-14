@@ -11,7 +11,7 @@ namespace TalentBlazor;
 public class ConfigureDb : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
-        .ConfigureServices((context, services) => 
+        .ConfigureServices((context, services) =>
             services.AddSingleton<IDbConnectionFactory>(new OrmLiteConnectionFactory(
                 ":memory:",
                 SqliteDialect.Provider)))
@@ -21,9 +21,10 @@ public class ConfigureDb : IHostingStartup
 
             using var db = appHost.Resolve<IDbConnectionFactory>().Open();
 
-            var profilesDir = appHost.IsDevelopmentEnvironment() 
-                ? "~/wwwroot/profiles".MapProjectPath() 
+            var profilesDir = appHost.IsDevelopmentEnvironment()
+                ? "~/wwwroot/profiles".MapProjectPath()
                 : Path.Join(AppContext.BaseDirectory, "wwwroot", "profiles");
-            db.SeedTalent(profilesDir:profilesDir);
+            db.SeedTalent(profilesDir: profilesDir);
+            db.SeedAttachments(appHost);
         });
 }

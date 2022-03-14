@@ -29,7 +29,6 @@ public static class ConfigureDbTalent
 
             var now = DateTime.UtcNow;
             var jobFaker = new Faker<Job>()
-                //.CustomInstantiator(f => new Job())
                 .RuleFor(j => j.Description, (faker, job1) => faker.Lorem.Paragraphs(3))
                 .RuleFor(j => j.Title, (faker, job1) => faker.Name.JobTitle())
                 .RuleFor(j => j.Company, (faker, job1) => faker.Company.CompanyName())
@@ -47,7 +46,6 @@ public static class ConfigureDbTalent
                 .RuleFor(j => j.ModifiedBy, () => "SYSTEM");
 
             var contactFaker = new Faker<Contact>()
-                //.CustomInstantiator(f => new Contact())
                 .RuleFor(c => c.FirstName, ((faker, contact1) => faker.Name.FirstName()))
                 .RuleFor(c => c.LastName, ((faker, contact1) => faker.Name.LastName()))
                 .RuleFor(c => c.Email,
@@ -68,7 +66,6 @@ public static class ConfigureDbTalent
                 .RuleFor(c => c.ModifiedBy, () => "SYSTEM");
 
             var jobAppFaker = new Faker<JobApplication>()
-                //.CustomInstantiator(f => new JobApplication())
                 .RuleFor(j => j.ApplicationStatus,
                     ((faker, application) => faker.Random.Enum<JobApplicationStatus>()))
                 .RuleFor(j => j.AppliedDate, (faker, application) => faker.Date.Recent(21))
@@ -101,7 +98,7 @@ public static class ConfigureDbTalent
                 var faker = new Faker();
                 var uniqueJobIndexes = Enumerable.Range(0, jobs.Count - 1)
                     .OrderBy(x => faker.Random.Int()).Take(8);
-                var lastIndex = 0;
+
                 foreach (var index in uniqueJobIndexes)
                 {
                     var job = jobs[index];
@@ -118,6 +115,32 @@ public static class ConfigureDbTalent
                 }
             }
         }
+    }
+
+    public static void SeedAttachments(this IDbConnection db, ServiceStackHost appHost)
+    {
+        var jobApps = db.Select<JobApplication>();
+        var sourceDir = appHost.ContentRootDirectory.RealPath.CombineWith("App_Data").AssertDir();
+        var sourceFilePath = Path.Join(sourceDir, "resume-2022-03-14.pdf");
+        var file = File.ReadAllBytes(sourceFilePath);
+        var now = DateTime.UtcNow;
+        foreach (var jobApp in jobApps)
+        {
+            var attachment = new JobApplicationAttachment
+            {
+                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/resume-2022-03-14.pdf",
+                FileName = "resume-2022-03-14.pdf",
+                ContentLength = file.Length,
+                ContentType = "application/pdf",
+                JobApplicationId = jobApp.JobId
+            };
+            var destPath = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}");
+            Directory.CreateDirectory(destPath);
+            if(!File.Exists(Path.Join(destPath, "resume-2022-03-14.pdf")))
+                File.Copy(sourceFilePath, Path.Join(destPath, "resume-2022-03-14.pdf"));
+            db.Save(attachment);
+        }
+        
     }
 
     private static Faker<PhoneScreen> phoneScreenFaker = new Faker<PhoneScreen>()
@@ -181,8 +204,6 @@ public static class ConfigureDbTalent
         var now = DateTime.UtcNow;
         var baseDate = (new DateTime(now.Year, now.Month, now.Day)) - TimeSpan.FromDays(3);
         var eventDate = baseDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-
-        // TODO generate attachments here
 
         if(status >= JobApplicationStatus.Offer)
         {

@@ -34,7 +34,7 @@ public class AppHost : AppHostBase, IHostingStartup
                 resolvePath: ctx => $"/profiles/users/{ctx.UserAuthId}.{ctx.FileExtension}"),
             new UploadLocation("applications", appDataVfs, maxFileCount: 3, maxFileBytes: 10_000_000,
                     resolvePath: ctx => ctx.GetLocationPath((ctx.Dto is CreateJobApplication create
-                        ? $"job/{create.JobId}"
+                        ? $"jobapp/{create.JobId}/{create.ContactId}/{ctx.FileName}"
                         : $"app/{ctx.Dto.GetId()}") + $"/{ctx.DateSegment}/{ctx.FileName}"),
                     readAccessRole: RoleNames.AllowAnon, writeAccessRole: RoleNames.AllowAnon)
         ));
