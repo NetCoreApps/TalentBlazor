@@ -19,6 +19,7 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">@(jobApp.Applicant?.DisplayName)</h1>
                 <p class="text-sm font-medium text-gray-500">Applied for <a href="#" class="text-gray-900">@(jobApp.Position?.Title)</a> on <time datetime="@(jobApp.AppliedDate.ToString("yyyy-MM-dd"))">@(jobApp.AppliedDate.ToString("MMMM d, yyyy"))</time></p>
+                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 @(jobApp?.ApplicationStatus == JobApplicationStatus.Disqualified ? "" : "hidden")">Disqualified</p>
             </div>
         </div>
     </div>
@@ -26,10 +27,10 @@
         <!-- Actions -->
         <AuthorizeView>
             <Authorized>
-                <span class="sm:block">
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
+                <span class="@(jobApp?.ApplicationStatus == JobApplicationStatus.Disqualified ? "hidden" : "sm:block")">
+                    <button type="button" @onclick="() => disqualifyJobApplication(JobApplicationStatus.Disqualified)" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
                 </span>
-                <span class="sm:block ml-3">
+                <span class="ml-3 @(jobApp?.ApplicationStatus == JobApplicationStatus.Disqualified ? "hidden" : "sm:block")">
                     @switch (jobApp.ApplicationStatus)
                     {
                         case JobApplicationStatus.Applied:
@@ -235,7 +236,7 @@
         offerNotes = "";
         employeeSelection = null;
         offerResult = new();
-        offerSalary = 0;
+        offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
     }
 
     void resetPhoneScreen()
@@ -288,6 +289,7 @@
             jobApp = api.Response!;
         else
             errorStatus = api.Error;
+        await refreshData();
     }
 
     async Task refreshData()
@@ -300,6 +302,8 @@
         await refreshPhoneScreen();
         await refreshInterview();
         await refreshJobOffer();
+        if(offerSalary == 0)
+            offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
     }
 
     void setBreadcrumbs()
