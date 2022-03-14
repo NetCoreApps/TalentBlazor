@@ -588,5 +588,8 @@ public class TalentStatsResponse
 {
     public long TotalJobs { get; set; }
     public long TotalContacts { get; set; }
-    public long TotalJobApplications { get; set; }
+    public int AvgSalaryExpectation { get; set; }
+    public int AvgSalaryLower { get; set; }
+    public int AvgSalaryUpper { get; set; }
+    public decimal PreferredRemotePercentage { get; set; }
 }

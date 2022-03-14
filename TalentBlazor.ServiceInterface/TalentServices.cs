@@ -90,13 +90,19 @@ namespace TalentBlazor.ServiceInterface
         {
             var jobsCount = Db.Count<Job>();
             var contactCount = Db.Count<Contact>();
-            var jobAppsCount = Db.Count<JobApplication>();
+            var avgExpectedSalary = Db.Scalar<Contact, int>(x => Sql.Avg(x.SalaryExpectation));
+            var avgJobSalaryRangeLower = Db.Scalar<Job, int>(x => Sql.Avg(x.SalaryRangeLower));
+            var avgJobSalaryRangeUpper = Db.Scalar<Job, int>(x => Sql.Avg(x.SalaryRangeUpper));
+            var preferredRemote = Db.Count<Contact>(x => x.PreferredLocation == "Remote");
 
             return new TalentStatsResponse
             {
                 TotalJobs = jobsCount,
                 TotalContacts = contactCount,
-                TotalJobApplications = jobAppsCount
+                AvgSalaryExpectation = avgExpectedSalary,
+                AvgSalaryLower = avgJobSalaryRangeLower,
+                AvgSalaryUpper = avgJobSalaryRangeUpper,
+                PreferredRemotePercentage = Math.Round((decimal)((double)preferredRemote / (double)contactCount * 100),2)
             };
         }
     }

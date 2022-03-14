@@ -77,60 +77,115 @@
     <div class="rounded-lg bg-white overflow-hidden shadow mb-3">
         <h2 class="sr-only" id="profile-overview-title">Stats Overview</h2>
         <dl class="mt-5 grid grid-cols-1 rounded-lg bg-white overflow-hidden shadow divide-y divide-gray-200 md:grid-cols-3 md:divide-y-0 md:divide-x">
-    <div class="px-4 py-5 sm:p-6">
-      <dt class="text-base font-normal text-gray-900">Total Jobs</dt>
-      <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
-        <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-          @totalJobs
-        </div>
+            <a href="/jobs">
+            <div class="px-4 py-5 sm:p-6">
+            <dt class="text-base font-normal text-gray-900">Total Jobs</dt>
+            <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+                <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @totalJobs
+                </div>
 
-        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
-          <!-- Heroicon name: solid/arrow-sm-up -->
-          <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-          </svg>
-          <span class="sr-only"> Increased by </span>
-          5%
-        </div>
-      </dd>
+                <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
+                    <!-- Heroicon name: solid/arrow-sm-up -->
+                    <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only"> Increased by </span>
+                    14%
+                </div>
+            </dd>
+
     </div>
+    </a>
+    <a href="/contacts">
+    <div class="px-4 py-5 sm:p-6">
+        <dt class="text-base font-normal text-gray-900"><a href="/contacts">Total Contacts</a></dt>
+        <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+            <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @totalContacts
+            </div>
+
+            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
+                <!-- Heroicon name: solid/arrow-sm-down -->
+                <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="sr-only"> Decreased by </span>
+                12%
+            </div>
+        </dd>
+    </div>
+    </a>
 
     <div class="px-4 py-5 sm:p-6">
-      <dt class="text-base font-normal text-gray-900">Total Contacts</dt>
-      <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
-        <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-          @totalContacts
-        </div>
+        <dt class="text-base font-normal text-gray-900">Avg Salary Expectation</dt>
+        <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+            <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @(avgSalaryExpectation/1000)k
+            </div>
 
-        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
-          <!-- Heroicon name: solid/arrow-sm-up -->
-          <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-          </svg>
-          <span class="sr-only"> Increased by </span>
-          10%
-        </div>
-      </dd>
+            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
+                <!-- Heroicon name: solid/arrow-sm-down -->
+                <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="sr-only"> Increased by </span>
+                18%
+            </div>
+        </dd>
     </div>
-
     <div class="px-4 py-5 sm:p-6">
-      <dt class="text-base font-normal text-gray-900">Total Applications</dt>
-      <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
-        <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-          @totalJobApps
-        </div>
+        <dt class="text-base font-normal text-gray-900">Avg Salary Range Lower</dt>
+        <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+            <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @(avgSalaryRangeLower/1000)k
+            </div>
 
-        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
-          <!-- Heroicon name: solid/arrow-sm-down -->
-          <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          <span class="sr-only"> Decreased by </span>
-          5%
-        </div>
-      </dd>
+            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
+                <!-- Heroicon name: solid/arrow-sm-down -->
+                <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="sr-only"> Decreased by </span>
+                5%
+            </div>
+        </dd>
     </div>
-  </dl>
+        <div class="px-4 py-5 sm:p-6">
+        <dt class="text-base font-normal text-gray-900">Avg Salary Range Upper</dt>
+        <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+            <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @(avgSalaryRangeUpper/1000)k
+            </div>
+
+            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
+                <!-- Heroicon name: solid/arrow-sm-down -->
+                <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="sr-only"> Decreased by </span>
+                5%
+            </div>
+        </dd>
+    </div>
+        <div class="px-4 py-5 sm:p-6">
+        <dt class="text-base font-normal text-gray-900">Remote Preferred</dt>
+        <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
+            <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
+                        @prefRemotePercentage %
+            </div>
+
+            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
+                <!-- Heroicon name: solid/arrow-sm-down -->
+                <svg class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="sr-only"> Increased by </span>
+                25%
+            </div>
+        </dd>
+    </div>
+    </dl>
     </div>
 </main>
 
@@ -143,7 +198,10 @@
 
     long totalJobs = 0;
     long totalContacts = 0;
-    long totalJobApps = 0;
+    int avgSalaryExpectation = 0;
+    int avgSalaryRangeLower = 0;
+    int avgSalaryRangeUpper = 0;
+    decimal prefRemotePercentage = 0.0m;
 
     ResponseStatus? errorResponnse;
     string? LoginUrl { get; set; }
@@ -167,11 +225,14 @@
         {
             totalJobs = api.Response!.TotalJobs;
             totalContacts = api.Response!.TotalContacts;
-            totalJobApps = api.Response!.TotalJobApplications;
+            avgSalaryExpectation = api.Response!.AvgSalaryExpectation;
+            avgSalaryRangeLower = api.Response!.AvgSalaryLower;
+            avgSalaryRangeUpper = api.Response!.AvgSalaryUpper;
+            prefRemotePercentage = api.Response!.PreferredRemotePercentage;
         }
         else
             errorResponnse = api.Error;
-            
+
     }
 
     protected override async Task OnInitializedAsync()
