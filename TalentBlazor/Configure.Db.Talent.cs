@@ -119,26 +119,46 @@ public static class ConfigureDbTalent
 
     public static void SeedAttachments(this IDbConnection db, ServiceStackHost appHost)
     {
-        var jobApps = db.Select<JobApplication>();
+        var jobApps = db.LoadSelect<JobApplication>();
         var sourceDir = appHost.ContentRootDirectory.RealPath.CombineWith("App_Data").AssertDir();
-        var sourceFilePath = Path.Join(sourceDir, "resume-2022-03-14.pdf");
-        var file = File.ReadAllBytes(sourceFilePath);
+        var resumeFileName = "resume-2022-03-14.pdf";
+        var coverLetterFileName = "sample_cover_letter.pdf";
+        var sourceResumeFilePath = Path.Join(sourceDir, resumeFileName);
+        var sourceCoverLetterFilePath = Path.Join(sourceDir, coverLetterFileName);
+        var resumeFile = File.ReadAllBytes(sourceResumeFilePath);
+        var coverLetterFile = File.ReadAllBytes(sourceCoverLetterFilePath);
         var now = DateTime.UtcNow;
         foreach (var jobApp in jobApps)
         {
+            var customResumeName = $"resume_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
             var attachment = new JobApplicationAttachment
             {
-                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/resume-2022-03-14.pdf",
-                FileName = "resume-2022-03-14.pdf",
-                ContentLength = file.Length,
+                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/{customResumeName}",
+                FileName = customResumeName,
+                ContentLength = resumeFile.Length,
                 ContentType = "application/pdf",
-                JobApplicationId = jobApp.JobId
+                JobApplicationId = jobApp.Id
             };
             var destPath = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}");
             Directory.CreateDirectory(destPath);
-            if(!File.Exists(Path.Join(destPath, "resume-2022-03-14.pdf")))
-                File.Copy(sourceFilePath, Path.Join(destPath, "resume-2022-03-14.pdf"));
+            if(!File.Exists(Path.Join(destPath, customResumeName)))
+                File.Copy(sourceResumeFilePath, Path.Join(destPath, customResumeName));
             db.Save(attachment);
+
+            var customCoverLetterName = $"coverletter_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
+            var coverLetter = new JobApplicationAttachment
+            {
+                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/{customCoverLetterName}",
+                FileName = customCoverLetterName,
+                ContentLength = coverLetterFile.Length,
+                ContentType = "application/pdf",
+                JobApplicationId = jobApp.Id
+            };
+            var coverLetterdestPath = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}");
+            Directory.CreateDirectory(coverLetterdestPath);
+            if (!File.Exists(Path.Join(coverLetterdestPath, customCoverLetterName)))
+                File.Copy(sourceCoverLetterFilePath, Path.Join(destPath, customCoverLetterName));
+            db.Save(coverLetter);
         }
         
     }
