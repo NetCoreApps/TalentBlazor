@@ -104,13 +104,11 @@
     <div class="bg-gray-50 border-b border-gray-200 lg:hidden @(collapseNavMenu == true ? "hidden" : "")" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1">
             <!-- Current: "bg-gray-100", Default: "hover:bg-gray-100" -->
-            <a href="#" class="bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900" aria-current="page">Dashboard</a>
+            <a href="/dashboard" class="bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900" @onclick="() => ToggleNavMenu()" aria-current="page">Dashboard</a>
 
-            <a href="#" class="hover:bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900">Jobs</a>
+            <a href="/jobs" class="hover:bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900" @onclick="() => ToggleNavMenu()">Jobs</a>
 
-            <a href="#" class="hover:bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900">Applicants</a>
-
-            <a href="#" class="hover:bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900">Company</a>
+            <a href="/contacts" class="hover:bg-gray-100 block px-3 py-2 rounded-md font-medium text-gray-900" @onclick="() => ToggleNavMenu()">Applicants</a>
         </div>
         <AuthorizeView>
             <Authorized>
