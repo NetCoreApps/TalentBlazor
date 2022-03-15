@@ -27,7 +27,7 @@
         @if (appMetadata != null)
         {
             <CascadingValue Value="appMetadata">
-                <AutoQueryForm TResponse="Job" T="CreateJob" Request="request" OnSave="save" OnDone="done"></AutoQueryForm>
+                <AutoQueryForm TResponse="Job" T="CreateJob" Request="request" OnSave="save" OnDone="done" OnCancel="OnCancel"></AutoQueryForm>
             </CascadingValue>
         }
     </div>

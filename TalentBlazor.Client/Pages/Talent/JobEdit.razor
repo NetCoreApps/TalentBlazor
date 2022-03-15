@@ -11,15 +11,18 @@
             <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
-            <div class="ml-4 mt-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Job Edit</h3>
-                <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
-            </div>
             @if (job != null)
             {
                 <div class="w-full mt-4">
                     <h1 class="text-2xl font-bold text-gray-900">@(job.Title)</h1>
                     <p class="text-sm font-medium text-gray-500"><a href="/jobs/@(job.Id)/applications" class="text-gray-900">@(job.Applications.Count) applicants</a> have applied since <time datetime="@(job.CreatedDate.ToString("yyyy-MM-dd"))">@(job.CreatedDate.ToString("MMMM d, yyyy"))</time></p>
+                </div>
+            }
+            else
+            {
+                <div class="w-full mt-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Loading...</h1>
+                    <p class="text-sm font-medium text-gray-500"></p>
                 </div>
             }
         </div>
@@ -34,7 +37,7 @@
         @if (appMetadata != null)
         {
             <CascadingValue Value="appMetadata">
-                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="save" OnDone="done"></AutoQueryForm>
+                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="save" OnDone="done" OnCancel="OnCancel"></AutoQueryForm>
             </CascadingValue>
         }
     </div>
