@@ -40,22 +40,17 @@ public class Job : AuditBase
 {
     [AutoIncrement]
     public int Id { get; set; }
-
-    [Reference]
-    public List<JobApplication> Applications { get; set; } = new();
-
     public string Title { get; set; }
-    public string Description { get; set; }
-
+    public EmploymentType EmploymentType { get; set; }
+    public string Company { get; set; }
+    public string Location { get; set; }
     [IntlNumber(Currency = NumberCurrency.USD)]
     public int SalaryRangeLower { get; set; }
     [IntlNumber(Currency = NumberCurrency.USD)]
     public int SalaryRangeUpper { get; set; }
-
-    public EmploymentType EmploymentType { get; set; }
-    public string Company { get; set; }
-    public string Location { get; set; }
-
+    public string Description { get; set; }
+    [Reference]
+    public List<JobApplication> Applications { get; set; } = new();
     public DateTime Closing { get; set; }
 }
 
