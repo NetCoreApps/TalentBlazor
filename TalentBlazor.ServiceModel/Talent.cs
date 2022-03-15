@@ -134,9 +134,9 @@ public class JobApplicationEvent : AuditBase
     [Reference, Format(FormatMethods.Hidden)]
     public AppUser AppUser { get; set; }
 
-    public JobApplicationStatus? Status { get; set; }
-
     public string Description { get; set; }
+
+    public JobApplicationStatus? Status { get; set; }
 
     public DateTime EventDate { get; set; }
 
