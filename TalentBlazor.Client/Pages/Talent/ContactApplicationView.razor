@@ -8,6 +8,20 @@
             <!-- Breadcrumbs-->
             <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
+        @if(loading)
+        {
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+            <!-- PersonInfo -->
+            <div class="flex-shrink-0">
+                <div class="relative">
+                    <svg class="h-16 w-16 rounded-full text-gray-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M11 6a3 3 0 1 1-6 0a3 3 0 0 1 6 0z"/><path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/></g></svg>
+                    <span class="absolute inset-0" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+        }
+        else
+        {
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
             <!-- PersonInfo -->
             <div class="flex-shrink-0">
@@ -25,7 +39,9 @@
                 </p>
                 <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 @(jobApp?.ApplicationStatus == JobApplicationStatus.Disqualified ? "" : "hidden")">Disqualified</p>
             </div>
-        </div>
+        </div>      
+        }
+
     </div>
     <div class="mt-6 flex xl:mt-0 xl:ml-4">
         <!-- Actions -->
@@ -199,6 +215,8 @@
 
     List<Breadcrumb> breadcrumbs = new();
 
+    bool loading = true;
+
     string? selectedResult;
 
     string? searchTerm;
@@ -305,6 +323,7 @@
         await refreshJobOffer();
         if(offerSalary == 0)
             offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
+        loading = false;
     }
 
     void setBreadcrumbs()
