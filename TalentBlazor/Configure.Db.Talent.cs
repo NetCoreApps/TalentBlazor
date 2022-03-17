@@ -128,18 +128,21 @@ public static class ConfigureDbTalent
         JobApplicationAttachment CreatePdfAttachment(JobApplication jobApp, FileInfo fileInfo)
         {
             var newName = $"{fileInfo.Name.WithoutExtension().Replace("sample_", "")}_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
+            var relativePath = $"applications/app/{jobApp.JobId}/{now:yyyy/MM/dd}/{newName}";
             var attachment = new JobApplicationAttachment
             {
-                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now:yyyy/MM/dd}/{newName}",
+                FilePath = $"/uploads/{relativePath}",
                 FileName = newName,
                 ContentLength = fileInfo.Length,
                 ContentType = "application/pdf",
                 JobApplicationId = jobApp.Id
             };
-            var destDir = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now:yyyy/MM/dd}").AssertDir();
-            var destPath = Path.Join(destDir, newName);
-            if (!File.Exists(destPath))
-                File.Copy(fileInfo.FullName, destPath);
+            var destFile = new FileInfo(Path.Join(sourceDir, relativePath));
+            if (!destFile.Exists)
+            {
+                destFile.Directory?.FullName.AssertDir();
+                File.Copy(fileInfo.FullName, destFile.FullName);
+            }
             return attachment;
         }
 
