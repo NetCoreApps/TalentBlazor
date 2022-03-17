@@ -117,50 +117,37 @@ public static class ConfigureDbTalent
         }
     }
 
-    public static void SeedAttachments(this IDbConnection db, ServiceStackHost appHost)
+    public static void SeedAttachments(this IDbConnection db, ServiceStackHost appHost, string sourceDir)
     {
+        sourceDir.AssertDir();
         var jobApps = db.LoadSelect<JobApplication>();
-        var sourceDir = appHost.ContentRootDirectory.RealPath.CombineWith("App_Data").AssertDir();
-        var resumeFileName = "resume-2022-03-14.pdf";
-        var coverLetterFileName = "sample_cover_letter.pdf";
-        var sourceResumeFilePath = Path.Join(sourceDir, resumeFileName);
-        var sourceCoverLetterFilePath = Path.Join(sourceDir, coverLetterFileName);
-        var resumeFile = File.ReadAllBytes(sourceResumeFilePath);
-        var coverLetterFile = File.ReadAllBytes(sourceCoverLetterFilePath);
+        var resumeFileInfo = new FileInfo(Path.Join(sourceDir, "sample_resume.pdf"));
+        var coverFileInfo = new FileInfo(Path.Join(sourceDir, "sample_coverletter.pdf"));
         var now = DateTime.UtcNow;
-        foreach (var jobApp in jobApps)
+
+        JobApplicationAttachment CreatePdfAttachment(JobApplication jobApp, FileInfo fileInfo)
         {
-            var customResumeName = $"resume_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
+            var newName = $"{fileInfo.Name.WithoutExtension().Replace("sample_", "")}_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
             var attachment = new JobApplicationAttachment
             {
-                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/{customResumeName}",
-                FileName = customResumeName,
-                ContentLength = resumeFile.Length,
+                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now:yyyy/MM/dd}/{newName}",
+                FileName = newName,
+                ContentLength = fileInfo.Length,
                 ContentType = "application/pdf",
                 JobApplicationId = jobApp.Id
             };
-            var destPath = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}");
-            Directory.CreateDirectory(destPath);
-            if(!File.Exists(Path.Join(destPath, customResumeName)))
-                File.Copy(sourceResumeFilePath, Path.Join(destPath, customResumeName));
-            db.Save(attachment);
-
-            var customCoverLetterName = $"coverletter_{jobApp.Position.Title.ToLower().Replace(" ", "_")}.pdf";
-            var coverLetter = new JobApplicationAttachment
-            {
-                FilePath = $"/uploads/applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}/{customCoverLetterName}",
-                FileName = customCoverLetterName,
-                ContentLength = coverLetterFile.Length,
-                ContentType = "application/pdf",
-                JobApplicationId = jobApp.Id
-            };
-            var coverLetterdestPath = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now.ToString("yyyy/MM/dd")}");
-            Directory.CreateDirectory(coverLetterdestPath);
-            if (!File.Exists(Path.Join(coverLetterdestPath, customCoverLetterName)))
-                File.Copy(sourceCoverLetterFilePath, Path.Join(destPath, customCoverLetterName));
-            db.Save(coverLetter);
+            var destDir = Path.Join(sourceDir, $"applications/app/{jobApp.JobId}/{now:yyyy/MM/dd}").AssertDir();
+            var destPath = Path.Join(destDir, newName);
+            if (!File.Exists(destPath))
+                File.Copy(fileInfo.FullName, destPath);
+            return attachment;
         }
-        
+
+        foreach (var jobApp in jobApps)
+        {
+            db.Save(CreatePdfAttachment(jobApp, resumeFileInfo));
+            db.Save(CreatePdfAttachment(jobApp, coverFileInfo));
+        }
     }
 
     private static Faker<PhoneScreen> phoneScreenFaker = new Faker<PhoneScreen>()
@@ -225,7 +212,7 @@ public static class ConfigureDbTalent
         var baseDate = (new DateTime(now.Year, now.Month, now.Day)) - TimeSpan.FromDays(3);
         var eventDate = baseDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
 
-        if(status >= JobApplicationStatus.Offer)
+        if (status >= JobApplicationStatus.Offer)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
             appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
@@ -235,7 +222,7 @@ public static class ConfigureDbTalent
             db.Insert(appEvent);
             var offer = jobOfferFaker.Generate();
             offer.JobApplicationId = jobApp.Id;
-            offer.SalaryOffer = FakerInstance.Random.Int(jobApp.Position.SalaryRangeLower,jobApp.Position.SalaryRangeUpper);
+            offer.SalaryOffer = FakerInstance.Random.Int(jobApp.Position.SalaryRangeLower, jobApp.Position.SalaryRangeUpper);
             offer.AppUserId = FakerInstance.Random.Int(1, 5);
             db.Insert(offer);
         }
@@ -263,7 +250,7 @@ public static class ConfigureDbTalent
             appEvent.Status = JobApplicationStatus.Interview;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
-            if(status == JobApplicationStatus.Interview)
+            if (status == JobApplicationStatus.Interview)
             {
                 var interview = interviewFaker.Generate();
                 interview.JobApplicationId = jobApp.Id;
@@ -295,7 +282,7 @@ public static class ConfigureDbTalent
             appEvent.Status = JobApplicationStatus.PhoneScreening;
             appEvent.EventDate = eventDate;
             db.Insert(appEvent);
-            if(status == JobApplicationStatus.PhoneScreening)
+            if (status == JobApplicationStatus.PhoneScreening)
             {
                 var screen = phoneScreenFaker.Generate();
                 screen.JobApplicationId = jobApp.Id;
@@ -315,7 +302,7 @@ public static class ConfigureDbTalent
         }
 
         var numOfComments = FakerInstance.Random.Int(1, 5);
-        for (var i = 0;  i < numOfComments; i++)
+        for (var i = 0; i < numOfComments; i++)
         {
             var comment = commentFaker.Generate();
             comment.JobApplicationId = jobApp.Id;

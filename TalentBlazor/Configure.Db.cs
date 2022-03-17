@@ -25,6 +25,6 @@ public class ConfigureDb : IHostingStartup
                 ? "~/wwwroot/profiles".MapProjectPath()
                 : Path.Join(AppContext.BaseDirectory, "wwwroot", "profiles");
             db.SeedTalent(profilesDir: profilesDir);
-            db.SeedAttachments(appHost);
+            db.SeedAttachments(appHost, appHost.ContentRootDirectory.RealPath.CombineWith("App_Data"));
         });
 }

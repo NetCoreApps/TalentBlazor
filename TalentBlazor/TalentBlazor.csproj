@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="App_Data\resume-2022-03-14.pdf" />
-      <None Remove="App_Data\sample_cover_letter.pdf" />
+      <None Remove="App_Data\sample_coverletter.pdf" />
+      <None Remove="App_Data\sample_resume.pdf" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="App_Data\resume-2022-03-14.pdf" CopyToOutputDirectory="Always" />
-      <Content Include="App_Data\sample_cover_letter.pdf" CopyToOutputDirectory="Always" />
+      <Content Include="App_Data\sample_resume.pdf" CopyToOutputDirectory="Always" />
+      <Content Include="App_Data\sample_coverletter.pdf" CopyToOutputDirectory="Always" />
     </ItemGroup>
     <ItemGroup>
         <Using Include="TalentBlazor" />
