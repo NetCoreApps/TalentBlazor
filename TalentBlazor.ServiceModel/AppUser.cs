@@ -3,6 +3,7 @@ using ServiceStack.Auth;
 using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TalentBlazor.ServiceModel;
 
@@ -55,8 +56,11 @@ public class AppUser : IUserAuth
     public string Nickname { get; set; }
     public string PostalCode { get; set; }
     public string TimeZone { get; set; }
+    [IgnoreDataMember]
     public string Salt { get; set; }
+    [IgnoreDataMember]
     public string PasswordHash { get; set; }
+    [IgnoreDataMember]
     public string DigestHa1Hash { get; set; }
     public List<string> Roles { get; set; } = new();
     public List<string> Permissions { get; set; } = new();
@@ -65,6 +69,7 @@ public class AppUser : IUserAuth
     public int InvalidLoginAttempts { get; set; }
     public DateTime? LastLoginAttempt { get; set; }
     public DateTime? LockedDate { get; set; }
+    [IgnoreDataMember]
     public string RecoveryToken { get; set; }
 
     //Custom Reference Data
