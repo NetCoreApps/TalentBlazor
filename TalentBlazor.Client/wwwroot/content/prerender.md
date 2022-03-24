@@ -62,8 +62,6 @@ before Blazor has loaded we need to implement this with a sprinkling of HTML + J
 First thing we need to do is move the scoped styles of our Apps
 [MainLayout](https://github.com/NetCoreTemplates/blazor-wasm/blob/main/TalentBlazor.Client/Shared/MainLayout.razor) and
 [NavMenu](https://github.com/NetCoreTemplates/blazor-wasm/blob/main/TalentBlazor.Client/Shared/NavMenu.razor) into an external
-[main-layout.css](https://github.com/NetCoreTemplates/blazor-wasm/blob/main/TalentBlazor.Client/wwwroot/css/main-layout.css) so our temp
-App chrome can use it.
 
 Then in our [/wwwroot/index.html](https://github.com/NetCoreTemplates/blazor-wasm/blob/main/TalentBlazor.Client/wwwroot/index.html) anything
 between `<div id="app"></div>` is displayed whilst our Blazor App is loading, before it's replaced with the real App.

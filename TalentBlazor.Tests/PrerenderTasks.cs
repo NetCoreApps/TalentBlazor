@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Bunit;
+using Bunit.Rendering;
+using Microsoft.AspNetCore.Components.Rendering;
 using static System.Console;
 using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
 using TalentBlazor.Client;
@@ -34,20 +37,47 @@ public class PrerenderTasks
         FileSystemVirtualFiles.RecreateDirectory(PrerenderDir);
     }
 
+    string CreatePageWithLayout<T>(IRenderedComponent<T> renderedComponent) where T : IComponent
+    {
+        var layout = Context.Services.GetRequiredService<ILayoutService>();
+        var builder = new RenderTreeBuilder(); 
+        layout.Header.Invoke(builder);
+        var frames = builder.GetFrames();
+        string appHeaderHtml = frames.Array.FirstOrDefault().TextContent ?? "";
+
+        var html = @$"
+        <!-- Header Content -->
+        <header class=""bg-gray-50 pb-8 pt-4"">
+            <div class=""max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:flex xl:items-center xl:justify-between"">
+                {appHeaderHtml}
+            </div>
+        </header>
+
+        <!-- Main -->
+        <main class=""pt-8 pb-16"">
+            <div class=""max-w-7xl mx-auto sm:px-6 lg:px-8"">
+                {renderedComponent.Markup}
+            </div>
+        </main>";
+        return html;
+    }
+
     void Render<T>(params ComponentParameter[] parameters) where T : IComponent
     {
         WriteLine($"Rendering: {typeof(T).FullName}...");
         Context.Services.AddScoped<ILayoutService, LayoutService>();
         var component = Context.RenderComponent<T>(parameters);
+
         var route = typeof(T).GetCustomAttribute<RouteAttribute>()?.Template;
         if (string.IsNullOrEmpty(route))
             throw new Exception($"Couldn't infer @page for component {typeof(T).Name}");
 
         var fileName = route.EndsWith("/") ? route + "index.html" : $"{route}.html";
 
+        var html = CreatePageWithLayout(component);
         var writeTo = Path.GetFullPath(PrerenderDir.CombineWith(fileName));
         WriteLine($"Written to {writeTo}");
-        File.WriteAllText(writeTo, component.Markup);
+        File.WriteAllText(writeTo, html);
     }
 
     [Test]
@@ -80,7 +110,7 @@ public class PrerenderTasks
                 continue;
             }
 
-            var dirName = dstDir.IndexOf("wwwroot") >= 0
+            var dirName = dstDir.IndexOf("wwwroot", StringComparison.Ordinal) >= 0
                 ? dstDir.LastRightPart("wwwroot").Replace('\\', '/')
                 : new DirectoryInfo(dstDir).Name;
             var path = dirName.CombineWith(name == "index" ? "" : name);
