@@ -374,11 +374,11 @@
     // Make sure default filter has listed candidates
     void startOnFilterWithJobs()
     {
-        var interviewCount = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.Interview);
-        if (interviewCount)
+        var interview = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.Interview);
+        if (interview)
             return;
-        var phoneCount = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.PhoneScreening || x.ApplicationStatus == JobApplicationStatus.PhoneScreeningCompleted);
-        if(phoneCount)
+        var phone = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.PhoneScreening || x.ApplicationStatus == JobApplicationStatus.PhoneScreeningCompleted);
+        if(phone)
         {
             filter = JobApplicationFilter.PhoneScreening;
             return;
