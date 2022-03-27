@@ -366,8 +366,35 @@
     protected override async Task OnInitializedAsync()
     {
         await refreshJobApps();
+        startOnFilterWithJobs();
         setBreadcrumbs();
         loading = false;
+    }
+
+    // Make sure default filter has listed candidates
+    void startOnFilterWithJobs()
+    {
+        var interviewCount = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.Interview);
+        if (interviewCount)
+            return;
+        var phoneCount = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.PhoneScreening || x.ApplicationStatus == JobApplicationStatus.PhoneScreeningCompleted);
+        if(phoneCount)
+        {
+            filter = JobApplicationFilter.PhoneScreening;
+            return;
+        }
+        var applied = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.Applied);
+        if(applied)
+        {
+            filter = JobApplicationFilter.Applied;
+            return;
+        }
+        var offer = jobApps.Any(x => x.ApplicationStatus == JobApplicationStatus.Offer);
+        if(offer)
+        {
+            filter = JobApplicationFilter.Offer;
+            return;
+        }
     }
 
     int interviewApplicationCount()

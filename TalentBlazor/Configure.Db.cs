@@ -17,7 +17,9 @@ public class ConfigureDb : IHostingStartup
                 SqliteDialect.Provider)))
         .ConfigureAppHost(appHost =>
         {
-            Debug.WriteLine("Faker seed: " + Randomizer.Seed);
+            var seed = 1807832753;
+            Randomizer.Seed = new Random(seed);
+            Debug.WriteLine("Faker seed: " + seed);
 
             using var db = appHost.Resolve<IDbConnectionFactory>().Open();
 

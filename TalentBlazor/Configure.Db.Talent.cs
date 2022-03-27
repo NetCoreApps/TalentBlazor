@@ -34,7 +34,12 @@ public static class ConfigureDbTalent
                 .RuleFor(j => j.Company, (faker, job1) => faker.Company.CompanyName())
                 .RuleFor(j => j.SalaryRangeLower, (faker, job1) => faker.Random.Int(90, 120) * 1000)
                 .RuleFor(j => j.SalaryRangeUpper, (faker, job1) => faker.Random.Int(125, 250) * 1000)
-                .RuleFor(j => j.EmploymentType, (faker, job1) => faker.Random.Enum<EmploymentType>())
+                .RuleFor(j => j.EmploymentType, (faker, job1) =>
+                {
+                    var rand = faker.Random.Int(0, 12);
+                    var empType = rand < 8 ? EmploymentType.FullTime : rand < 10 ? EmploymentType.Contract : rand < 11 ? EmploymentType.PartTime : EmploymentType.Casual;
+                    return empType;
+                })
                 .RuleFor(j => j.Location,
                     (faker, job1) => faker.Random.Int(1, 3) == 1
                         ? "Remote"
@@ -58,7 +63,12 @@ public static class ConfigureDbTalent
                     (faker, contact1) => faker.Random.Int(1, 2) == 1
                         ? "Remote"
                         : ($"{faker.Address.City()},{faker.Address.Country()}"))
-                .RuleFor(c => c.PreferredWorkType, (faker, contact1) => faker.Random.Enum<EmploymentType>())
+                .RuleFor(c => c.PreferredWorkType, (faker, contact1) =>
+                {
+                    var rand = faker.Random.Int(0, 12);
+                    var empType = rand < 8 ? EmploymentType.FullTime : rand < 10 ? EmploymentType.Contract : rand < 11 ? EmploymentType.PartTime : EmploymentType.Casual;
+                    return empType;
+                })
                 .RuleFor(c => c.SalaryExpectation, (faker, contact1) => faker.Random.Int(92, 245) * 1000)
                 .RuleFor(c => c.CreatedDate, () => now)
                 .RuleFor(c => c.ModifiedDate, () => now)
