@@ -18,7 +18,7 @@ public class Contact : AuditBase
     public string FirstName { get; set; }
     public string LastName { get; set; }
 
-    [IntlNumber(Currency = NumberCurrency.USD)]
+    [Format(FormatMethods.Currency)]
     public int? SalaryExpectation { get; set; }
 
     public string JobType { get; set; }
