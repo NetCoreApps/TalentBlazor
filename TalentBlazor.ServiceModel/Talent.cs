@@ -252,6 +252,7 @@ public class JobApplicationAttachment
     [Format(FormatMethods.Attachment)]
     public string FilePath { get; set; }
     public string ContentType { get; set; }
+    [Format(FormatMethods.Bytes)]
     public long ContentLength { get; set; }
 }
 
