@@ -13,7 +13,6 @@ using System.Collections.Generic;
 
 namespace TalentBlazor.Tests;
 
-[Category("Integration")]
 public class FileUploadTests
 {
     static string AppData = "../../../../TalentBlazor/App_Data";
@@ -33,7 +32,7 @@ public class FileUploadTests
             throw new Exception(api.ErrorMessage);
     }
 
-    [Test]
+    [Test, Explicit]
     public async Task Can_CreateContact_with_Profile_Image_and_CreateJobApplication_with_attachments()
     {
         var profileImg = await ProfileImageUrl.GetStreamFromUrlAsync();
@@ -74,7 +73,7 @@ public class FileUploadTests
         uploadAttachments.Each(x => x.Stream.Dispose());
     }
 
-    [Test]
+    [Test, Explicit]
     public async Task Can_CreateContact_with_Profile_Image_and_CreateJobApplication_with_attachments_MultipartFormDataContent()
     {
         var profileImg = await ProfileImageUrl.GetStreamFromUrlAsync();
