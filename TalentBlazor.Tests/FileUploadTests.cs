@@ -13,6 +13,7 @@ using System.Collections.Generic;
 
 namespace TalentBlazor.Tests;
 
+[Category("Integration")]
 public class FileUploadTests
 {
     static string AppData = "../../../../TalentBlazor/App_Data";
