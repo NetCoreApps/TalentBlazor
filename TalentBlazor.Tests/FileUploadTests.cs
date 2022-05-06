@@ -1,18 +1,15 @@
-﻿using Funq;
-using ServiceStack;
-using NUnit.Framework;
-using TalentBlazor.ServiceInterface;
+﻿using NUnit.Framework;
 using TalentBlazor.ServiceModel;
 using System.Threading.Tasks;
 using System;
+using ServiceStack;
 using ServiceStack.Text;
 using System.IO;
 using System.Net.Http;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace TalentBlazor.Tests;
 
+[TestFixture, Explicit]
 public class FileUploadTests
 {
     static string AppData = "../../../../TalentBlazor/App_Data";
@@ -21,6 +18,7 @@ public class FileUploadTests
 
     public FileUploadTests()
     {
+        // Requires local AppHost running...
         client = new JsonApiClient("https://localhost:5001");
         var api = client.Api(new Authenticate {
             provider = "credentials",
