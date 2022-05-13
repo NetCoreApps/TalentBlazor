@@ -57,7 +57,7 @@
                 <AuthorizeView>
                     <Authorized>
                         <div class="mt-5 flex justify-center sm:mt-0">
-                            <button type="button" @onclick="logout" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Sign Out </button>
+                            <button type="button" @onclick="Logout" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Sign Out </button>
                         </div>
                     </Authorized>
                     <Authorizing>
@@ -196,10 +196,9 @@
 
 @code {
 
-    List<Breadcrumb> breadcrumbs = new()
-        {
-            new Breadcrumb { Name = "Dashboard", Url = "/dashboard" }
-        };
+    readonly List<Breadcrumb> breadcrumbs = new() {
+        new Breadcrumb { Name = "Dashboard", Url = "/dashboard" }
+    };
 
     long totalJobs = 0;
     long totalContacts = 0;
@@ -208,7 +207,7 @@
     int avgSalaryRangeUpper = 0;
     decimal prefRemotePercentage = 0.0m;
 
-    ResponseStatus? errorResponnse;
+    ResponseStatus? errorResponse;
     string? LoginUrl { get; set; }
 
     protected override Task OnParametersSetAsync()
@@ -217,13 +216,13 @@
         return base.OnParametersSetAsync();
     }
 
-    async Task logout(MouseEventArgs e)
+    async Task Logout(MouseEventArgs e)
     {
         await AuthStateProvider.LogoutAsync();
         NavigationManager.NavigateTo(LoginUrl ?? "/", true);
     }
 
-    async Task fetchJobApps()
+    async Task FetchJobApps()
     {
         var api = await ApiAsync(new TalentStats());
         if (api.Succeeded)
@@ -236,13 +235,14 @@
             prefRemotePercentage = api.Response!.PreferredRemotePercentage;
         }
         else
-            errorResponnse = api.Error;
-
+        {
+            errorResponse = api.Error;
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await fetchJobApps();
+        await FetchJobApps();
         await base.OnInitializedAsync();
     }
 }

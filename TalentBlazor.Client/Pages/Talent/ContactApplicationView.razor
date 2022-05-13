@@ -48,7 +48,7 @@
         <AuthorizeView>
             <Authorized>
                 <span class="@((jobApp?.ApplicationStatus >= JobApplicationStatus.Offer) ? "hidden" : "sm:block")">
-                    <button type="button" @onclick="() => disqualifyJobApplication(JobApplicationStatus.Disqualified)" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
+                    <button type="button" @onclick="() => DisqualifyJobApplication(JobApplicationStatus.Disqualified)" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
                 </span>
                 <span class="ml-3 @(jobApp?.ApplicationStatus >= JobApplicationStatus.Offer ? "hidden" : "sm:block")">
                     @switch (jobApp.ApplicationStatus)
@@ -102,8 +102,8 @@
             </div>
 
             <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-                <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="advanceApplication"
-                                OnDisqualifyClick="disqualifyJobApplication"></JobAppTimeline>
+                <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="AdvanceApplication"
+                                OnDisqualifyClick="DisqualifyJobApplication"></JobAppTimeline>
             </section>
         </div>
     </div>
@@ -111,7 +111,7 @@
     <!-- Advance to phonescreen -->
     <CascadingValue Value=@phoneScreenResult.Error>
         <JobAppModal ModalTitle="Advance to phone screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
-                     OnSave="createPhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
+                     OnSave="CreatePhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
@@ -126,7 +126,7 @@
     <!--Complete Phone Screen-->
     <CascadingValue Value=@phoneScreenResult.Error>
         <JobAppModal ModalTitle="Progress To Phone Screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
-                     OnSave="updatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
+                     OnSave="UpdatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
@@ -141,7 +141,7 @@
     <!-- Book interview -->
     <CascadingValue Value=@interviewResult.Error>
         <JobAppModal ModalTitle="Interview Booking" ModalDescription="Book interview with appropriate team member to evaluate the candidate."
-                     OnSave="createInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
+                     OnSave="CreateInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
@@ -159,7 +159,7 @@
     <!-- Complete interview -->
 
     <JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
-                 OnSave="updateInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
+                 OnSave="UpdateInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
         <CascadingValue Value=@interviewResult.Error>
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
@@ -176,7 +176,7 @@
     @if(jobApp?.Position != null)
     {
         <JobAppModal ModalTitle="Make Offer" ModalDescription="Specify details about the job offer."
-                 OnSave="createOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
+                 OnSave="CreateOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
         <CascadingValue Value=@offerResult.Error>
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
@@ -233,16 +233,16 @@
     ApiResult<PhoneScreen> phoneScreenResult = new();
     ApiResult<JobOffer> offerResult = new();
 
-    bool showBookInterview = false;
-    bool showCompleteInterview = false;
+    bool showBookInterview;
+    bool showCompleteInterview;
 
-    bool showAdvancePhoneScreen = false;
-    bool showCompletePhoneScreen = false;
+    bool showAdvancePhoneScreen;
+    bool showCompletePhoneScreen;
 
-    bool showMakeOffer = false;
-    bool showDisqualify = false;
+    bool showMakeOffer;
+    bool showDisqualify;
 
-    void resetInterview()
+    void ResetInterview()
     {
         interviewBookingTime = DateTime.UtcNow.Date;
         interviewNotes = "";
@@ -250,7 +250,7 @@
         interviewResult = new();
     }
 
-    void resetOffer()
+    void ResetOffer()
     {
         offerNotes = "";
         employeeSelection = null;
@@ -258,7 +258,7 @@
         offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
     }
 
-    void resetPhoneScreen()
+    void ResetPhoneScreen()
     {
         phoneScreenNotes = "";
         employeeSelection = null;
@@ -267,10 +267,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await refreshData();
+        await RefreshData();
     }
 
-    async Task advanceApplication(JobApplicationStatus status)
+    Task AdvanceApplication(JobApplicationStatus status)
     {
         switch (status)
         {
@@ -289,113 +289,114 @@
             case JobApplicationStatus.InterviewCompleted:
                 showMakeOffer = true;
                 break;
-            default:
-                break;
         }
+        return Task.CompletedTask;
     }
 
-    async Task disqualifyJobApplication(JobApplicationStatus status)
+    async Task DisqualifyJobApplication(JobApplicationStatus status)
     {
-        var api = await ApiAsync(new UpdateJobApplication
-            {
-                Id = jobApp.Id,
-                AppliedDate = jobApp.AppliedDate,
-                ContactId = jobApp.ContactId,
-                JobId = jobApp.JobId,
-                ApplicationStatus = JobApplicationStatus.Disqualified
-            });
+        var api = await ApiAsync(new UpdateJobApplication {
+            Id = jobApp.Id,
+            AppliedDate = jobApp.AppliedDate,
+            ContactId = jobApp.ContactId,
+            JobId = jobApp.JobId,
+            ApplicationStatus = JobApplicationStatus.Disqualified
+        });
         if (api.Succeeded)
             jobApp = api.Response!;
         else
             errorStatus = api.Error;
-        await refreshData();
+        await RefreshData();
     }
 
-    async Task refreshData()
+    async Task RefreshData()
     {
-        await refreshJobApp();
-        setBreadcrumbs();
-        await refreshJobAppEvents();
+        await RefreshJobApp();
+        SetBreadcrumbs();
+        await RefreshJobAppEvents();
         if (appUsers.Count == 0)
-            await getAppUsers();
-        await refreshPhoneScreen();
-        await refreshInterview();
-        await refreshJobOffer();
+            await GetAppUsers();
+        await RefreshPhoneScreen();
+        await RefreshInterview();
+        await RefreshJobOffer();
         if(offerSalary == 0)
             offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
         loading = false;
     }
 
-    void setBreadcrumbs()
+    void SetBreadcrumbs()
     {
         if (breadcrumbs.IsEmpty())
-            breadcrumbs = new List<Breadcrumb>
-            {
-                new Breadcrumb{Name="Jobs", Url="/jobs"},
-                new Breadcrumb{Name=$"{jobApp.Position.Title}", Url=$"/jobs/{jobApp.JobId}"},
-                new Breadcrumb{Name="Applications", Url=$"/jobs/{jobApp.JobId}/applications"},
-                new Breadcrumb{Name=$"{jobApp.Applicant.DisplayName}", Url=$"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}"},
+        {
+            breadcrumbs = new List<Breadcrumb> {
+                new() { Name="Jobs", Url="/jobs" },
+                new() { Name=$"{jobApp.Position.Title}", Url=$"/jobs/{jobApp.JobId}" },
+                new() { Name="Applications", Url=$"/jobs/{jobApp.JobId}/applications" },
+                new() { Name=$"{jobApp.Applicant.DisplayName}", Url=$"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}" },
             };
+        }
     }
 
-    async Task refreshPhoneScreen()
+    async Task RefreshPhoneScreen()
     {
-        var api = await ApiAsync(new QueryPhoneScreen
-            {
-                JobApplicationId = JobAppId
-            });
+        var api = await ApiAsync(new QueryPhoneScreen {
+            JobApplicationId = JobAppId
+        });
         if (api.Succeeded)
         {
             var hasPhoneScreen = api.Response!.Results.Count > 0;
             phoneScreen = hasPhoneScreen ? api.Response!.Results[0] : new();
         }
         else
+        {
             errorStatus = api.Error;
+        }
     }
 
-    async Task refreshInterview()
+    async Task RefreshInterview()
     {
-        var api = await ApiAsync(new QueryInterview
-            {
-                JobApplicationId = JobAppId
-            });
+        var api = await ApiAsync(new QueryInterview {
+            JobApplicationId = JobAppId
+        });
         if (api.Succeeded)
         {
             var hasInterview = api.Response!.Results.Count > 0;
             interview = hasInterview ? api.Response!.Results[0] : new();
         }
         else
+        {
             errorStatus = api.Error;
+        }
     }
 
-    async Task refreshJobOffer()
+    async Task RefreshJobOffer()
     {
-        var api = await ApiAsync(new QueryJobOffer
-            {
-                JobApplicationId = JobAppId
-            });
+        var api = await ApiAsync(new QueryJobOffer {
+            JobApplicationId = JobAppId
+        });
         if (api.Succeeded)
         {
             var hasOffer = api.Response!.Results.Count > 0;
             jobOffer = hasOffer ? api.Response!.Results[0] : new();
         }
         else
+        {
             errorStatus = api.Error;
+        }
     }
 
-    async Task refreshJobApp()
+    async Task RefreshJobApp()
     {
-        var api = await ApiAsync(new QueryJobApplication
-            {
-                Id = JobAppId
-            });
+        var api = await ApiAsync(new QueryJobApplication {
+            Id = JobAppId
+        });
         if (api.Succeeded)
             jobApp = api.Response!.Results[0];
         else
             errorStatus = api.Error;
     }
 
-    async Task getAppUsers()
+    async Task GetAppUsers()
     {
         var api = await ApiAsync(new QueryAppUser());
         if (api.Succeeded)
@@ -410,115 +411,123 @@
         employeeSelection = val;
     }
 
-    async Task refreshJobAppEvents()
+    async Task RefreshJobAppEvents()
     {
-        var api = await ApiAsync(new QueryJobAppEvents
-            {
-                JobApplicationId = JobAppId
-            });
+        var api = await ApiAsync(new QueryJobAppEvents {
+            JobApplicationId = JobAppId
+        });
         if (api.Succeeded)
             jobAppEvents = api.Response!.Results;
         else
             errorStatus = api.Error;
     }
 
-    async Task createPhoneScreenBooking()
+    async Task CreatePhoneScreenBooking()
     {
-        var createPhone = new CreatePhoneScreen();
-        createPhone.JobApplicationId = JobAppId;
-        createPhone.AppUserId = employeeSelection?.Id ?? 0;
-        createPhone.ApplicationStatus = JobApplicationStatus.PhoneScreening;
-        phoneScreenResult = await ApiAsync(createPhone);
+        phoneScreenResult = await ApiAsync(new CreatePhoneScreen {
+            JobApplicationId = JobAppId,
+            AppUserId = employeeSelection?.Id ?? 0,
+            ApplicationStatus = JobApplicationStatus.PhoneScreening
+        });
         if (phoneScreenResult.Succeeded)
         {
-            resetPhoneScreen();
-            await refreshData();
+            ResetPhoneScreen();
+            await RefreshData();
             showAdvancePhoneScreen = false;
         }
         else
+        {
             errorStatus = phoneScreenResult.Error;
+        }
     }
 
-    async Task updatePhoneScreenCompleted()
+    async Task UpdatePhoneScreenCompleted()
     {
-        var updatePhone = new UpdatePhoneScreen();
-        updatePhone.JobApplicationId = jobApp.Id;
-        updatePhone.Notes = phoneScreenNotes;
-        updatePhone.Id = jobApp.PhoneScreen.Id;
-        updatePhone.ApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted;
-        phoneScreenResult = await ApiAsync(updatePhone);
+        phoneScreenResult = await ApiAsync(new UpdatePhoneScreen {
+            JobApplicationId = jobApp.Id,
+            Notes = phoneScreenNotes,
+            Id = jobApp.PhoneScreen.Id,
+            ApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted
+        });
         if (phoneScreenResult.Succeeded)
         {
-            resetPhoneScreen();
-            await refreshData();
+            ResetPhoneScreen();
+            await RefreshData();
             showCompletePhoneScreen = false;
         }
         else
+        {
             errorStatus = phoneScreenResult.Error;
+        }
     }
 
-    async Task createInterviewBooking()
+    async Task CreateInterviewBooking()
     {
-        var createInterview = new CreateInterview();
-        createInterview.JobApplicationId = JobAppId;
-        createInterview.AppUserId = employeeSelection?.Id ?? 0;
-        createInterview.BookingTime = interviewBookingTime;
-        createInterview.ApplicationStatus = JobApplicationStatus.Interview;
-        interviewResult = await ApiAsync(createInterview);
+        interviewResult = await ApiAsync(new CreateInterview {
+            JobApplicationId = JobAppId,
+            AppUserId = employeeSelection?.Id ?? 0,
+            BookingTime = interviewBookingTime,
+            ApplicationStatus = JobApplicationStatus.Interview
+        });
         if (interviewResult.Succeeded)
         {
-            resetInterview();
-            await refreshData();
+            ResetInterview();
+            await RefreshData();
             showBookInterview = false;
         }
         else
+        {
             errorStatus = interviewResult.Error;
+        }
     }
 
-    async Task updateInterviewCompleted()
+    async Task UpdateInterviewCompleted()
     {
-        var updateInterview = new UpdateInterview();
-        updateInterview.Id = jobApp.Interview.Id;
-        updateInterview.JobApplicationId = jobApp.Id;
-        updateInterview.Notes = interviewNotes;
-        updateInterview.ApplicationStatus = JobApplicationStatus.InterviewCompleted;
-        interviewResult = await ApiAsync(updateInterview);
+        interviewResult = await ApiAsync(new UpdateInterview {
+            Id = jobApp.Interview.Id,
+            JobApplicationId = jobApp.Id,
+            Notes = interviewNotes,
+            ApplicationStatus = JobApplicationStatus.InterviewCompleted
+        });
         if (interviewResult.Succeeded)
         {
-            resetInterview();
-            await refreshData();
+            ResetInterview();
+            await RefreshData();
             showCompleteInterview = false;
         }
         else
+        {
             errorStatus = interviewResult.Error;
+        }
     }
 
-    async Task createOffer()
+    async Task CreateOffer()
     {
-        var createJobOffer = new CreateJobOffer();
-        createJobOffer.JobApplicationId = JobAppId;
-        createJobOffer.SalaryOffer = offerSalary;
-        createJobOffer.Notes = offerNotes;
-        createJobOffer.ApplicationStatus = JobApplicationStatus.Offer;
-        offerResult = await ApiAsync(createJobOffer);
+        offerResult = await ApiAsync(new CreateJobOffer {
+            JobApplicationId = JobAppId,
+            SalaryOffer = offerSalary,
+            Notes = offerNotes,
+            ApplicationStatus = JobApplicationStatus.Offer
+        });
         if (offerResult.Succeeded)
         {
-            resetOffer();
-            await refreshData();
+            ResetOffer();
+            await RefreshData();
             showMakeOffer = false;
         }
         else
+        {
             errorStatus = offerResult.Error;
+        }
     }
 
-    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
-        {
-            { JobApplicationStatus.Applied, "Applied" },
-            { JobApplicationStatus.Interview, "Interview" },
-            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
-            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
-            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
-            { JobApplicationStatus.Offer, "Offer" },
-            { JobApplicationStatus.Disqualified, "Disqualified" }
-        };
+    readonly Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new() {
+        { JobApplicationStatus.Applied, "Applied" },
+        { JobApplicationStatus.Interview, "Interview" },
+        { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+        { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+        { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+        { JobApplicationStatus.Offer, "Offer" },
+        { JobApplicationStatus.Disqualified, "Disqualified" }
+    };
 }

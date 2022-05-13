@@ -3,27 +3,27 @@
 
 <div >
     <label for="employeeSearchBox" class="block text-sm font-medium text-gray-700 mt-4 mb-2">@(ControlTitle)</label>
-    <div class="@(selectedResult != null ? "" : "shadow-2xl") mx-auto max-w-3xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white ring-1 ring-black ring-opacity-5 transition-all">
+    <div class="@(SelectedResult != null ? "" : "shadow-2xl") mx-auto max-w-3xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white ring-1 ring-black ring-opacity-5 transition-all">
         <div class="relative">
             
-            @if (selectedResult == null)
+            @if (SelectedResult == null)
             {
                 <!-- Heroicon name: solid/search -->
                 <svg class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
-                <input @onfocusout="onSearchBlur" @onfocus="onSearchFocus" type="text" @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="onSearchTermChanged" name="employeeSearchBox" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." role="combobox" aria-expanded="false" aria-controls="options" />
+                <input @onfocusout="OnSearchBlur" @onfocus="OnSearchFocus" type="text" @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="OnSearchTermChanged" name="employeeSearchBox" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." role="combobox" aria-expanded="false" aria-controls="options" />
             }
             else
             {
                 <div class="py-4 px-4 flex">
-                    <img class="h-10 w-10 rounded-full" src="@(selectedResult.ProfileUrl)" alt="">
+                    <img class="h-10 w-10 rounded-full" src="@(SelectedResult.ProfileUrl)" alt="">
                     <div class="ml-3 flex-grow-1">
-                        <p class="text-sm font-medium text-gray-900">@(selectedResult.DisplayName)</p>
-                        <p class="text-sm text-gray-500">@(selectedResult.Email)</p>
+                        <p class="text-sm font-medium text-gray-900">@(SelectedResult.DisplayName)</p>
+                        <p class="text-sm text-gray-500">@(SelectedResult.Email)</p>
                     </div>
                     <div class="flex-shrink-1">
-                        <button type="button" @onclick="(e) => selectedResult = null" class="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"> Change </button>
+                        <button type="button" @onclick="(e) => SelectedResult = null" class="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"> Change </button>
                     </div>
                 </div>
             }
@@ -34,10 +34,10 @@
             <div class="max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4 sm:h-96">
                 <!-- Results, show/hide based on command palette state. -->
                 <ul class="-mx-2 text-sm text-gray-700" id="options" role="listbox">
-                    @foreach (var user in filtered())
+                    @foreach (var user in Filtered())
                     {
                         var u = user;
-                        <li @onmouseover="(e) => updateActive(u)" @onclick="(e) => selectUser(u)" class="group flex cursor-default select-none items-center rounded-md p-2 hover:bg-gray-100" id="option-1" role="option" tabindex="-1">
+                        <li @onmouseover="(e) => UpdateActive(u)" @onclick="(e) => SelectUser(u)" class="group flex cursor-default select-none items-center rounded-md p-2 hover:bg-gray-100" id="option-1" role="option" tabindex="-1">
                             <img src="@user.ProfileUrl" alt="" class="h-6 w-6 flex-none rounded-full">
                             <span class="ml-3 flex-auto truncate">@(user.DisplayName)</span>
                             <!-- Not Active: "hidden" -->
@@ -66,7 +66,7 @@
                             <dt class="col-end-1 font-semibold text-gray-900">Email</dt>
                             <dd class="truncate"><a href="#" class="text-indigo-600 underline">@(currentActive.Email)</a></dd>
                         </dl>
-                        <button type="button" @onclick="(e) => selectUser(currentActive)" class="mt-6 w-full rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Select Employee</button>
+                        <button type="button" @onclick="(e) => SelectUser(currentActive)" class="mt-6 w-full rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Select Employee</button>
                     </div>
                 </div>
             }
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Empty state, show/hide based on command palette state -->
-        <div class="py-14 px-6 text-center text-sm sm:px-14 @(searchHasFocus == true && filtered().Count() == 0 ? "" : "hidden")">
+        <div class="py-14 px-6 text-center text-sm sm:px-14 @(searchHasFocus == true && Filtered().Count() == 0 ? "" : "hidden")">
             <!-- Heroicon name: outline/users -->
             <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -90,18 +90,17 @@
 
     public AppUser? EmployeeSelection
     {
-        get => selectedResult;
+        get => SelectedResult;
         set
         {
-            if (selectedResult == value) return;
+            if (SelectedResult == value) return;
 
-            selectedResult = value;
+            SelectedResult = value;
             OnEmployeeSelection.InvokeAsync(value);
         }
     }
 
     string searchTerm = "";
-
 
     [Parameter]
     public EventCallback<AppUser> OnEmployeeSelection { get; set; }
@@ -112,20 +111,20 @@
     [Parameter]
     public string ControlTitle { get; set; }
 
-    AppUser currentActive;
+    AppUser? currentActive;
 
-    IEnumerable<AppUser> filtered()
+    IEnumerable<AppUser> Filtered()
     {
-        if (searchTerm == null)
+        if (string.IsNullOrEmpty(searchTerm))
             return Users;
         return Users.Where(x => x.FirstName.Contains(searchTerm) ||
-        x.LastName.Contains(searchTerm) ||
-        x.Email.Contains(searchTerm));
+            x.LastName.Contains(searchTerm) ||
+            x.Email.Contains(searchTerm));
     }
 
-    AppUser getCurrentActive()
+    AppUser GetCurrentActive()
     {
-        var users = filtered();
+        var users = Filtered();
         if (currentActive == null && users.Count() > 0)
             return users.First();
         return currentActive;
@@ -136,46 +135,45 @@
         currentActive = user;
     }
 
-    private void onSearchTermChanged(KeyboardEventArgs args)
+    private void OnSearchTermChanged(KeyboardEventArgs args)
     {
         hasMadeSearch = true;
     }
 
     private bool searchHasFocus = false;
 
-    async Task onSearchBlur(FocusEventArgs args)
+    async Task OnSearchBlur(FocusEventArgs args)
     {
         Console.WriteLine($"onSearchBlur: {args.Type}");
         await Task.Delay(100);
         searchHasFocus = false;
     }
 
-    private void onSearchFocus(FocusEventArgs args)
+    private void OnSearchFocus(FocusEventArgs args)
     {
         Console.WriteLine($"onSearchFocus: {args.Type}");
         hasMadeSearch = true;
         searchHasFocus = true;
     }
 
-    void updateActive(AppUser user)
+    void UpdateActive(AppUser user)
     {
         currentActive = user;
     }
 
-    void selectUser(AppUser user)
+    void SelectUser(AppUser user)
     {
         EmployeeSelection = user;
     }
 
-    async Task OnEmployeeClick(MouseEventArgs e)
+    Task OnEmployeeClick(MouseEventArgs e)
     {
-        selectUser(currentActive);
+        SelectUser(currentActive);
+        return Task.CompletedTask;
     }
 
     [Parameter]
-    public AppUser? selectedResult { get; set; }
+    public AppUser? SelectedResult { get; set; }
 
     bool hasMadeSearch = false;
-
-
 }

@@ -3,7 +3,7 @@
 <section aria-labelledby="notes-title">
     <div class="bg-white shadow sm:rounded-lg sm:overflow-hidden">
         <div class="divide-y divide-gray-200">
-            @if (PhoneScreen != null && PhoneScreen.Notes != null)
+            @if (PhoneScreen is { Notes: { } })
             {
                 <div class="px-4 py-2 sm:px-6">
                     <h2 id="notes-title" class="text-lg font-medium text-gray-900">Phone Screen Notes</h2>
@@ -31,7 +31,7 @@
                 </div>
             }
 
-            @if (Interview != null && Interview.Notes != null)
+            @if (Interview is { Notes: { } })
             {
                 <div class="px-4 py-2 sm:px-6">
                     <h2 id="notes-title" class="text-lg font-medium text-gray-900">Interview Notes</h2>
@@ -59,7 +59,7 @@
                 </div>
             }
 
-            @if (JobOffer != null && JobOffer.Notes != null)
+            @if (JobOffer is { Notes: { } })
             {
                 <div class="px-4 py-2 sm:px-6">
                     <h2 id="notes-title" class="text-lg font-medium text-gray-900">Offer Notes</h2>
@@ -96,7 +96,7 @@
             </div>
             <div class="px-4 py-6 sm:px-6">
                 <ul role="list" class="space-y-8">
-                    @foreach (var comment in getComments().OrderBy(x => x.CreatedDate))
+                    @foreach (var comment in GetComments().OrderBy(x => x.CreatedDate))
                     {
                         <li>
                             <div class="flex space-x-3">
@@ -129,7 +129,7 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <CascadingValue Value=@errorStatus>
-                                <form @onsubmit="submit">
+                                <form @onsubmit="Submit">
                                     <div>
                                         <TextAreaInput @bind-Value="request.Comment" name="Note" rows="3" class="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Add a comment"></TextAreaInput>
                                     </div>
@@ -169,15 +169,12 @@
     bool hasPhoneScreen => PhoneScreen?.Notes != null;
     bool hasInterview => Interview?.Notes != null;
 
-    List<JobApplicationComment> comments;
+    List<JobApplicationComment>? comments;
     JobApplicationComment request = new();
 
     ResponseStatus? errorStatus;
 
-    IEnumerable<JobApplicationComment> getComments()
-    {
-        return comments ?? new List<JobApplicationComment>();
-    }
+    IEnumerable<JobApplicationComment> GetComments() => comments ?? new List<JobApplicationComment>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -186,45 +183,45 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await refreshData();
+        await RefreshData();
         await base.OnParametersSetAsync();
     }
 
-    async Task refreshData()
+    async Task RefreshData()
     {
-        await refreshComments();
+        await RefreshComments();
     }
 
-    async Task refreshComments()
+    async Task RefreshComments()
     {
-        var api = await ApiAsync(new QueryJobApplicationComments
-            {
-                JobApplicationId = JobApplicationId
-            });
+        var api = await ApiAsync(new QueryJobApplicationComments {
+            JobApplicationId = JobApplicationId
+        });
         if (api.Succeeded)
             comments = api.Response!.Results;
         else
             errorStatus = api.Error;
     }
 
-    async Task submit()
+    async Task Submit()
     {
-        await addComment();
+        await AddComment();
     }
 
-    async Task addComment()
+    async Task AddComment()
     {
-        var api = await ApiAsync(new CreateJobApplicationComment
-            {
-                JobApplicationId = JobApplicationId,
-                Comment = request.Comment
-            });
+        var api = await ApiAsync(new CreateJobApplicationComment {
+            JobApplicationId = JobApplicationId,
+            Comment = request.Comment
+        });
         if (api.Succeeded)
         {
-            await refreshComments();
+            await RefreshComments();
             request = new();
         }
         else
+        {
             errorStatus = api.Error;
+        }
     }
 }

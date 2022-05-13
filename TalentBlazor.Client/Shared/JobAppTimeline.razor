@@ -8,11 +8,11 @@
         <div class="mt-6 flow-root">
             <ul role="list" class="-mb-8">
 
-                @foreach (var e in getJobEvents().OrderBy(x => x.EventDate))
+                @foreach (var e in GetJobEvents().OrderBy(x => x.EventDate))
                 {
                     <li>
                         <div class="relative pb-8">
-                            @if (getJobEvents().OrderBy(x => x.EventDate).Last().Id != e.Id || (JobApplication?.ApplicationStatus == JobApplicationStatus.Disqualified || JobApplication?.ApplicationStatus == JobApplicationStatus.Offer))
+                            @if (GetJobEvents().OrderBy(x => x.EventDate).Last().Id != e.Id || (JobApplication?.ApplicationStatus == JobApplicationStatus.Disqualified || JobApplication?.ApplicationStatus == JobApplicationStatus.Offer))
                             {
                                 <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                             }
@@ -101,10 +101,10 @@
                     </li>
                 }
 
-                @if (!getJobEvents().IsEmpty() && JobApplication != null)
+                @if (!GetJobEvents().IsEmpty() && JobApplication != null)
                 {
-                    var lastEvent = getJobEvents().OrderBy(x => x.EventDate).LastOrDefault();
-                    if(lastEvent != null && lastEvent.Status == JobApplicationStatus.Offer)
+                    var lastEvent = GetJobEvents().MaxBy(x => x.EventDate);
+                    if (lastEvent is { Status: JobApplicationStatus.Offer })
                     {
                                             <li>
                         <div class="relative pb-8">
@@ -124,10 +124,8 @@
                         </div>
                     </li>
                     }
-
                 }
-
-                @if (JobApplication != null && JobApplication.ApplicationStatus == JobApplicationStatus.Disqualified)
+                @if (JobApplication is { ApplicationStatus: JobApplicationStatus.Disqualified })
                 {
                     <li>
                         <div class="relative pb-8">
@@ -148,14 +146,12 @@
                         </div>
                     </li>
                 }
-
-
             </ul>
         </div>
         <AuthorizeView>
             <Authorized>
                 <div class="mt-6 flex flex-col justify-stretch">
-                    @switch (JobApplication.ApplicationStatus)
+                    @switch (JobApplication!.ApplicationStatus)
                     {
                         case JobApplicationStatus.Applied:
                         case JobApplicationStatus.PhoneScreening:
@@ -166,10 +162,7 @@
                             break;
                         case JobApplicationStatus.Disqualified:
                             break;
-                        default:
-                            break;
                     }
-
                 </div>
             </Authorized>
         </AuthorizeView>
@@ -190,26 +183,21 @@
     public EventCallback<JobApplicationStatus> OnDisqualifyClick { get; set; }
 
 
-    List<JobApplicationEvent> jobAppEvents;
+    List<JobApplicationEvent>? jobAppEvents;
     ResponseStatus? errorStatus;
 
-    List<JobApplicationEvent> getJobEvents()
-    {
-        if (jobAppEvents == null)
-            return new List<JobApplicationEvent>();
-        return jobAppEvents;
-    }
+    List<JobApplicationEvent> GetJobEvents() => jobAppEvents ?? new List<JobApplicationEvent>();
 
     async Task AdvanceClick(JobApplicationStatus status)
     {
         await OnAdvanceClick.InvokeAsync(status);
-        await refreshJobAppEvents();
+        await RefreshJobAppEvents();
     }
 
     async Task DisqualifyClick(JobApplicationStatus status)
     {
         await OnDisqualifyClick.InvokeAsync(status);
-        await refreshJobAppEvents();
+        await RefreshJobAppEvents();
     }
 
     protected override async Task OnInitializedAsync()
@@ -219,16 +207,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await refreshJobAppEvents();
+        await RefreshJobAppEvents();
         await base.OnParametersSetAsync();
     }
 
-    async Task refreshJobAppEvents()
+    async Task RefreshJobAppEvents()
     {
-        var api = await ApiAsync(new QueryJobAppEvents
-            {
-                JobApplicationId = JobApplicationId
-            });
+        var api = await ApiAsync(new QueryJobAppEvents {
+            JobApplicationId = JobApplicationId
+        });
         if (api.Succeeded)
             jobAppEvents = api.Response!.Results;
         else
@@ -237,14 +224,13 @@
         this.StateHasChanged();
     }
 
-    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
-        {
-            { JobApplicationStatus.Applied, "Applied" },
-            { JobApplicationStatus.Interview, "Interview" },
-            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
-            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
-            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
-            { JobApplicationStatus.Offer, "Offer" },
-            { JobApplicationStatus.Disqualified, "Disqualified" }
-        };
+    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new() {
+        { JobApplicationStatus.Applied, "Applied" },
+        { JobApplicationStatus.Interview, "Interview" },
+        { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+        { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+        { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+        { JobApplicationStatus.Offer, "Offer" },
+        { JobApplicationStatus.Disqualified, "Disqualified" }
+    };
 }

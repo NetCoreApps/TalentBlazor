@@ -8,19 +8,19 @@
         <main>
             <div class="main-container p-2">
                 <div class="my-2 d-flex flex-wrap align-items-center">
-                    <form class="d-flex mb-2" @onsubmit=search @onsubmit:preventDefault>
+                    <form class="d-flex mb-2" @onsubmit=Search @onsubmit:preventDefault>
                     @if (!string.IsNullOrEmpty(request.Query))
                     {
-                        <i class="text-close" style="position:absolute;margin:0 0 3px 265px" title="clear" @onclick="clearQuery"></i>
+                        <i class="text-close" style="position:absolute;margin:0 0 3px 265px" title="clear" @onclick="ClearQuery"></i>
                     }
                         <input @bind-value="request.Query" id="txtQuery" placeholder="Search Users" class="form-control" style="width:290px" />
 
-                        <button @onclick="search" class="ms-1 btn btn-outline-primary">Go</button>
+                        <button @onclick="Search" class="ms-1 btn btn-outline-primary">Go</button>
                     </form>
                     <div class="mb-2 d-flex flex-wrap align-items-center">
                         <span class="main-query ms-2 d-flex">
-                            <button class="btn oi oi-chevron-left"  disabled=@(request.Skip == 0) title="&lt; previous" @onclick="_ => viewNext(-pageSize)"></button>
-                            <button class="btn oi oi-chevron-right" disabled=@(results.Count < pageSize) title="next &gt;" @onclick="_ => viewNext(pageSize)"></button>
+                            <button class="btn oi oi-chevron-left"  disabled=@(request.Skip == 0) title="&lt; previous" @onclick="_ => ViewNext(-pageSize)"></button>
+                            <button class="btn oi oi-chevron-right" disabled=@(results.Count < pageSize) title="next &gt;" @onclick="_ => ViewNext(pageSize)"></button>
                         </span>
                     @if (results.Count > 0)
                     {
@@ -32,7 +32,7 @@
                     {
                         <span class="text-muted">No results</span>
                     }
-                        <button class="ms-3 btn btn-outline-primary" @onclick="_ => reset(newUser:true)" @onclick:preventDefault>
+                        <button class="ms-3 btn btn-outline-primary" @onclick="_ => Reset(newUser:true)" @onclick:preventDefault>
                             New User 
                         </button>
                     </div>
@@ -40,11 +40,11 @@
 
             @if (newUser)
             {
-                <Create done="onDone" class="mb-4 max-w-screen-md" />
+                <Create done="OnDone" class="mb-4 max-w-screen-md" />
             }
             else if (!string.IsNullOrEmpty(editUserId))
             {
-                <Edit Id=@editUserId done="onDone" class="mb-4 max-w-screen-md" />
+                <Edit Id=@editUserId done="OnDone" class="mb-4 max-w-screen-md" />
             }
                     
             @if (results.Count > 0)
@@ -53,12 +53,12 @@
                 <table class="table table-striped">
                     <thead><tr class="noselect">
                         <th>
-                            <span class="oi oi-plus cursor-pointer" title="New User" @onclick="_ => reset(newUser:true)"/>
+                            <span class="oi oi-plus cursor-pointer" title="New User" @onclick="_ => Reset(newUser:true)"/>
                         </th>
-                    @foreach (var f in fieldNames)
+                    @foreach (var f in FieldNames)
                     {
-                        <th @key=f @onclick="_ => setOrderBy(f)" 
-                            class=@ClassNames("th-link", $"show-{minVisibleSize(f)}-tcell")>
+                        <th @key=f @onclick="_ => SetOrderBy(f)" 
+                            class=@ClassNames("th-link", $"show-{MinVisibleSize(f)}-tcell")>
                             <div class="text-nowrap">
                                 @TextUtils.Humanize(f)
                             @if (request.OrderBy == f)
@@ -77,21 +77,21 @@
                     @for (var i=0; i<results.Count; i++)
                     {
                         var r = results[i];
-                        var id = getField(r, "Id").ToString();
+                        var id = GetField(r, "Id").ToString();
 
                         <tr @key=@id>
                             <td>
                                 <span>
-                                    <span class="oi oi-pencil cursor-pointer" title="Update User" @onclick="_ => reset(editUserId:id)" />
+                                    <span class="oi oi-pencil cursor-pointer" title="Update User" @onclick="_ => Reset(editUserId:id)" />
                                 </span>
                             </td>
                                         
-                        @for (var j=0; j<fieldNames.Count; j++)
+                        @for (var j=0; j<FieldNames.Count; j++)
                         {
-                            var f = fieldNames[j];
-                            <td @key=j title=@renderValue(getField(r,f))
-                                class=@($"show-{minVisibleSize(f)}-tcell")>
-                                <FormatValue value=@getField(r,f) />
+                            var f = FieldNames[j];
+                            <td @key=j title=@RenderValue(GetField(r,f))
+                                class=@($"show-{MinVisibleSize(f)}-tcell")>
+                                <FormatValue Value=@GetField(r,f) />
                             </td>
                         }
                         </tr>
@@ -133,57 +133,57 @@
         "ModifiedDate",
     };
 
-    string minVisibleSize(string propName) => AdminUsers != null 
-        ? MediaRules.MinVisibleSize(AdminUsers.QueryMediaRules, propName) 
+    string MinVisibleSize(string propName) => AdminUsers != null 
+        ? AdminUsers.QueryMediaRules.MinVisibleSize(propName) 
         : MediaSizes.All.Last();
 
     ApiResult<AdminUsersResponse> searchApi = new();
     List<Dictionary<string, object>> results => searchApi.Response?.Results ?? TypeConstants<Dictionary<string,object>>.EmptyList;
 
-    List<string> fieldNames => AdminUsers?.QueryUserAuthProperties ?? new();
+    List<string> FieldNames => AdminUsers?.QueryUserAuthProperties ?? new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await search();
+        await Search();
     }
 
-    Dictionary<string,object> santize(Dictionary<string,object> from) =>
-        new Dictionary<string, object>(from, StringComparer.OrdinalIgnoreCase);
+    Dictionary<string,object> santize(Dictionary<string, object> from) => new(from, StringComparer.OrdinalIgnoreCase);
 
-    void reset(bool newUser = false, string? editUserId = null)
+    void Reset(bool newUser = false, string? editUserId = null)
     {
         this.newUser = newUser;
         this.editUserId = editUserId;
     }
 
-    Task search() => search(null);
-    async Task search(int? skip=null)
+    Task Search() => Search(null);
+    
+    async Task Search(int? skip)
     {
-        reset();
+        Reset();
         request.Skip = skip ?? 0;
         searchApi = await ApiAsync(request);
         if (searchApi.Response != null)
             searchApi.Response.Results = searchApi.Response.Results.Select(santize).ToList();
     }
 
-    async Task onDone(Dictionary<string,object>? model) {
+    async Task OnDone(Dictionary<string,object>? model) {
 
-        await this.search();
+        await this.Search();
     }
 
-    async Task viewNext(int pageSize)
+    async Task ViewNext(int pageSize)
     {
-        await search(request.Skip + pageSize);
+        await Search(request.Skip + pageSize);
     }
 
-    async Task clearQuery()
+    async Task ClearQuery()
     {
         request.Query = "";
-        await search();
+        await Search();
     }
 
-    async Task setOrderBy(string field)
+    async Task SetOrderBy(string field)
     {
         if (request.OrderBy == field)
             request.OrderBy = '-' + field;
@@ -191,12 +191,12 @@
             request.OrderBy = "";
         else
             request.OrderBy = field;
-        await search();
+        await Search();
     }
 
-    string renderValue(object o) => o?.ToString() ?? "";
+    string RenderValue(object o) => o?.ToString() ?? "";
 
-    object getField(Dictionary<string, object> o, string name)
+    object GetField(Dictionary<string, object> o, string name)
     {
         return o.TryGetValue(name, out var value)
             ? value
@@ -206,8 +206,7 @@
     Task OnKeyPress(KeyboardEventArgs e)
     {
         if (e.Key == "Escape")
-            reset();
+            Reset();
         return Task.CompletedTask;
     }
-
 }

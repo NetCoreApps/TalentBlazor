@@ -2,12 +2,10 @@
 @inject NavigationManager navigationManager;
 @page "/jobs/{JobId:int}/edit"
 
-
 <SetHeader>
     <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
             <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
@@ -29,15 +27,15 @@
     </div>
     <div class="mt-6 flex xl:mt-0 xl:ml-4">
         <!-- Actions -->
-
     </div>
 </SetHeader>
+
 <main class="space-y-8 divide-y divide-gray-200">
     <div class="space-y-8 divide-y divide-gray-200">
         @if (appMetadata != null)
         {
             <CascadingValue Value="appMetadata">
-                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="save" OnDone="done" OnCancel="OnCancel"></AutoQueryForm>
+                <AutoQueryForm TResponse="Job" T="UpdateJob" Request="request" OnSave="Save" OnDone="Done" OnCancel="OnCancel"></AutoQueryForm>
             </CascadingValue>
         }
     </div>
@@ -56,12 +54,12 @@
 
     List<Breadcrumb> breadcrumbs = new();
 
-    async Task save(UpdateJob req)
+    async Task Save(UpdateJob req)
     {
         //request = req;
     }
 
-    async Task done(Job response)
+    async Task Done(Job response)
     {
         navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
     }
@@ -71,24 +69,25 @@
         navigationManager.NavigateTo("/jobs/" + JobId + "/applications");
     }
 
-    void setBreadcrumbs()
+    void SetBreadcrumbs()
     {
         if (breadcrumbs.IsEmpty())
-            breadcrumbs = new List<Breadcrumb>
-                {
-                    new Breadcrumb{Name="Jobs",Url="/jobs"},
-                    new Breadcrumb{Name=$"{job.Title}",Url=$"/jobs/{JobId}"},
-                    new Breadcrumb{Name=$"Edit",Url=$"/jobs/{JobId}/edit"},
-                };
+        {
+            breadcrumbs = new List<Breadcrumb> {
+                new() { Name="Jobs",Url="/jobs" },
+                new() { Name=$"{job.Title}",Url=$"/jobs/{JobId}" },
+                new() { Name=$"Edit",Url=$"/jobs/{JobId}/edit" },
+            };
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await refreshData();
-        setBreadcrumbs();
+        await RefreshData();
+        SetBreadcrumbs();
     }
 
-    async Task refreshData()
+    async Task RefreshData()
     {
         var appMetadataApi = await this.ApiAppMetadataAsync();
         if (appMetadataApi.Succeeded)
@@ -100,6 +99,7 @@
             errorStatus = appMetadataApi.Error;
             return;
         }
+        
         var api = await ApiAsync(new QueryJob { Id = JobId });
         if (api.Succeeded)
         {

@@ -2,7 +2,6 @@
 @inject ServiceStackStateProvider AuthStateProvider;
 @inject NavigationManager NavigationManager;
 
-
 <div class="min-h-screen">
     <!-- Navigation -->
     <NavMenu></NavMenu>
@@ -23,7 +22,7 @@
         </main>
     </CascadingValue>
 </div>
-    <Footer></Footer>
+<Footer></Footer>
 
 @code {
     [CascadingParameter] protected Task<AuthenticationState>? AuthenticationStateTask { get; set; }
@@ -40,7 +39,7 @@
         return base.OnParametersSetAsync();
     }
 
-    async Task logout()
+    async Task Logout()
     {
         await AuthStateProvider.LogoutAsync();
         NavigationManager.NavigateTo(LoginUrl, true);

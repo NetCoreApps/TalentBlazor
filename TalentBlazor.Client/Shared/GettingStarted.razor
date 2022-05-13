@@ -10,7 +10,7 @@
 
                 <div class="flex justify-center text-center">
                     <a class="hover:no-underline" 
-                        href=@zipUrl("NetCoreApps/TalentBlazor")>
+                        href=@ZipUrl("NetCoreApps/TalentBlazor")>
                         <div class="bg-white px-4 py-4 mr-4 mb-4 rounded-lg shadow-lg text-center items-center justify-center hover:shadow-2xl" 
                              style="min-width:150px">
                             <div class="text-center font-extrabold flex items-center justify-center mb-2">
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div class="text-lg font-medium text-gray-700">Blazor WASM</div>
-                            <div class="text-base px-4 py-2 text-blue-600">@projectZip</div>
+                            <div class="text-base px-4 py-2 text-blue-600">@ProjectZip</div>
                         </div>
                     </a>
                 </div>
@@ -33,8 +33,8 @@
 </section>
 
 @code {
-    string projectZip => "TalentBlazor.zip";
+    string ProjectZip => "TalentBlazor.zip";
 
-    string zipUrl(string repo) =>
+    string ZipUrl(string repo) =>
          $"https://github.com/{repo}/archive/refs/heads/main.zip";
 }

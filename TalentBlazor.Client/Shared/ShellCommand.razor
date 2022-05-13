@@ -1,7 +1,7 @@
 @inject IJSRuntime JsRuntime
 
 <div class=@CssUtils.ClassNames("lang relative bg-gray-700 text-gray-300 pl-5 py-3 sm:rounded flex", @class)>
-    <div @ref="elCmd" class="flex ml-2 w-full justify-between cursor-pointer" @onclick="copyCommand">
+    <div @ref="elCmd" class="flex ml-2 w-full justify-between cursor-pointer" @onclick="CopyCommand">
         <label>@ChildContent</label>
         <small class="text-xs text-gray-400 px-3 -mt-1">sh</small>
     </div>
@@ -27,7 +27,7 @@
 
     private ElementReference elCmd;
 
-    async Task copyCommand(MouseEventArgs e)
+    async Task CopyCommand(MouseEventArgs e)
     {
         SuccessText = "copied";
         await JsRuntime.InvokeVoidAsync("copy", elCmd);

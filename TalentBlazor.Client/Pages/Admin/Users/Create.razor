@@ -1,12 +1,12 @@
 ﻿@inherits AppAuthComponentBase
 @using ServiceStack.Html
 
-<form @onsubmit="submit" @onsubmit:preventDefault autocomplete="off" class=@CssUtils.ClassNames("mt-3 relative shadow rounded p-4",
+<form @onsubmit="Submit" @onsubmit:preventDefault autocomplete="off" class=@CssUtils.ClassNames("mt-3 relative shadow rounded p-4",
         createUserApi.Failed ? "error" : "",
         createUserApi.Completed ? "" : "loading", @class)>
 <CascadingValue Value=@createUserApi.Error>
 
-    <button type="button" class="close" @onclick="close"><i></i></button>
+    <button type="button" class="close" @onclick="Close"><i></i></button>
     <h1 class="fs-4 text-secondary text-center">
         New User
     </h1>
@@ -40,7 +40,7 @@
                 @foreach (var role in request.Roles)
                 {
                     <div @key=role>
-                        <button @onclick="_ => removeRole(role)" class="btn oi oi-trash" title="Remove Role"></button>                    
+                        <button @onclick="_ => RemoveRole(role)" class="btn oi oi-trash" title="Remove Role"></button>                    
                         <span class="align-middle">@role</span>
                     </div>
                 }
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div class="d-flex pb-2">
-                    <button disabled="@string.IsNullOrWhiteSpace(newRole)" @onclick="addRole" class="btn btn-outline-secondary" title="Add Role">Add</button>                    
+                    <button disabled="@string.IsNullOrWhiteSpace(newRole)" @onclick="AddRole" class="btn btn-outline-secondary" title="Add Role">Add</button>                    
                 </div>
             </div>
         }
@@ -70,7 +70,7 @@
                 @foreach (var perm in request.Permissions)
                 {
                     <div>
-                        <button @onclick="_ => removePermission(perm)"
+                        <button @onclick="_ => RemovePermission(perm)"
                                 class="btn oi oi-trash" title="Remove Permission"></button>                    
                         <span class="align-middle">@perm</span>
                     </div>
@@ -87,7 +87,7 @@
                     </SelectInput>
                 </div>
                 <div class="col col-4 p-0 sm:w-full">
-                    <button disabled="@string.IsNullOrWhiteSpace(newPermission)" @onclick="addPermission" 
+                    <button disabled="@string.IsNullOrWhiteSpace(newPermission)" @onclick="AddPermission" 
                             class="btn btn-outline-secondary" title="Add Permission">Add</button>                    
                 </div>
             </div>
@@ -137,31 +137,31 @@
 
     string[] VisibleFields => FormLayout.Select(x => x.Id).Union(new[]{ "Password" }).ToArray();
 
-    void addRole() {
+    void AddRole() {
         if (string.IsNullOrWhiteSpace(newRole)) return;
         request.Roles.Add(newRole);
         newRole = "";
     }
 
-    async Task close() => await done.InvokeAsync(null);
+    async Task Close() => await done.InvokeAsync(null);
 
-    void removeRole(string role) {
+    void RemoveRole(string role) {
         if (!string.IsNullOrWhiteSpace(role))
             request.Roles.RemoveAll(x => x == role);
     }
 
-    void addPermission() {
+    void AddPermission() {
         if (string.IsNullOrWhiteSpace(newPermission)) return;
         request.Permissions.Add(newPermission);
         newPermission = "";
     }
 
-    void removePermission(string permission) {
+    void RemovePermission(string permission) {
         if (!string.IsNullOrWhiteSpace(permission)) 
             request.Permissions.RemoveAll(x => x == permission);
     }
 
-    void syncModel()
+    void SyncModel()
     {
         foreach (var entry in Model)
         {
@@ -184,9 +184,9 @@
         }
     }
 
-    async Task submit()
+    async Task Submit()
     {
-        syncModel();
+        SyncModel();
         createUserApi.ClearErrors();
         createUserApi = await ApiAsync(request);
 

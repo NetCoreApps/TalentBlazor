@@ -26,7 +26,7 @@ else
     {
         var html = await JsRuntime.InvokeAsync<string>("prerenderedPage") ?? "";
         var currentPath = new Uri(NavigationManager.Uri).AbsolutePath;
-        var prerenderedContentIsForPath = html.IndexOf($"data-prerender=\"{currentPath}\"") >= 0;
+        var prerenderedContentIsForPath = html.IndexOf($"data-prerender=\"{currentPath}\"", StringComparison.Ordinal) >= 0;
         if (prerenderedContentIsForPath)
         {
             prerenderedHtml = html;

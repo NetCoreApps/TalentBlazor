@@ -9,7 +9,7 @@
             <!-- Breadcrumbs-->
             <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
         </nav>
-        @if(loading == true)
+        @if (loading)
         {
          <h1 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Loading...</h1>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -50,7 +50,7 @@
         }
         else
         {
-         <h1 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">@job.Title</h1>
+        <h1 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">@job.Title</h1>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
 
             <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -151,13 +151,9 @@
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
     <select id="tabs" name="tabs" @bind="Filter" class="mt-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
         <option value="@JobApplicationFilter.Applied">Applied</option>
-
         <option value="@JobApplicationFilter.PhoneScreening">Phone Screening</option>
-
         <option value="@JobApplicationFilter.Interview">Interview</option>
-
         <option value="@JobApplicationFilter.Offer">Offer</option>
-
         <option value="@JobApplicationFilter.Disqualified">Disqualified</option>
     </select>
 </div>
@@ -170,7 +166,7 @@
 
                 <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
                 <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Applied ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                    @(applicationCount(JobApplicationStatus.Applied))
+                    @(ApplicationCount(JobApplicationStatus.Applied))
                 </span>
             </a>
 
@@ -178,7 +174,7 @@
                 Phone Screening
 
                 <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.PhoneScreening ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                    @(phoneApplicationCount())
+                    @(PhoneApplicationCount())
                 </span>
             </a>
 
@@ -186,7 +182,7 @@
                 Interview
 
                 <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Interview ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                    @(interviewApplicationCount())
+                    @(InterviewApplicationCount())
                 </span>
             </a>
 
@@ -194,14 +190,14 @@
                 Offer
                 <!-- Current: "bg-purple-100 text-purple-600", Default: "bg-gray-100 text-gray-900" -->
                 <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Offer ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                    @(applicationCount(JobApplicationStatus.Offer))
+                    @(ApplicationCount(JobApplicationStatus.Offer))
                 </span>
             </a>
 
             <a href="" @onclick="(e) => Filter = JobApplicationFilter.Disqualified" @onclick:preventDefault class="@(Filter == JobApplicationFilter.Disqualified ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Disqualified
                 <span class="hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block @(Filter == JobApplicationFilter.Disqualified ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-900")">
-                    @(applicationCount(JobApplicationStatus.Disqualified))
+                    @(ApplicationCount(JobApplicationStatus.Disqualified))
                 </span>
             </a>
         </nav>
@@ -212,7 +208,7 @@
 <!-- Stacked list -->
 <div class="bg-white shadow overflow-hidden sm:rounded-md">
     <ul role="list" class="border-t px-6 border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
-        @foreach (var jobApp in filteredJobs().Skip((currentPage) * perPage).Take(perPage))
+        @foreach (var jobApp in FilteredJobs().Skip((currentPage) * perPage).Take(perPage))
         {
             <li>
                 <a href="/jobs/@(jobApp.JobId)/applications/@(jobApp.Id)" class="group block">
@@ -263,7 +259,7 @@
     </ul>
 </div>
 <!-- Pagination -->
-<nav class="border-t border-gray-200 px-4 py-2 flex items-center justify-between sm:px-0 @(numberOfPages() > 1 ? "" : "hidden")" aria-label="Pagination">
+<nav class="border-t border-gray-200 px-4 py-2 flex items-center justify-between sm:px-0 @(NumberOfPages() > 1 ? "" : "hidden")" aria-label="Pagination">
     <div class="-mt-px w-0 flex-1 flex">
         <a href="" @onclick="(e) => currentPage = currentPage == 0 ? 0 : currentPage - 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
             <!-- Heroicon name: solid/arrow-narrow-left -->
@@ -274,7 +270,7 @@
         </a>
     </div>
     <div class="hidden md:-mt-px md:flex">
-        @for (var i = 0; i < numberOfPages(); i++)
+        @for (var i = 0; i < NumberOfPages(); i++)
         {
             var tempint = i;
             <a href="" @onclick="(e) => currentPage = tempint" @onclick:preventDefault class="@(tempint == currentPage ? "border-purple-500 text-purple-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200") border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">@(i+1)</a>
@@ -284,7 +280,7 @@
 
     </div>
     <div class="-mt-px w-0 flex-1 flex justify-end">
-        <a href="" @onclick="(e) => currentPage = currentPage == numberOfPages() - 1 ? currentPage : currentPage + 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
+        <a href="" @onclick="(e) => currentPage = currentPage == NumberOfPages() - 1 ? currentPage : currentPage + 1" @onclick:preventDefault class="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-200">
             Next
             <!-- Heroicon name: solid/arrow-narrow-right -->
             <svg class="ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -296,7 +292,6 @@
 
 
 @code {
-
     //static string[] VisibleFields = new[] { nameof(CreateTodo.Text) };
 
     //string TabClass(string @class, bool isActive) =>
@@ -309,11 +304,7 @@
     JobApplicationFilter filter = JobApplicationFilter.Interview;
     JobApplicationFilter Filter
     {
-        get
-        {
-            return filter;
-        }
-
+        get => filter;
         set
         {
             filter = value;
@@ -332,42 +323,32 @@
 
     ResponseStatus? errorStatus;
 
-    int numberOfPages()
+    int NumberOfPages()
     {
-        if (jobApps == null)
-            return 0;
-        var minPages = (int)Math.Floor((decimal)(filteredJobs().Count() / perPage));
-        var remainderPage = ((filteredJobs().Count() % perPage > 0) ? 1 : 0);
+        var minPages = (int)Math.Floor((decimal)(FilteredJobs().Count() / perPage));
+        var remainderPage = ((FilteredJobs().Count() % perPage > 0) ? 1 : 0);
         return minPages + remainderPage;
     }
 
-    IEnumerable<JobApplication> filteredJobs()
+    IEnumerable<JobApplication> FilteredJobs()
     {
-        if (jobApps == null || jobApps.Count == 0)
+        if (jobApps.Count == 0)
             return jobApps;
-        switch (Filter)
-        {
-            case JobApplicationFilter.Applied:
-                return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Applied);
-            case JobApplicationFilter.PhoneScreening:
-                return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.PhoneScreening ||
-                                          x.ApplicationStatus == JobApplicationStatus.PhoneScreeningCompleted);
-            case JobApplicationFilter.Interview:
-                return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Interview ||
-                                          x.ApplicationStatus == JobApplicationStatus.InterviewCompleted);
-            case JobApplicationFilter.Offer:
-                return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Offer);
-            case JobApplicationFilter.Disqualified:
-                return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Disqualified);
-        }
-        return jobApps;
+        return Filter switch {
+            JobApplicationFilter.Applied => jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Applied),
+            JobApplicationFilter.PhoneScreening => jobApps.Where(x => x.ApplicationStatus is JobApplicationStatus.PhoneScreening or JobApplicationStatus.PhoneScreeningCompleted),
+            JobApplicationFilter.Interview => jobApps.Where(x => x.ApplicationStatus is JobApplicationStatus.Interview or JobApplicationStatus.InterviewCompleted),
+            JobApplicationFilter.Offer => jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Offer),
+            JobApplicationFilter.Disqualified => jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Disqualified),
+            _ => jobApps
+        };
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await refreshJobApps();
+        await RefreshJobApps();
         startOnFilterWithJobs();
-        setBreadcrumbs();
+        SetBreadcrumbs();
         loading = false;
     }
 
@@ -397,42 +378,26 @@
         }
     }
 
-    int interviewApplicationCount()
+    int InterviewApplicationCount()
     {
-        if (jobApps == null)
-            return 0;
-
-        return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.Interview ||
-            x.ApplicationStatus == JobApplicationStatus.InterviewCompleted).Count();
+        return jobApps.Count(x => x.ApplicationStatus is JobApplicationStatus.Interview or JobApplicationStatus.InterviewCompleted);
     }
 
-    int phoneApplicationCount()
+    int PhoneApplicationCount()
     {
-        if (jobApps == null)
-            return 0;
-
-        return jobApps.Where(x => x.ApplicationStatus == JobApplicationStatus.PhoneScreening ||
-            x.ApplicationStatus == JobApplicationStatus.PhoneScreeningCompleted).Count();
+        return jobApps.Count(x => x.ApplicationStatus is JobApplicationStatus.PhoneScreening or JobApplicationStatus.PhoneScreeningCompleted);
     }
 
-    int applicationCount(JobApplicationStatus status)
-    {
-        if (jobApps == null)
-            return 0;
+    int ApplicationCount(JobApplicationStatus status) => jobApps.Count(x => x.ApplicationStatus == status);
 
-        return jobApps.Where(x => x.ApplicationStatus == status).Count();
-    }
-
-    async Task refreshJobApps()
+    async Task RefreshJobApps()
     {
-        var api = await ApiAsync(new QueryJob
-            {
-                Id = JobId
-            });
-        var jobAppsApi = await ApiAsync(new QueryJobApplication
-            {
-                JobId = JobId
-            });
+        var api = await ApiAsync(new QueryJob {
+            Id = JobId
+        });
+        var jobAppsApi = await ApiAsync(new QueryJobApplication {
+            JobId = JobId
+        });
         if (api.Succeeded)
             job = api.Response!.Results[0];
         else
@@ -444,35 +409,34 @@
             errorStatus = api.Error;
     }
 
-    void setBreadcrumbs()
+    void SetBreadcrumbs()
     {
-        if(breadcrumbs.IsEmpty())
-            breadcrumbs = new List<Breadcrumb>
-            {
-                new Breadcrumb{Name="Jobs",Url="/jobs"},
-                new Breadcrumb{Name=$"{job.Title}", Url=$"/jobs/{job.Id}"},
-                new Breadcrumb{Name=$"Applications", Url=$"/jobs/{job.Id}/applications"}
+        if (breadcrumbs.IsEmpty())
+        {
+            breadcrumbs = new List<Breadcrumb> {
+                new() { Name="Jobs",Url="/jobs" },
+                new() { Name=$"{job.Title}", Url=$"/jobs/{job.Id}" },
+                new() { Name=$"Applications", Url=$"/jobs/{job.Id}/applications" }
             };
+        }
     }
 
-    Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new()
-        {
-            { JobApplicationStatus.Applied, "Applied" },
-            { JobApplicationStatus.Interview, "Interview" },
-            { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
-            { JobApplicationStatus.PhoneScreening, "Phone Screening" },
-            { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
-            { JobApplicationStatus.Offer, "Offer" },
-            { JobApplicationStatus.Disqualified, "Disqualified" }
-        };
+    readonly Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new() {
+        { JobApplicationStatus.Applied, "Applied" },
+        { JobApplicationStatus.Interview, "Interview" },
+        { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+        { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+        { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+        { JobApplicationStatus.Offer, "Offer" },
+        { JobApplicationStatus.Disqualified, "Disqualified" }
+    };
 
-    Dictionary<EmploymentType, string> employmentTypeMapping = new()
-        {
-            { EmploymentType.FullTime, "Full-time" },
-            { EmploymentType.PartTime, "Part-time" },
-            { EmploymentType.Contract, "Contract" },
-            { EmploymentType.Casual, "Casual" }
-        };
+    readonly Dictionary<EmploymentType, string> employmentTypeMapping = new() {
+        { EmploymentType.FullTime, "Full-time" },
+        { EmploymentType.PartTime, "Part-time" },
+        { EmploymentType.Contract, "Contract" },
+        { EmploymentType.Casual, "Casual" }
+    };
 
     enum JobApplicationFilter
     {

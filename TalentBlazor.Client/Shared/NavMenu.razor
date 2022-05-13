@@ -84,7 +84,7 @@
                                     <!-- Active: "bg-gray-100", Not Active: "" -->
                                     <NavLink href="/" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0"> Your Profile </NavLink>
 
-                                    <a href="" @onclick="logout" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2"> Sign out </a>
+                                    <a href="" @onclick="Logout" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2"> Sign out </a>
                                 </div>
                             </Authorized>
                             <Authorizing>
@@ -132,7 +132,7 @@
                     <div class="mt-3 px-2 space-y-1">
                         <a href="/dashboard" class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100">Your Profile</a>
 
-                        <a href="" @onclick="logout" class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100">Sign out</a>
+                        <a href="" @onclick="Logout" class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100">Sign out</a>
                     </div>
                 </div>
 
@@ -155,7 +155,7 @@
         return base.OnParametersSetAsync();
     }
 
-    async Task logout()
+    async Task Logout()
     {
         await AuthStateProvider.LogoutAsync();
         NavigationManager.NavigateTo(LoginUrl ?? "/", true);

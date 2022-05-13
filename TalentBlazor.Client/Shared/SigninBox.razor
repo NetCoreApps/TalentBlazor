@@ -2,7 +2,6 @@
 @inject ServiceStackStateProvider provider
 @inject NavigationManager NavigationManager
 
-
 <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-12 w-auto" src="/img/blazor.svg" alt="Talent">
@@ -32,7 +31,7 @@
                 </div>
 
                 <div>
-                    <button type="button" @onclick="() => submit()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign in</button>
+                    <button type="button" @onclick="() => Submit()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign in</button>
                 </div>
             </form>
             </CascadingValue>
@@ -76,7 +75,6 @@
     </div>
 </div>
 
-
 @code {
     string[] VisibleFields => new[] { nameof(Authenticate.UserName), nameof(Authenticate.Password) };
 
@@ -90,7 +88,7 @@
         request.Password = password;
     }
 
-    async Task submit()
+    async Task Submit()
     {
         api.ClearErrors();
 

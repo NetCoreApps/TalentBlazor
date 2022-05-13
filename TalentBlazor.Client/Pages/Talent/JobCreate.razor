@@ -2,7 +2,6 @@
 @inject NavigationManager navigationManager;
 @page "/jobs/create"
 
-
 <SetHeader>
     <!-- Page header -->
     <div class="flex-1 min-w-0">
@@ -27,7 +26,7 @@
         @if (appMetadata != null)
         {
             <CascadingValue Value="appMetadata">
-                <AutoQueryForm TResponse="Job" T="CreateJob" Request="request" OnSave="save" OnDone="done" OnCancel="OnCancel"></AutoQueryForm>
+                <AutoQueryForm TResponse="Job" T="CreateJob" Request="request" OnSave="Save" OnDone="Done" OnCancel="OnCancel"></AutoQueryForm>
             </CascadingValue>
         }
     </div>
@@ -41,18 +40,17 @@
     AppMetadata? appMetadata;
     CreateJob request = new();
 
-    List<Breadcrumb> breadcrumbs = new()
-    {
-        new Breadcrumb{Name="Jobs",Url="/jobs"},
-        new Breadcrumb{Name="Create",Url="/jobs/create"},
+    readonly List<Breadcrumb> breadcrumbs = new() {
+        new Breadcrumb { Name="Jobs",Url="/jobs" },
+        new Breadcrumb { Name="Create",Url="/jobs/create" },
     };
 
-    async Task save(CreateJob req)
+    async Task Save(CreateJob req)
     {
         //request = req;
     }
 
-    async Task done(Job response)
+    async Task Done(Job response)
     {
         navigationManager.NavigateTo("/jobs/" + response.Id + "/applications");
     }
@@ -66,13 +64,8 @@
     {
         var appMetadataApi = await this.ApiAppMetadataAsync();
         if (appMetadataApi.Succeeded)
-        {
             appMetadata = appMetadataApi.Response!;
-        }
         else
-        {
             errorStatus = appMetadataApi.Error;
-            return;
-        }
     }
 }
