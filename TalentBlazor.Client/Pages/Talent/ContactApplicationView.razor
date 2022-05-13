@@ -176,7 +176,7 @@
     @if(jobApp?.Position != null)
     {
         <JobAppModal ModalTitle="Make Offer" ModalDescription="Specify details about the job offer."
-                 OnSave="CreateOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
+                 OnSave="CreateJobOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
         <CascadingValue Value=@offerResult.Error>
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
@@ -501,7 +501,7 @@
         }
     }
 
-    async Task CreateOffer()
+    async Task CreateJobOffer()
     {
         offerResult = await ApiAsync(new CreateJobOffer {
             JobApplicationId = JobAppId,
