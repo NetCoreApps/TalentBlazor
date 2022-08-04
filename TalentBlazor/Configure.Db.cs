@@ -11,10 +11,9 @@ namespace TalentBlazor;
 public class ConfigureDb : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder) => builder
-        .ConfigureServices((context, services) =>
-            services.AddSingleton<IDbConnectionFactory>(new OrmLiteConnectionFactory(
-                ":memory:",
-                SqliteDialect.Provider)))
+        .ConfigureServices((context, services) => services.AddSingleton<IDbConnectionFactory>(new OrmLiteConnectionFactory(
+            context.Configuration.GetConnectionString("DefaultConnection") ?? ":memory:",
+            SqliteDialect.Provider)))
         .ConfigureAppHost(appHost =>
         {
             var seed = 1807832753;
