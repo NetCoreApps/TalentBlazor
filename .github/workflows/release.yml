@@ -1,4 +1,7 @@
 name: Release
+permissions:
+  packages: write
+  contents: write
 on:
   # Triggered on new GitHub Release
   release:
@@ -51,10 +54,23 @@ jobs:
             echo "TAG_NAME=${{ github.event.inputs.version }}" >> $GITHUB_ENV
           fi;
 
+      - name: Run CI Prebuild Script
+        env:
+          deploy_api: ${{ secrets.DEPLOY_API }}
+          deploy_cdn: ${{ secrets.DEPLOY_CDN }}
+        run: |
+          if [ -e ./.deploy/ci.prebuild.sh ]
+          then
+            chmod +x ./.deploy/ci.prebuild.sh
+            ./.deploy/ci.prebuild.sh
+          else
+            echo "Skipping CI prebuild"
+          fi
+
       # Publish .NET Project
       - name: Publish dotnet project
         working-directory: ./TalentBlazor
-        run: | 
+        run: |
           dotnet publish -c Release /p:DEPLOY_API=${{ secrets.DEPLOY_API }} /p:DEPLOY_CDN=${{ secrets.DEPLOY_CDN }} /p:APP_TASKS=prerender
 
       # Authenticate, build and push to GitHub Container Registry (ghcr.io)
@@ -63,10 +79,10 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Build and push new docker image, skip for manual redeploy other than 'latest'
-      - name: Build and push API Docker image
+      - name: Build and push Docker images
         uses: docker/build-push-action@v2.2.2
         if: ${{ github.event.inputs.version == '' || github.event.inputs.version == 'latest' }}
         with:
@@ -75,29 +91,15 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.image_repository_name }}:${{ env.TAG_NAME }}
 
-      - name: Create env.deploy_cdn
-        run: |
-          echo "deploy_cdn=${{ secrets.DEPLOY_CDN }}" >> $GITHUB_ENV
-
       # Deploy UI to GitHub Pages
       - name: Deploy to GitHub Pages
         if: ${{ env.deploy_cdn != '' }}
-        run: |
-          cd ./TalentBlazor/bin/Release/net6.0/publish/wwwroot
-          git init
-          git add -A
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m 'deploy'
-
-      - name: Force push to gh-pages
-        if: ${{ env.deploy_cdn != '' }}
-        uses: ad-m/github-push-action@v0.5.0
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          force: true
-          directory: ./TalentBlazor/bin/Release/net6.0/publish/wwwroot
+          publish_dir: ./api/TalentBlazor/wwwroot
+          user_name: 'GitHub Action'
+          user_email: 'action@github.com'
 
   deploy_via_ssh:
     needs: push_to_registry
@@ -138,6 +140,9 @@ jobs:
           DEPLOY_API: ${{ secrets.DEPLOY_API }}
           DEPLOY_CDN: ${{ secrets.DEPLOY_CDN }}
           SERVICESTACK_LICENSE: ${{ secrets.SERVICESTACK_LICENSE }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
@@ -157,7 +162,7 @@ jobs:
       - name: remote docker-compose up via ssh
         uses: appleboy/ssh-action@v0.1.4
         env:
-          APPTOKEN: ${{ secrets.CR_PAT }}
+          APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ secrets.DEPLOY_USERNAME }}
         with:
           host: ${{ secrets.DEPLOY_API }}
