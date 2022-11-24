@@ -74,9 +74,9 @@
         if (breadcrumbs.IsEmpty())
         {
             breadcrumbs = new List<Breadcrumb> {
-                new() { Name="Jobs",Url="/jobs" },
-                new() { Name=$"{job.Title}",Url=$"/jobs/{JobId}" },
-                new() { Name=$"Edit",Url=$"/jobs/{JobId}/edit" },
+                new() { title="Jobs",href="/jobs" },
+                new() { title=$"{job.Title}",href=$"/jobs/{JobId}" },
+                new() { title=$"Edit",href=$"/jobs/{JobId}/edit" },
             };
         }
     }

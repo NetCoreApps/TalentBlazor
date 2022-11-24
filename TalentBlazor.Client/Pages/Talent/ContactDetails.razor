@@ -175,8 +175,8 @@
         {
             breadcrumbs = new List<Breadcrumb>
             {
-                new() { Name="Contacts",Url="/contacts" },
-                new() { Name=$"{contact.DisplayName}", Url=$"/contacts/{contact.Id}" }
+                new() { title="Contacts",href="/contacts" },
+                new() { title=$"{contact.DisplayName}", href=$"/contacts/{contact.Id}" }
             };
         }
     }

@@ -41,8 +41,8 @@
     CreateJob request = new();
 
     readonly List<Breadcrumb> breadcrumbs = new() {
-        new Breadcrumb { Name="Jobs",Url="/jobs" },
-        new Breadcrumb { Name="Create",Url="/jobs/create" },
+        new Breadcrumb { title="Jobs",href="/jobs" },
+        new Breadcrumb { title="Create",href="/jobs/create" },
     };
 
     async Task Save(CreateJob req)

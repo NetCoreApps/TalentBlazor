@@ -16,19 +16,19 @@
     <ErrorSummary Except=@VisibleFields />
 
     <div class="mb-3 form-floating">
-        <TextInput @bind-Value="request.DisplayName" spellcheck="false" Help="Your first and last name" required />
+        <InputText @bind-Value="request.DisplayName" spellcheck="false" Help="Your first and last name" required />
     </div>
 
     <div class="mb-3 form-floating">
-        <TextInput type="email" @bind-Value="request.Email" spellcheck="false" required />
+        <InputText type="email" @bind-Value="request.Email" spellcheck="false" required />
     </div>
 
     <div class="mb-3 form-floating">
-        <TextInput type="password" @bind-Value="request.Password" Help="Password, 6 characters or more" required />
+        <InputText type="password" @bind-Value="request.Password" Help="Password, 6 characters or more" required />
     </div>
 
     <div class="mb-3 form-floating">
-        <TextInput type="password" @bind-Value="request.ConfirmPassword" />
+        <InputText type="password" @bind-Value="request.ConfirmPassword" />
     </div>
 
     <div class="form-check mb-4">

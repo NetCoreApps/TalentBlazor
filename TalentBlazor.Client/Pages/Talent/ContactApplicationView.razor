@@ -130,7 +130,7 @@
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
-                        <TextAreaInput @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                        <InputTextArea @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></InputTextArea>
                     </div>
                 </div>
                 <ErrorSummary Status="@phoneScreenResult.Error" />
@@ -145,7 +145,7 @@
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
-                        <DateTimeLocalInput @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></DateTimeLocalInput>
+                        <InputDate @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></InputDate>
                     </div>
                     <div class="mt-1">
                         <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
@@ -164,7 +164,7 @@
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
-                        <TextAreaInput @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></TextAreaInput>
+                        <InputTextArea @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></InputTextArea>
                     </div>
                 </div>
                 <ErrorSummary Status="@interviewResult.Error" />
@@ -181,10 +181,10 @@
             <form class="space-y-6" @onsubmit:preventDefault>
                 <div>
                     <div class="mt-1">
-                        <TextAreaInput @bind-Value="offerNotes" name="offerNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="We've decided to offer the candidate..."></TextAreaInput>
+                        <InputTextArea @bind-Value="offerNotes" name="offerNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="We've decided to offer the candidate..."></InputTextArea>
                     </div>
                     <div class="mt-1">
-                        <TextInput type="number" @bind-Value="offerSalary" step="1000" max="@jobApp.Position.SalaryRangeUpper" min="@jobApp.Position.SalaryRangeLower" name="offerSalary" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></TextInput>
+                        <InputNumber type="number" @bind-Value="offerSalary" step="1000" max="@jobApp.Position.SalaryRangeUpper" min="@jobApp.Position.SalaryRangeLower" name="offerSalary" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></InputNumber>
                     </div>
                 </div>
                 <ErrorSummary Status="@offerResult.Error" />
@@ -329,10 +329,10 @@
         if (breadcrumbs.IsEmpty())
         {
             breadcrumbs = new List<Breadcrumb> {
-                new() { Name="Jobs", Url="/jobs" },
-                new() { Name=$"{jobApp.Position.Title}", Url=$"/jobs/{jobApp.JobId}" },
-                new() { Name="Applications", Url=$"/jobs/{jobApp.JobId}/applications" },
-                new() { Name=$"{jobApp.Applicant.DisplayName}", Url=$"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}" },
+                new() { title="Jobs", href="/jobs" },
+                new() { title=$"{jobApp.Position.Title}", href=$"/jobs/{jobApp.JobId}" },
+                new() { title="Applications", href=$"/jobs/{jobApp.JobId}/applications" },
+                new() { title=$"{jobApp.Applicant.DisplayName}", href=$"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}" },
             };
         }
     }
