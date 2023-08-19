@@ -2,13 +2,16 @@
 @inherits AppComponentBase
 
 <SetHeader>
-    <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            <Breadcrumbs>
+                <Breadcrumb href="/contacts">Contacts</Breadcrumb>
+                @if (loading != true)
+                {
+                    <Breadcrumb href=@($"/contacts/{contact.Id}")>@contact.DisplayName</Breadcrumb>
+                }
+            </Breadcrumbs>
         </nav>
-
         <div class="">
             <div>
                 <div>
@@ -156,8 +159,6 @@
     public int ContactId { get; set; }
     Contact contact = new();
 
-    List<Breadcrumb> breadcrumbs = new();
-
     ResponseStatus? errorStatus;
     bool? loading;
 
@@ -165,20 +166,7 @@
     {
         await Task.Delay(300).ContinueWith(_ => { loading ??= true; });
         await RefreshContact();
-        SetBreadcrumbs();
         loading = false;
-    }
-
-    void SetBreadcrumbs()
-    {
-        if (breadcrumbs.IsEmpty())
-        {
-            breadcrumbs = new List<Breadcrumb>
-            {
-                new() { title="Contacts",href="/contacts" },
-                new() { title=$"{contact.DisplayName}", href=$"/contacts/{contact.Id}" }
-            };
-        }
     }
 
     // For best UX: apply changes locally then revalidate with real server state
@@ -192,5 +180,4 @@
         else
             errorStatus = api.Error;
     }
-
 }

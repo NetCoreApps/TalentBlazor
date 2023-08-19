@@ -2,13 +2,19 @@
 @inherits AppComponentBase
 
 <SetHeader>
-    <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            @if (!loading)
+            {
+                <Breadcrumbs>
+                    <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}")>@jobApp.Position.Title</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}/applications")>Applications</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}")>@jobApp.Applicant.DisplayName</Breadcrumb>
+                </Breadcrumbs>
+            }
         </nav>
-        @if(loading)
+        @if (loading)
         {
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
             <!-- PersonInfo -->
@@ -213,8 +219,6 @@
 
     AppUser? employeeSelection;
 
-    List<Breadcrumb> breadcrumbs = new();
-
     bool loading = true;
 
     string? selectedResult;
@@ -312,7 +316,6 @@
     async Task RefreshData()
     {
         await RefreshJobApp();
-        SetBreadcrumbs();
         await RefreshJobAppEvents();
         if (appUsers.Count == 0)
             await GetAppUsers();
@@ -322,19 +325,6 @@
         if(offerSalary == 0)
             offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
         loading = false;
-    }
-
-    void SetBreadcrumbs()
-    {
-        if (breadcrumbs.IsEmpty())
-        {
-            breadcrumbs = new List<Breadcrumb> {
-                new() { title="Jobs", href="/jobs" },
-                new() { title=$"{jobApp.Position.Title}", href=$"/jobs/{jobApp.JobId}" },
-                new() { title="Applications", href=$"/jobs/{jobApp.JobId}/applications" },
-                new() { title=$"{jobApp.Applicant.DisplayName}", href=$"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}" },
-            };
-        }
     }
 
     async Task RefreshPhoneScreen()

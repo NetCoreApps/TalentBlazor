@@ -4,7 +4,12 @@
 <SetHeader>
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            @if (jobs.Count > 0)
+            {
+                <Breadcrumbs>
+                    <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+                </Breadcrumbs>
+            }
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
             <div class="ml-4 mt-4">
@@ -161,11 +166,6 @@
     ResponseStatus? errorStatus;
     int currentPage = 0;
     int perPage = 5;
-
-    List<Breadcrumb> breadcrumbs = new()
-    {
-        new Breadcrumb { title="Jobs",href="/jobs" },
-    };
 
     Dictionary<EmploymentType, string> employmentTypeMapping = new() {
         { EmploymentType.FullTime, "Full-time" },

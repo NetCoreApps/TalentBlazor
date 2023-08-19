@@ -4,11 +4,14 @@
 @inject NavigationManager NavigationManager;
 
 <SetHeader>
-    <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            @if (hasInit)
+            {
+                <Breadcrumbs>
+                    <Breadcrumb href="/dashboard">Dashboard</Breadcrumb>
+                </Breadcrumbs>
+            }
         </nav>
 
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -82,7 +85,7 @@
             <dt class="text-base font-normal text-gray-900">Total Jobs</dt>
             <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
                 <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @totalJobs
+                    @totalJobs
                 </div>
 
                 <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
@@ -102,7 +105,7 @@
         <dt class="text-base font-normal text-gray-900"><a href="/contacts">Total Contacts</a></dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @totalContacts
+                @totalContacts
             </div>
 
             <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
@@ -121,7 +124,7 @@
         <dt class="text-base font-normal text-gray-900">Avg Salary Expectation</dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @(avgSalaryExpectation/1000)k
+                @(avgSalaryExpectation/1000)k
             </div>
 
             <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
@@ -143,7 +146,7 @@
         <dt class="text-base font-normal text-gray-900">Avg Salary Range Lower</dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @(avgSalaryRangeLower/1000)k
+                @(avgSalaryRangeLower/1000)k
             </div>
 
             <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
@@ -160,7 +163,7 @@
         <dt class="text-base font-normal text-gray-900">Avg Salary Range Upper</dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @(avgSalaryRangeUpper/1000)k
+                @(avgSalaryRangeUpper/1000)k
             </div>
 
             <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
@@ -177,7 +180,7 @@
         <dt class="text-base font-normal text-gray-900">Remote Preferred</dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        @prefRemotePercentage %
+                @prefRemotePercentage %
             </div>
 
             <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
@@ -196,16 +199,13 @@
 
 @code {
 
-    readonly List<Breadcrumb> breadcrumbs = new() {
-        new Breadcrumb { title = "Dashboard", href = "/dashboard" }
-    };
-
     long totalJobs = 0;
     long totalContacts = 0;
     int avgSalaryExpectation = 0;
     int avgSalaryRangeLower = 0;
     int avgSalaryRangeUpper = 0;
     decimal prefRemotePercentage = 0.0m;
+    bool hasInit = false;
 
     ResponseStatus? errorResponse;
     string? LoginUrl { get; set; }
@@ -244,5 +244,6 @@
     {
         await FetchJobApps();
         await base.OnInitializedAsync();
+        hasInit = true;
     }
 }

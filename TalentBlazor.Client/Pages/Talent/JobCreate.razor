@@ -3,11 +3,12 @@
 @page "/jobs/create"
 
 <SetHeader>
-    <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            <Breadcrumbs>
+                <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+                <Breadcrumb href="/jobs/create">Create</Breadcrumb>
+            </Breadcrumbs>
         </nav>
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0">
             <div class="ml-4 mt-4">
@@ -39,11 +40,6 @@
 
     AppMetadata? appMetadata;
     CreateJob request = new();
-
-    readonly List<Breadcrumb> breadcrumbs = new() {
-        new Breadcrumb { title="Jobs",href="/jobs" },
-        new Breadcrumb { title="Create",href="/jobs/create" },
-    };
 
     async Task Save(CreateJob req)
     {

@@ -1,13 +1,15 @@
 ﻿@page "/contacts"
 @inherits AppComponentBase
 
-
 <SetHeader>
-    <!-- Page header -->
     <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
-            <!-- Breadcrumbs-->
-            <Breadcrumbs BreadCrumbs="breadcrumbs"></Breadcrumbs>
+            @if (contacts.Count > 0)
+            {
+                <Breadcrumbs>
+                    <Breadcrumb href="/contacts">Contacts</Breadcrumb>
+                </Breadcrumbs>
+            }
         </nav>
 
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
@@ -171,10 +173,6 @@
     ResponseStatus? errorStatus;
     int currentPage = 0;
     int perPage = 5;
-
-    List<Breadcrumb> breadcrumbs = new() {
-        new Breadcrumb { title = "Contacts", href = "/contacts" }
-    };
 
     Dictionary<EmploymentType, string> employmentTypeMapping = new() {
         { EmploymentType.FullTime, "Full-time" },
