@@ -35,3 +35,8 @@ services:
 
 volumes:
   ${APP_NAME}-mydb:
+
+networks:
+  default:
+    external: true
+    name: nginx
