@@ -147,6 +147,18 @@ jobs:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
 
+      # Copy sample data manually for this demo
+      - name: copy sample pdfs
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.DEPLOY_API }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          port: 22
+          key: ${{ secrets.DEPLOY_KEY }}
+          strip_components: 2
+          source: "./TalentBlazor/App_Data/*.pdf"
+          target: "/var/lib/docker/volumes/deploy_TalentBlazor-mydb/_data/App_Data/"
+
       # Copy only the docker-compose.yml to remote server home folder
       - name: copy compose file via scp
         uses: appleboy/scp-action@v0.1.3
