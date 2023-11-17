@@ -20,12 +20,12 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0-rc.2.23480.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-rc.2.23480.1" />
         <PackageReference Include="Markdig" Version="0.33.0" />
-        <PackageReference Include="ServiceStack" Version="8.*" />
-        <PackageReference Include="ServiceStack.Blazor" Version="8.*" />
-        <PackageReference Include="ServiceStack.Mvc" Version="8.*" />
-        <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="8.*" />
-        <PackageReference Include="ServiceStack.Extensions" Version="8.*" />
-        <PackageReference Include="ServiceStack.Server" Version="8.*" />
+        <PackageReference Include="ServiceStack" Version="6.*" />
+        <PackageReference Include="ServiceStack.Blazor" Version="6.*" />
+        <PackageReference Include="ServiceStack.Mvc" Version="6.*" />
+        <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="6.*" />
+        <PackageReference Include="ServiceStack.Extensions" Version="6.*" />
+        <PackageReference Include="ServiceStack.Server" Version="6.*" />
     </ItemGroup>
 
 <!--    <ItemGroup>-->
