@@ -72,11 +72,11 @@ public class JobApplicationComment : AuditBase
     [AutoIncrement]
     public int Id { get; set; }
 
-    [References(typeof(AppUser))]
-    public int AppUserId { get; set; }
+    [References(typeof(ApplicationUser))]
+    public string ApplicationUserId { get; set; }
 
     [Reference, Format(FormatMethods.Hidden)]
-    public AppUser AppUser { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
@@ -132,11 +132,11 @@ public class JobApplicationEvent : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(AppUser))]
-    public int AppUserId { get; set; }
+    [References(typeof(ApplicationUser))]
+    public string ApplicationUserId { get; set; }
 
     [Reference, Format(FormatMethods.Hidden)]
-    public AppUser AppUser { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     public string Description { get; set; }
 
@@ -152,11 +152,11 @@ public class PhoneScreen : AuditBase
     [AutoIncrement]
     public int Id { get; set; }
 
-    [References(typeof(AppUser))]
-    public int AppUserId { get; set; }
+    [References(typeof(ApplicationUser))]
+    public string ApplicationUserId { get; set; }
 
     [Reference, Format(FormatMethods.Hidden)]
-    public AppUser AppUser { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
@@ -180,11 +180,11 @@ public class Interview : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(AppUser))]
-    public int AppUserId { get; set; }
+    [References(typeof(ApplicationUser))]
+    public string ApplicationUserId { get; set; }
 
     [Reference, Format(FormatMethods.Hidden)]
-    public AppUser AppUser { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     [ReferenceField(typeof(JobApplication), nameof(JobApplicationId))]
     public JobApplicationStatus? ApplicationStatus { get; set; }
@@ -205,11 +205,11 @@ public class JobOffer : AuditBase
     [References(typeof(JobApplication))]
     public int JobApplicationId { get; set; }
 
-    [References(typeof(AppUser))]
-    public int AppUserId { get; set; }
+    [References(typeof(ApplicationUser))]
+    public string ApplicationUserId { get; set; }
 
     [Reference, Format(FormatMethods.Hidden)]
-    public AppUser AppUser { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     [Input(Type = "textarea"), FieldCss(Field = "col-span-12 text-center")]
     public string Notes { get; set; }
@@ -427,7 +427,7 @@ public class CreatePhoneScreen : ICreateDb<PhoneScreen>, IReturn<PhoneScreen>
     [ValidateGreaterThan(0)]
     public int JobApplicationId { get; set; }
     [ValidateGreaterThan(0, Message = "An employee to perform the phone screening must be selected.")]
-    public int AppUserId { get; set; }
+    public string ApplicationUserId { get; set; }
 
     public JobApplicationStatus ApplicationStatus { get; set; }
 }
@@ -460,7 +460,7 @@ public class CreateInterview : ICreateDb<Interview>, IReturn<Interview>
     [ValidateGreaterThan(0)]
     public int JobApplicationId { get; set; }
     [ValidateGreaterThan(0, Message = "An employee to perform interview must be selected.")]
-    public int AppUserId { get; set; }
+    public string ApplicationUserId { get; set; }
 
     public JobApplicationStatus ApplicationStatus { get; set; }
 }
@@ -537,7 +537,7 @@ public class DeleteJobApplicationEvent : IDeleteDb<JobApplicationEvent>,
 }
 
 [Tag("Talent")]
-public class QueryAppUser : QueryDb<AppUser>
+public class QueryAppUser : QueryDb<ApplicationUser>
 {
     public string? EmailContains { get; set; }
     public string? FirstNameContains { get; set; }
@@ -553,7 +553,7 @@ public class QueryJobApplicationComments : QueryDb<JobApplicationComment>
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditCreate)]
-[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.ApplicationUserId), Eval = "userAuthId")]
 public class CreateJobApplicationComment : ICreateDb<JobApplicationComment>, IReturn<JobApplicationComment>
 {
     [ValidateGreaterThan(0)]
@@ -566,7 +566,7 @@ public class CreateJobApplicationComment : ICreateDb<JobApplicationComment>, IRe
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditModify)]
-[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.ApplicationUserId), Eval = "userAuthId")]
 public class UpdateJobApplicationComment : IPatchDb<JobApplicationComment>, IReturn<JobApplicationComment>
 {
     public int Id { get; set; }
@@ -579,7 +579,7 @@ public class UpdateJobApplicationComment : IPatchDb<JobApplicationComment>, IRet
 
 [Tag("Talent")]
 [AutoApply(Behavior.AuditSoftDelete)]
-[AutoPopulate(nameof(JobApplicationComment.AppUserId), Eval = "userAuthId")]
+[AutoPopulate(nameof(JobApplicationComment.ApplicationUserId), Eval = "userAuthId")]
 public class DeleteJobApplicationComment : IDeleteDb<JobApplicationComment>, IReturnVoid
 {
     public int Id { get; set; }

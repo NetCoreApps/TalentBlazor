@@ -1,14 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <NoWarn>CA1822;CA2208</NoWarn>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="ServiceStack" Version="6.*" />
+        <PackageReference Include="ServiceStack.Ormlite" Version="6.*" />
         <PackageReference Include="ServiceStack.Server" Version="6.*" />
     </ItemGroup>
+
+<!--    <ItemGroup>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Server\ServiceStack.Server.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack\ServiceStack.csproj" />-->
+<!--    </ItemGroup>-->
 
     <ItemGroup>
         <ProjectReference Include="..\TalentBlazor.ServiceModel\TalentBlazor.ServiceModel.csproj" />

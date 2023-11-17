@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Bogus;
+using Microsoft.AspNetCore.Identity;
 using ServiceStack;
 using ServiceStack.OrmLite;
 using TalentBlazor.ServiceModel;
@@ -11,7 +12,7 @@ public static class ConfigureDbTalent
     /// <summary>
     /// Create non-existing Table and add Seed Data Example
     /// </summary>
-    public static void SeedTalent(this IDbConnection db, string profilesDir)
+    public static void SeedTalent(this IDbConnection db, AppHost appHost, string profilesDir)
     {
         var seedData = db.CreateTableIfNotExists<Contact>();
         db.CreateTableIfNotExists<Job>();
@@ -127,17 +128,16 @@ public static class ConfigureDbTalent
         }
     }
 
-    public static void SeedAttachments(this IDbConnection db, ServiceStackHost appHost, string sourceDir)
+    public static void SeedAttachments(this IDbConnection db, string sourceDir, string targetDir)
     {
-        sourceDir.AssertDir();
         var resumeFileInfo = new FileInfo(Path.Join(sourceDir, "sample_resume.pdf"));
         var coverFileInfo = new FileInfo(Path.Join(sourceDir, "sample_coverletter.pdf"));
 
         var jobApps = db.LoadSelect<JobApplication>();
         foreach (var jobApp in jobApps)
         {
-            db.Save(sourceDir.CreatePdfAttachment(jobApp, resumeFileInfo));
-            db.Save(sourceDir.CreatePdfAttachment(jobApp, coverFileInfo));
+            db.Save(targetDir.CreatePdfAttachment(jobApp, resumeFileInfo));
+            db.Save(targetDir.CreatePdfAttachment(jobApp, coverFileInfo));
         }
     }
 
@@ -164,7 +164,7 @@ public static class ConfigureDbTalent
 
     private static Faker<PhoneScreen> phoneScreenFaker = new Faker<PhoneScreen>()
         .RuleFor(p => p.Id, () => 0)
-        .RuleFor(p => p.AppUserId, (faker, screen) => faker.Random.Int(1, 5))
+        .RuleFor(p => p.ApplicationUserId, (faker, screen) => ConfigureDbMigrations.allSeedUsers[faker.Random.Int(0, ConfigureDbMigrations.allSeedUsers.Count - 1)])
         .RuleFor(p => p.Notes, (faker, screen) => faker.Lorem.Paragraph())
         .RuleFor(p => p.CreatedDate, () => DateTime.UtcNow)
         .RuleFor(p => p.ModifiedDate, () => DateTime.UtcNow)
@@ -173,7 +173,7 @@ public static class ConfigureDbTalent
 
     private static Faker<Interview> interviewFaker = new Faker<Interview>()
         .RuleFor(p => p.Id, () => 0)
-        .RuleFor(p => p.AppUserId, (faker, screen) => faker.Random.Int(1, 5))
+        .RuleFor(p => p.ApplicationUserId, (faker, screen) => ConfigureDbMigrations.allSeedUsers[faker.Random.Int(0, ConfigureDbMigrations.allSeedUsers.Count - 1)])
         .RuleFor(p => p.Notes, (faker, screen) => faker.Lorem.Paragraph())
         .RuleFor(p => p.CreatedDate, () => DateTime.UtcNow)
         .RuleFor(p => p.ModifiedDate, () => DateTime.UtcNow)
@@ -182,7 +182,7 @@ public static class ConfigureDbTalent
 
     private static Faker<JobOffer> jobOfferFaker = new Faker<JobOffer>()
         .RuleFor(p => p.Id, () => 0)
-        .RuleFor(p => p.AppUserId, (faker, screen) => faker.Random.Int(1, 5))
+        .RuleFor(p => p.ApplicationUserId, (faker, screen) => ConfigureDbMigrations.allSeedUsers[faker.Random.Int(0, ConfigureDbMigrations.allSeedUsers.Count - 1)])
         .RuleFor(p => p.Notes, (faker, screen) => faker.Lorem.Paragraph())
         .RuleFor(p => p.CreatedDate, () => DateTime.UtcNow)
         .RuleFor(p => p.ModifiedDate, () => DateTime.UtcNow)
@@ -191,7 +191,7 @@ public static class ConfigureDbTalent
 
     private static Faker<JobApplicationEvent> eventFaker = new Faker<JobApplicationEvent>()
         .RuleFor(e => e.Id, () => 0)
-        .RuleFor(e => e.AppUserId, (f) => f.Random.Int(1, 5))
+        .RuleFor(e => e.ApplicationUserId, (f) => ConfigureDbMigrations.allSeedUsers[f.Random.Int(0, ConfigureDbMigrations.allSeedUsers.Count - 1)])
         .RuleFor(e => e.CreatedDate, () => DateTime.UtcNow)
         .RuleFor(e => e.ModifiedDate, () => DateTime.UtcNow)
         .RuleFor(e => e.CreatedBy, () => "SYSTEM")
@@ -199,7 +199,7 @@ public static class ConfigureDbTalent
 
     private static Faker<JobApplicationComment> commentFaker = new Faker<JobApplicationComment>()
         .RuleFor(c => c.Id, () => 0)
-        .RuleFor(c => c.AppUserId, (f) => f.Random.Int(1, 5))
+        .RuleFor(c => c.ApplicationUserId, (f) => ConfigureDbMigrations.allSeedUsers[f.Random.Int(0, ConfigureDbMigrations.allSeedUsers.Count - 1)])
         .RuleFor(c => c.Comment, (f) => f.Lorem.Paragraph())
         .RuleFor(c => c.CreatedDate, (f) => f.Date.Recent(5))
         .RuleFor(c => c.ModifiedDate, () => DateTime.UtcNow)
@@ -207,9 +207,10 @@ public static class ConfigureDbTalent
         .RuleFor(c => c.ModifiedBy, () => "SYSTEM");
 
     private static readonly Faker FakerInstance = new();
-
+    
     public static void PopulateJobApplicationEvents(this IDbConnection db, JobApplication jobApp)
     {
+        var allIds = ConfigureDbMigrations.allSeedUsers;
         var disqualifiedStep =
             FakerInstance.Random.Enum(JobApplicationStatus.Applied, JobApplicationStatus.Disqualified);
 
@@ -224,10 +225,13 @@ public static class ConfigureDbTalent
         var baseDate = (new DateTime(now.Year, now.Month, now.Day)) - TimeSpan.FromDays(3);
         var eventDate = baseDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
 
+
+        
         if (status >= JobApplicationStatus.Offer)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            // Randomly select and assign application user id
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.Offer.ToDescription();
             appEvent.EventDate = eventDate;
             appEvent.Status = JobApplicationStatus.Offer;
@@ -235,14 +239,14 @@ public static class ConfigureDbTalent
             var offer = jobOfferFaker.Generate();
             offer.JobApplicationId = jobApp.Id;
             offer.SalaryOffer = FakerInstance.Random.Int(jobApp.Position.SalaryRangeLower, jobApp.Position.SalaryRangeUpper);
-            offer.AppUserId = FakerInstance.Random.Int(1, 5);
+            offer.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             db.Insert(offer);
         }
 
         if (status >= JobApplicationStatus.InterviewCompleted)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.InterviewCompleted.ToDescription();
             appEvent.EventDate = eventDate;
             appEvent.Status = JobApplicationStatus.InterviewCompleted;
@@ -250,14 +254,14 @@ public static class ConfigureDbTalent
             var interview = interviewFaker.Generate();
             interview.JobApplicationId = jobApp.Id;
             interview.BookingTime = eventDate;
-            interview.AppUserId = FakerInstance.Random.Int(1, 5);
+            interview.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             db.Insert(interview);
         }
 
         if (status >= JobApplicationStatus.Interview)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.Interview.ToDescription();
             appEvent.Status = JobApplicationStatus.Interview;
             appEvent.EventDate = eventDate;
@@ -267,7 +271,7 @@ public static class ConfigureDbTalent
                 var interview = interviewFaker.Generate();
                 interview.JobApplicationId = jobApp.Id;
                 interview.BookingTime = eventDate;
-                interview.AppUserId = FakerInstance.Random.Int(1, 5);
+                interview.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
                 db.Insert(interview);
             }
         }
@@ -275,21 +279,21 @@ public static class ConfigureDbTalent
         if (status >= JobApplicationStatus.PhoneScreeningCompleted)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.PhoneScreeningCompleted.ToDescription();
             appEvent.EventDate = eventDate;
             appEvent.Status = JobApplicationStatus.PhoneScreeningCompleted;
             db.Insert(appEvent);
             var screen = phoneScreenFaker.Generate();
             screen.JobApplicationId = jobApp.Id;
-            screen.AppUserId = FakerInstance.Random.Int(1, 5);
+            screen.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             db.Insert(screen);
         }
 
         if (status >= JobApplicationStatus.PhoneScreening)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.PhoneScreening.ToDescription();
             appEvent.Status = JobApplicationStatus.PhoneScreening;
             appEvent.EventDate = eventDate;
@@ -298,7 +302,7 @@ public static class ConfigureDbTalent
             {
                 var screen = phoneScreenFaker.Generate();
                 screen.JobApplicationId = jobApp.Id;
-                screen.AppUserId = FakerInstance.Random.Int(1, 5);
+                screen.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
                 db.Insert(screen);
             }
         }
@@ -306,7 +310,7 @@ public static class ConfigureDbTalent
         if (status >= JobApplicationStatus.Applied)
         {
             eventDate = eventDate - TimeSpan.FromDays(FakerInstance.Random.Int(1, 3));
-            appEvent.AppUserId = FakerInstance.Random.Int(1, 5);
+            appEvent.ApplicationUserId = allIds[FakerInstance.Random.Int(0, allIds.Count - 1)];
             appEvent.Description = JobApplicationStatus.Applied.ToDescription();
             appEvent.Status = JobApplicationStatus.Applied;
             appEvent.EventDate = eventDate;

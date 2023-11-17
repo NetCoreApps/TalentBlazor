@@ -1,0 +1,523 @@
+﻿@page "/jobs/{JobId:int}/applications/{JobAppId:int}"
+@inherits AppComponentBase
+@layout MainLayout
+@rendermode RenderMode.InteractiveServer
+
+    <div class="flex-1 min-w-0">
+        <nav class="flex" aria-label="Breadcrumb">
+            @if (!loading)
+            {
+                <Breadcrumbs>
+                    <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}")>@jobApp.Position.Title</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}/applications")>Applications</Breadcrumb>
+                    <Breadcrumb href=@($"/jobs/{jobApp.JobId}/applications/{jobApp.ContactId}")>@jobApp.Applicant.DisplayName</Breadcrumb>
+                </Breadcrumbs>
+            }
+        </nav>
+        @if (loading)
+        {
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+            <!-- PersonInfo -->
+            <div class="flex-shrink-0">
+                <div class="relative">
+                    <svg class="h-16 w-16 rounded-full text-gray-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M11 6a3 3 0 1 1-6 0a3 3 0 0 1 6 0z"/><path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/></g></svg>
+                    <span class="absolute inset-0" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+        }
+        else
+        {
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+            <!-- PersonInfo -->
+            <div class="flex-shrink-0">
+                <div class="relative">
+                    <img class="h-16 w-16 rounded-full" src="@(jobApp.Applicant?.ProfileUrl)" alt="">
+                    <span class="absolute inset-0" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">@(jobApp.Applicant?.DisplayName)</h1>
+                <p class="text-sm font-medium text-gray-500">Applied for <a href="#" class="text-gray-900">@(jobApp.Position?.Title)</a> on <time datetime="@(jobApp.AppliedDate.ToString("yyyy-MM-dd"))">@(jobApp.AppliedDate.ToString("MMMM d, yyyy"))</time></p>
+                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 @(jobApp?.ApplicationStatus == JobApplicationStatus.Offer ? "" : "hidden")">
+                    <svg class="w-5 h-5 pr-1 text-amber-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 48 48"><path fill="currentColor" fill-rule="evenodd" d="M12 7a1 1 0 0 1 1-1h22a1 1 0 0 1 1 1v1h5a1 1 0 0 1 1 1v6a5 5 0 0 1-5 5h-1.683A12.017 12.017 0 0 1 26 27.834V34h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H16a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6v-6.166A12.017 12.017 0 0 1 12.683 20H11a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1h5V7Zm24 9v-6h4v5a3 3 0 0 1-3 3h-1v-2Zm-24-6H8v5a3 3 0 0 0 3 3h1v-8Z" clip-rule="evenodd"/></svg>
+                     Awarded
+                </p>
+                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 @(jobApp?.ApplicationStatus == JobApplicationStatus.Disqualified ? "" : "hidden")">Disqualified</p>
+            </div>
+        </div>      
+        }
+
+    </div>
+    <div class="mt-6 flex xl:mt-0 xl:ml-4">
+        <!-- Actions -->
+        <AuthorizeView>
+            <Authorized>
+                <span class="@((jobApp?.ApplicationStatus >= JobApplicationStatus.Offer) ? "hidden" : "sm:block")">
+                    <button type="button" @onclick="() => DisqualifyJobApplication(JobApplicationStatus.Disqualified)" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500">Disqualify</button>
+                </span>
+                <span class="ml-3 @(jobApp?.ApplicationStatus >= JobApplicationStatus.Offer ? "hidden" : "sm:block")">
+                    @switch (jobApp.ApplicationStatus)
+                    {
+                        case JobApplicationStatus.Applied:
+                            <button type="button" @onclick="() => showAdvancePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            break;
+                        case JobApplicationStatus.PhoneScreening:
+                            <button type="button" @onclick="() => showCompletePhoneScreen = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            break;
+                        case JobApplicationStatus.PhoneScreeningCompleted:
+                            <button type="button" @onclick="() => showBookInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            break;
+                        case JobApplicationStatus.Interview:
+                            <button type="button" @onclick="() => showCompleteInterview = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            break;
+                        case JobApplicationStatus.InterviewCompleted:
+                            <button type="button" @onclick="() => showMakeOffer = true" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Advance to @jobAppStatusMapping[jobApp.ApplicationStatus + 1]</button>
+                            break;
+                        case JobApplicationStatus.Disqualified:
+                            break;
+                        default:
+                            break;
+                    }
+                </span>
+
+            </Authorized>
+        </AuthorizeView>
+    </div>
+
+<div class="px-4 sm:px-0">
+    <div>
+        <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+            <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+                <!-- Description list-->
+                <section aria-labelledby="applicant-information-title">
+                    <div class="bg-white shadow sm:rounded-lg">
+                        <div class="px-4 py-5 sm:px-6">
+                            <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">Applicant Information</h2>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+                        </div>
+                        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                            <JobAppSummaryInfo JobApplication="jobApp" />
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Comments-->
+                <JobAppComments JobApplicationId="JobAppId" PhoneScreen="phoneScreen" Interview="interview" JobOffer="jobOffer" />
+            </div>
+
+            <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+                <JobAppTimeline JobApplicationId="JobAppId" JobApplication="jobApp" OnAdvanceClick="AdvanceApplication"
+                                OnDisqualifyClick="DisqualifyJobApplication"></JobAppTimeline>
+            </section>
+        </div>
+    </div>
+
+    <!-- Advance to phonescreen -->
+    <CascadingValue Value=@phoneScreenResult.Error>
+        <JobAppModal ModalTitle="Advance to phone screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                     OnSave="CreatePhoneScreenBooking" OnClose="() => showAdvancePhoneScreen = false" class="@(showAdvancePhoneScreen == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Phone Screener"></EmployeeLookup>
+                    </div>
+                </div>
+                <ErrorSummary Status="@phoneScreenResult.Error" />
+            </form>
+        </JobAppModal>
+    </CascadingValue>
+
+    <!--Complete Phone Screen-->
+    <CascadingValue Value=@phoneScreenResult.Error>
+        <JobAppModal ModalTitle="Progress To Phone Screen" ModalDescription="The candidate will need an employee to perform a phone screening before proceeding."
+                     OnSave="UpdatePhoneScreenCompleted" OnClose="() => showCompletePhoneScreen = false" class="@(showCompletePhoneScreen == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <InputTextArea @bind-Value="phoneScreenNotes" name="phoneScreenNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></InputTextArea>
+                    </div>
+                </div>
+                <ErrorSummary Status="@phoneScreenResult.Error" />
+            </form>
+        </JobAppModal>
+    </CascadingValue>
+
+    <!-- Book interview -->
+    <CascadingValue Value=@interviewResult.Error>
+        <JobAppModal ModalTitle="Interview Booking" ModalDescription="Book interview with appropriate team member to evaluate the candidate."
+                     OnSave="CreateInterviewBooking" OnClose="() => showBookInterview = false" class="@(showBookInterview == false ? "hidden" : "")">
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <InputDate @bind-Value="interviewBookingTime" min="09:00" max="18:00" required class="block w-full sm:text-sm rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"></InputDate>
+                    </div>
+                    <div class="mt-1">
+                        <EmployeeLookup Users="appUsers" OnEmployeeSelection="OnEmployeeSelectionChanged" ControlTitle="Interviewer"></EmployeeLookup>
+                    </div>
+                </div>
+                <ErrorSummary Status="@interviewResult.Error" />
+            </form>
+        </JobAppModal>
+    </CascadingValue>
+
+    <!-- Complete interview -->
+
+    <JobAppModal ModalTitle="Interview Result" ModalDescription="Provide context of other team members for how the interview with the candidate went."
+                 OnSave="UpdateInterviewCompleted" OnClose="() => showCompleteInterview = false" class="@(showCompleteInterview == false ? "hidden" : "")">
+        <CascadingValue Value=@interviewResult.Error>
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <InputTextArea @bind-Value="interviewNotes" name="interviewNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="The candidate demonstrated..."></InputTextArea>
+                    </div>
+                </div>
+                <ErrorSummary Status="@interviewResult.Error" />
+            </form>
+        </CascadingValue>
+    </JobAppModal>
+
+    <!-- Make Offer -->
+    @if(jobApp?.Position != null)
+    {
+        <JobAppModal ModalTitle="Make Offer" ModalDescription="Specify details about the job offer."
+                 OnSave="CreateJobOffer" OnClose="() => showMakeOffer = false" class="@(showMakeOffer == false ? "hidden" : "")">
+        <CascadingValue Value=@offerResult.Error>
+            <form class="space-y-6" @onsubmit:preventDefault>
+                <div>
+                    <div class="mt-1">
+                        <InputTextArea @bind-Value="offerNotes" name="offerNotes" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="We've decided to offer the candidate..."></InputTextArea>
+                    </div>
+                    <div class="mt-1">
+                        <InputNumber type="number" @bind-Value="offerSalary" step="1000" max="@jobApp.Position.SalaryRangeUpper" min="@jobApp.Position.SalaryRangeLower" name="offerSalary" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></InputNumber>
+                    </div>
+                </div>
+                <ErrorSummary Status="@offerResult.Error" />
+            </form>
+        </CascadingValue>
+    </JobAppModal>
+    }
+    
+
+</div>
+
+@code {
+    [Parameter]
+    public int JobId { get; set; }
+
+    [Parameter]
+    public int JobAppId { get; set; }
+
+    JobApplication jobApp = new();
+    List<JobApplicationEvent> jobAppEvents = new();
+    List<ApplicationUser> appUsers = new();
+
+    PhoneScreen phoneScreen = new();
+    Interview interview = new();
+    JobOffer jobOffer = new();
+
+    ApplicationUser? employeeSelection;
+
+    bool loading = true;
+
+    string? selectedResult;
+
+    string? searchTerm;
+
+    ResponseStatus? errorStatus;
+
+    DateTime interviewBookingTime = DateTime.UtcNow.Date;
+    string interviewNotes = "";
+    string phoneScreenNotes = "";
+    string offerNotes = "";
+    int offerSalary = 0;
+
+    ApiResult<Interview> interviewResult = new();
+    ApiResult<PhoneScreen> phoneScreenResult = new();
+    ApiResult<JobOffer> offerResult = new();
+
+    bool showBookInterview;
+    bool showCompleteInterview;
+
+    bool showAdvancePhoneScreen;
+    bool showCompletePhoneScreen;
+
+    bool showMakeOffer;
+    bool showDisqualify;
+
+    void ResetInterview()
+    {
+        interviewBookingTime = DateTime.UtcNow.Date;
+        interviewNotes = "";
+        employeeSelection = null;
+        interviewResult = new();
+    }
+
+    void ResetOffer()
+    {
+        offerNotes = "";
+        employeeSelection = null;
+        offerResult = new();
+        offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
+    }
+
+    void ResetPhoneScreen()
+    {
+        phoneScreenNotes = "";
+        employeeSelection = null;
+        phoneScreenResult = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    Task AdvanceApplication(JobApplicationStatus status)
+    {
+        switch (status)
+        {
+            case JobApplicationStatus.Applied:
+                showAdvancePhoneScreen = true;
+                break;
+            case JobApplicationStatus.PhoneScreening:
+                showCompletePhoneScreen = true;
+                break;
+            case JobApplicationStatus.PhoneScreeningCompleted:
+                showBookInterview = true;
+                break;
+            case JobApplicationStatus.Interview:
+                showCompleteInterview = true;
+                break;
+            case JobApplicationStatus.InterviewCompleted:
+                showMakeOffer = true;
+                break;
+        }
+        return Task.CompletedTask;
+    }
+
+    async Task DisqualifyJobApplication(JobApplicationStatus status)
+    {
+        var api = await ApiAsync(new UpdateJobApplication {
+            Id = jobApp.Id,
+            AppliedDate = jobApp.AppliedDate,
+            ContactId = jobApp.ContactId,
+            JobId = jobApp.JobId,
+            ApplicationStatus = JobApplicationStatus.Disqualified
+        });
+        if (api.Succeeded)
+            jobApp = api.Response!;
+        else
+            errorStatus = api.Error;
+        await RefreshData();
+    }
+
+    async Task RefreshData()
+    {
+        await RefreshJobApp();
+        await RefreshJobAppEvents();
+        if (appUsers.Count == 0)
+            await GetAppUsers();
+        await RefreshPhoneScreen();
+        await RefreshInterview();
+        await RefreshJobOffer();
+        if(offerSalary == 0)
+            offerSalary = jobApp?.Position?.SalaryRangeLower ?? 0;
+        loading = false;
+    }
+
+    async Task RefreshPhoneScreen()
+    {
+        var api = await ApiAsync(new QueryPhoneScreen {
+            JobApplicationId = JobAppId
+        });
+        if (api.Succeeded)
+        {
+            var hasPhoneScreen = api.Response!.Results.Count > 0;
+            phoneScreen = hasPhoneScreen ? api.Response!.Results[0] : new();
+        }
+        else
+        {
+            errorStatus = api.Error;
+        }
+    }
+
+    async Task RefreshInterview()
+    {
+        var api = await ApiAsync(new QueryInterview {
+            JobApplicationId = JobAppId
+        });
+        if (api.Succeeded)
+        {
+            var hasInterview = api.Response!.Results.Count > 0;
+            interview = hasInterview ? api.Response!.Results[0] : new();
+        }
+        else
+        {
+            errorStatus = api.Error;
+        }
+    }
+
+    async Task RefreshJobOffer()
+    {
+        var api = await ApiAsync(new QueryJobOffer {
+            JobApplicationId = JobAppId
+        });
+        if (api.Succeeded)
+        {
+            var hasOffer = api.Response!.Results.Count > 0;
+            jobOffer = hasOffer ? api.Response!.Results[0] : new();
+        }
+        else
+        {
+            errorStatus = api.Error;
+        }
+    }
+
+    async Task RefreshJobApp()
+    {
+        var api = await ApiAsync(new QueryJobApplication {
+            Id = JobAppId
+        });
+        if (api.Succeeded)
+            jobApp = api.Response!.Results[0];
+        else
+            errorStatus = api.Error;
+    }
+
+    async Task GetAppUsers()
+    {
+        var api = await ApiAsync(new QueryAppUser());
+        if (api.Succeeded)
+            appUsers = api.Response!.Results;
+        else
+            errorStatus = api.Error;
+    }
+
+    void OnEmployeeSelectionChanged(ApplicationUser val)
+    {
+        Console.WriteLine($"Api user selection changed: {val.Email}");
+        employeeSelection = val;
+    }
+
+    async Task RefreshJobAppEvents()
+    {
+        var api = await ApiAsync(new QueryJobAppEvents {
+            JobApplicationId = JobAppId
+        });
+        if (api.Succeeded)
+            jobAppEvents = api.Response!.Results;
+        else
+            errorStatus = api.Error;
+    }
+
+    async Task CreatePhoneScreenBooking()
+    {
+        phoneScreenResult = await ApiAsync(new CreatePhoneScreen {
+            JobApplicationId = JobAppId,
+            ApplicationUserId = employeeSelection?.Id ?? "",
+            ApplicationStatus = JobApplicationStatus.PhoneScreening
+        });
+        if (phoneScreenResult.Succeeded)
+        {
+            ResetPhoneScreen();
+            await RefreshData();
+            showAdvancePhoneScreen = false;
+        }
+        else
+        {
+            errorStatus = phoneScreenResult.Error;
+        }
+    }
+
+    async Task UpdatePhoneScreenCompleted()
+    {
+        phoneScreenResult = await ApiAsync(new UpdatePhoneScreen {
+            JobApplicationId = jobApp.Id,
+            Notes = phoneScreenNotes,
+            Id = jobApp.PhoneScreen.Id,
+            ApplicationStatus = JobApplicationStatus.PhoneScreeningCompleted
+        });
+        if (phoneScreenResult.Succeeded)
+        {
+            ResetPhoneScreen();
+            await RefreshData();
+            showCompletePhoneScreen = false;
+        }
+        else
+        {
+            errorStatus = phoneScreenResult.Error;
+        }
+    }
+
+    async Task CreateInterviewBooking()
+    {
+        interviewResult = await ApiAsync(new CreateInterview {
+            JobApplicationId = JobAppId,
+            ApplicationUserId = employeeSelection?.Id ?? "",
+            BookingTime = interviewBookingTime,
+            ApplicationStatus = JobApplicationStatus.Interview
+        });
+        if (interviewResult.Succeeded)
+        {
+            ResetInterview();
+            await RefreshData();
+            showBookInterview = false;
+        }
+        else
+        {
+            errorStatus = interviewResult.Error;
+        }
+    }
+
+    async Task UpdateInterviewCompleted()
+    {
+        interviewResult = await ApiAsync(new UpdateInterview {
+            Id = jobApp.Interview.Id,
+            JobApplicationId = jobApp.Id,
+            Notes = interviewNotes,
+            ApplicationStatus = JobApplicationStatus.InterviewCompleted
+        });
+        if (interviewResult.Succeeded)
+        {
+            ResetInterview();
+            await RefreshData();
+            showCompleteInterview = false;
+        }
+        else
+        {
+            errorStatus = interviewResult.Error;
+        }
+    }
+
+    async Task CreateJobOffer()
+    {
+        offerResult = await ApiAsync(new CreateJobOffer {
+            JobApplicationId = JobAppId,
+            SalaryOffer = offerSalary,
+            Notes = offerNotes,
+            ApplicationStatus = JobApplicationStatus.Offer
+        });
+        if (offerResult.Succeeded)
+        {
+            ResetOffer();
+            await RefreshData();
+            showMakeOffer = false;
+        }
+        else
+        {
+            errorStatus = offerResult.Error;
+        }
+    }
+
+    readonly Dictionary<JobApplicationStatus, string> jobAppStatusMapping = new() {
+        { JobApplicationStatus.Applied, "Applied" },
+        { JobApplicationStatus.Interview, "Interview" },
+        { JobApplicationStatus.InterviewCompleted, "Interview Completed" },
+        { JobApplicationStatus.PhoneScreening, "Phone Screening" },
+        { JobApplicationStatus.PhoneScreeningCompleted, "Phone Screening Completed" },
+        { JobApplicationStatus.Offer, "Offer" },
+        { JobApplicationStatus.Disqualified, "Disqualified" }
+    };
+}

@@ -1,18 +1,18 @@
+# blazor
 
-# .NET 6.0 Blazor WASM Bootstrap Template
+.NET 8.0 Blazor Tailwind App
 
-[![](https://raw.githubusercontent.com/ServiceStack/Assets/master/csharp-templates/blazor-wasm.png)](https://blazor-wasm.jamstacks.net)
+[![](https://raw.githubusercontent.com/ServiceStack/Assets/master/csharp-templates/blazor.png)](http://blazor.web-templates.io/)
 
-> Browse [source code](https://github.com/NetCoreTemplates/blazor-wasm), view live demo [blazor-wasm.jamstacks.net](https://blazor-wasm.jamstacks.net) and install with [x new](https://docs.servicestack.net/dotnet-new):
+> Browse [source code](https://github.com/NetCoreTemplates/blazor), view live demo [blazor.web-templates.io](http://blazor.web-templates.io) and install with [dotnet-new](https://docs.servicestack.net/dotnet-new):
 
-This template will help get you started developing with Blazor WASM Apps for ServiceStack Server Apps.
+    $ dotnet tool install -g x
 
-```bash
-$ dotnet tool install -g x
+    $ x new blazor ProjectName
 
-$ x new blazor-wasm ProjectName
-```
+Alternatively write new project files directly into an empty repository, using the Directory Name as the ProjectName:
 
-## Getting Started
+    $ git clone https://github.com/<User>/<ProjectName>.git
+    $ cd <ProjectName>
+    $ x new blazor
 
-[Visual Studio 2022](https://visualstudio.microsoft.com/launch/) is recommended for developing Blazor WASM Apps.

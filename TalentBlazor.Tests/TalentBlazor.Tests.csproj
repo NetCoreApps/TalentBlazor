@@ -1,35 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <DebugType>portable</DebugType>
-        <OutputType>Library</OutputType>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DebugType>portable</DebugType>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <None Remove="appsettings.json" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TalentBlazor.ServiceInterface\TalentBlazor.ServiceInterface.csproj" />
+    <ProjectReference Include="..\TalentBlazor.ServiceModel\TalentBlazor.ServiceModel.csproj" />
+    <ProjectReference Include="..\TalentBlazor\TalentBlazor.csproj" />
 
-    <ItemGroup>
-      <Content Include="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.*" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="ServiceStack" Version="6.*" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="6.*" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\TalentBlazor.Client\TalentBlazor.Client.csproj" />
-        <ProjectReference Include="..\TalentBlazor.ServiceInterface\TalentBlazor.ServiceInterface.csproj" />
-        <ProjectReference Include="..\TalentBlazor.ServiceModel\TalentBlazor.ServiceModel.csproj" />
-
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
-        <PackageReference Include="NUnit" Version="3.*" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.*" />
-        <PackageReference Include="coverlet.collector" Version="3.*" />
-        <PackageReference Include="bunit" Version="1.4.*" />
-
-        <PackageReference Include="ServiceStack" Version="6.*" />
-        <PackageReference Include="ServiceStack.Kestrel" Version="6.*" />
-    </ItemGroup>
+<!--  <ItemGroup>-->
+<!--    <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack\ServiceStack.csproj" />-->
+<!--    <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Kestrel\ServiceStack.Kestrel.csproj" />-->
+<!--  </ItemGroup>-->
 
 </Project>

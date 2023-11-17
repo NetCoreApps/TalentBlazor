@@ -1,75 +1,122 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-TalentBlazor-7b2ab71a-0b50-423f-969d-e35a9402b1b5</UserSecretsId>
+        <PublishProfile>DefaultContainer</PublishProfile>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Content Include="App_Data\sample_resume.pdf" CopyToOutputDirectory="Always" />
-      <Content Include="App_Data\sample_coverletter.pdf" CopyToOutputDirectory="Always" />
-    </ItemGroup>
     <ItemGroup>
         <Using Include="TalentBlazor" />
         <Using Include="ServiceStack" />
     </ItemGroup>
 
     <ItemGroup>
-		<PackageReference Include="Bogus" Version="34.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0-rc.2.23480.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0-rc.2.23480.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0-rc.2.23480.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-rc.2.23480.1" />
+        <PackageReference Include="Markdig" Version="0.33.0" />
         <PackageReference Include="ServiceStack" Version="6.*" />
+        <PackageReference Include="ServiceStack.Blazor" Version="6.*" />
+        <PackageReference Include="ServiceStack.Mvc" Version="6.*" />
         <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="6.*" />
+        <PackageReference Include="ServiceStack.Extensions" Version="6.*" />
         <PackageReference Include="ServiceStack.Server" Version="6.*" />
     </ItemGroup>
 
+<!--    <ItemGroup>-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.Blazor\src\ServiceStack.Blazor\ServiceStack.Blazor.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite.Sqlite.Data\ServiceStack.OrmLite.Sqlite.Data.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.OrmLite\src\ServiceStack.OrmLite\ServiceStack.OrmLite.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack.Text\src\ServiceStack.Text\ServiceStack.Text.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Client\ServiceStack.Client.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Common\ServiceStack.Common.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Extensions\ServiceStack.Extensions.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.GrpcClient\ServiceStack.GrpcClient.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Interfaces\ServiceStack.Interfaces.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Server\ServiceStack.Server.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack\ServiceStack.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.Extensions\ServiceStack.Extensions.csproj" />-->
+<!--        <ProjectReference Include="..\..\..\ServiceStack\ServiceStack\ServiceStack\src\ServiceStack.GrpcClient\ServiceStack.GrpcClient.csproj" />-->
+<!--    </ItemGroup>-->
+
     <ItemGroup>
-        <ProjectReference Include="..\TalentBlazor.Client\TalentBlazor.Client.csproj" />
         <ProjectReference Include="..\TalentBlazor.ServiceInterface\TalentBlazor.ServiceInterface.csproj" />
         <ProjectReference Include="..\TalentBlazor.ServiceModel\TalentBlazor.ServiceModel.csproj" />
     </ItemGroup>
 
-    <Target Name="CreateAppDataFolderBuild" AfterTargets="AfterBuild">
-        <MakeDir Directories="$(BuildDir)App_Data" Condition="!Exists('$(BuildDir)App_Data')" />
-    </Target>
+    <ItemGroup>
+      <Folder Include="App_Data\" />
+    </ItemGroup>
 
-    <Target Name="CreateAppDataFolder" AfterTargets="AfterPublish">
-        <MakeDir Directories="$(PublishDir)App_Data" Condition="!Exists('$(PublishDir)App_Data')" />
-    </Target>
+    <ItemGroup>
+        <Content Include="_pages\**" CopyToPublishDirectory="PreserveNewest"/>
+        <Content Include="_videos\**" CopyToPublishDirectory="PreserveNewest"/>
+        <None Remove="Migrations\seed\sample_coverletter.pdf" />
+        <Content Include="Migrations\seed\sample_coverletter.pdf">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Migrations\seed\sample_resume.pdf" />
+        <Content Include="Migrations\seed\sample_resume.pdf">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-    <PropertyGroup>
-        <ClientDir>$(MSBuildProjectDirectory)/../TalentBlazor.Client</ClientDir>
-        <WwwRoot>$(ClientDir)/wwwroot</WwwRoot>
-        <TestsDir>$(MSBuildProjectDirectory)/../TalentBlazor.Tests</TestsDir>
-    </PropertyGroup>
-
-    <!-- Populated in release.yml with GitHub Actions secrets -->
-    <Target Name="DeployApi" AfterTargets="Build" Condition="$(DEPLOY_API) != ''">
-        <Exec Command="echo DEPLOY_API=$(DEPLOY_API)" />
-
-        <!-- Update Production settings with DEPLOY_API Blazor UI should use  -->
-        <WriteLinesToFile File="$(WwwRoot)/appsettings.Production.json" Lines="$([System.IO.File]::ReadAllText($(WwwRoot)/appsettings.Production.json).Replace('{DEPLOY_API}',$(DEPLOY_API)))" Overwrite="true" Encoding="UTF-8" />
-
-        <!-- 404.html SPA fallback (supported by GitHub Pages, Cloudflare & Netlify CDNs) -->
-        <Copy SourceFiles="$(WwwRoot)/index.html" DestinationFiles="$(WwwRoot)/404.html" />
-
-        <!-- define /api proxy routes (supported by Cloudflare or Netlify CDNs)  -->
-        <WriteLinesToFile File="$(WwwRoot)/_redirects" Lines="$([System.IO.File]::ReadAllText($(WwwRoot)/_redirects).Replace('{DEPLOY_API}',$(DEPLOY_API)))" Overwrite="true" Encoding="UTF-8" />
-    </Target>
-    <Target Name="DeployCdn" AfterTargets="Build" Condition="$(DEPLOY_CDN) != ''">
-        <Exec Command="echo DEPLOY_CDN=$(DEPLOY_CDN)" />
-
-        <!-- Define custom domain name that CDN should use -->
-        <Exec Condition="$(DEPLOY_CDN) != ''" Command="echo $(DEPLOY_CDN) &gt; $(WwwRoot)/CNAME" />
-    </Target>
-
-    <!-- Prerender tasks run in release.yml -->
-    <Target Name="AppTasks" AfterTargets="Build" Condition="$(APP_TASKS) != ''">
-        <CallTarget Targets="Prerender" Condition="$(APP_TASKS.Contains('prerender'))" />
-    </Target>
-    <Target Name="Prerender">
-        <Message Text="Prerender..." />
-        <Exec Command="dotnet test --filter TestCategory=prerender --logger:&quot;console;verbosity=detailed&quot;" WorkingDirectory="$(TestsDir)" />
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\AccessDenied.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ConfirmEmail.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ConfirmEmailChange.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ExternalLogin.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ForgotPassword.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ForgotPasswordConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\InvalidPasswordReset.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\InvalidUser.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Lockout.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Login.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\LoginWith2fa.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\LoginWithRecoveryCode.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ChangePassword.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\DeletePersonalData.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Disable2fa.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Email.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\EnableAuthenticator.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ExternalLogins.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\GenerateRecoveryCodes.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Index.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\PersonalData.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ResetAuthenticator.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\SetPassword.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\TwoFactorAuthentication.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\_Imports.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\Register.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\RegisterConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResendEmailConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResetPassword.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResetPasswordConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Account\_Imports.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Bookings.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Coupons.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Index.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Counter.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Docs.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Profile.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Secure\Bookings.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Secure\Coupons.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\TodoMvc.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Weather.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Create.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Edit.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Index.razor" />
+    </ItemGroup>
+    
+    <Target Name="tailwind" BeforeTargets="Publish">
+        <Exec Command="npm run ui:build" WorkingDirectory="./" />
     </Target>
 
 </Project>

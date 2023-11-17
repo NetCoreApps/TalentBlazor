@@ -1,0 +1,95 @@
+﻿@page "/jobs/{JobId:int}"
+@inherits AppComponentBase
+@layout MainLayout
+@rendermode RenderMode.InteractiveServer
+
+@if (Job != null)
+{
+  <div class="flex-1 min-w-0">
+    <nav class="flex" aria-label="Breadcrumb">
+      <Breadcrumbs>
+        <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+        <Breadcrumb href=@($"/jobs/{Job.Id}")>@Job.Title</Breadcrumb>
+      </Breadcrumbs>
+    </nav>
+    <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+      <div class="ml-4 mt-4">
+        <h1 class="text-2xl font-bold text-gray-900">@(GetJob().Title)</h1>
+        <p class="text-sm font-medium text-gray-500"><a href="/jobs/@(GetJob().Id)/applications" class="text-gray-900">@(GetJob().Applications.Count) applicants</a> have applied since <time datetime="@(GetJob().CreatedDate.ToString("yyyy-MM-dd"))">@(GetJob().CreatedDate.ToString("MMMM d, yyyy"))</time></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 gap-6 sm:px-6">
+    <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+      <!-- Description list-->
+      <section aria-labelledby="applicant-information-title">
+        <div class="bg-white shadow sm:rounded-lg">
+          <div class="px-4 py-5 sm:px-6">
+            <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">Job Information</h2>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Details about the role</p>
+          </div>
+          <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <div>
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Title</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().Title)</dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Company</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().Company)</dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().EmploymentType)</dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Closing</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().Closing)</dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Location</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().Location)</dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
+                  <dd class="mt-1 text-sm text-gray-900">$@(GetJob().SalaryRangeLower/1000)k - $@(GetJob().SalaryRangeUpper/1000)k</dd>
+                </div>
+                <div class="sm:col-span-2">
+                  <dt class="text-sm font-medium text-gray-500">Description</dt>
+                  <dd class="mt-1 text-sm text-gray-900">@(GetJob().Description)</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+}
+@code {
+    [Parameter]
+    public int JobId { get; set; }
+
+    ResponseStatus? errorStatus;
+    Job? Job = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    Job GetJob() => Job!;
+
+    async Task RefreshData()
+    {
+        var api = await ApiAsync(new QueryJob {
+            Id = JobId
+        });
+        if (api.Succeeded)
+            Job = api.Response!.Results[0];
+        else
+            errorStatus = api.Error;
+    }
+}
