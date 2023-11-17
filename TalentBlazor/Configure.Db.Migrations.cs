@@ -93,6 +93,7 @@ public class ConfigureDbMigrations : IHostingStartup
             FirstName = "Test",
             LastName = "User",
             EmailConfirmed = true,
+            ProfileUrl = "/profiles/users/1.jpg"
         }, "p@55wOrd");
 
         await EnsureUserAsync(new ApplicationUser
@@ -103,6 +104,7 @@ public class ConfigureDbMigrations : IHostingStartup
             FirstName = "Test",
             LastName = "Employee",
             EmailConfirmed = true,
+            ProfileUrl = "/profiles/users/2.jpg"
         }, "p@55wOrd", [Roles.Employee]);
 
         await EnsureUserAsync(new ApplicationUser
@@ -113,6 +115,7 @@ public class ConfigureDbMigrations : IHostingStartup
             FirstName = "Test",
             LastName = "Manager",
             EmailConfirmed = true,
+            ProfileUrl = "/profiles/users/3.jpg"
         }, "p@55wOrd", [Roles.Manager]);
 
         await EnsureUserAsync(new ApplicationUser
@@ -123,6 +126,7 @@ public class ConfigureDbMigrations : IHostingStartup
             FirstName = "Admin",
             LastName = "User",
             EmailConfirmed = true,
+            ProfileUrl = "/profiles/users/4.jpg"
         }, "p@55wOrd", allRoles);
     }
 }
