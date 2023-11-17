@@ -60,8 +60,7 @@ jobs:
       - name: setup .net core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.*'
-          dotnet-quality: 'preview'
+          dotnet-version: '8.0'
       
       # Build and push new docker image, skip for manual redeploy other than 'latest'
       - name: Build and push Docker image
