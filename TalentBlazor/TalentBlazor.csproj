@@ -15,10 +15,10 @@
 
     <ItemGroup>
         <PackageReference Include="Bogus" Version="34.0.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0-rc.2.23480.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0-rc.2.23480.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0-rc.2.23480.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-rc.2.23480.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.*" />
         <PackageReference Include="Markdig" Version="0.33.0" />
         <PackageReference Include="ServiceStack" Version="8.*" />
         <PackageReference Include="ServiceStack.Blazor" Version="8.*" />
@@ -64,55 +64,6 @@
         <Content Include="Migrations\seed\sample_resume.pdf">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\AccessDenied.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ConfirmEmail.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ConfirmEmailChange.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ExternalLogin.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ForgotPassword.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ForgotPasswordConfirmation.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\InvalidPasswordReset.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\InvalidUser.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Lockout.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Login.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\LoginWith2fa.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\LoginWithRecoveryCode.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ChangePassword.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\DeletePersonalData.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Disable2fa.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Email.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\EnableAuthenticator.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ExternalLogins.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\GenerateRecoveryCodes.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\Index.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\PersonalData.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\ResetAuthenticator.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\SetPassword.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\TwoFactorAuthentication.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Manage\_Imports.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\Register.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\RegisterConfirmation.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResendEmailConfirmation.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResetPassword.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\ResetPasswordConfirmation.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Account\_Imports.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Bookings.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Coupons.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Index.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Counter.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Docs.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Profile.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Secure\Bookings.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Secure\Coupons.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\TodoMvc.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Weather.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Create.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Edit.razor" />
-      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Users\Index.razor" />
     </ItemGroup>
     
     <Target Name="tailwind" BeforeTargets="Publish">

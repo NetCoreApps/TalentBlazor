@@ -2,6 +2,7 @@
 using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using TalentBlazor.Data;
 
 namespace TalentBlazor.ServiceModel;
 

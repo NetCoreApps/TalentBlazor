@@ -4,7 +4,7 @@
 
 <div class="min-h-screen">
     <!-- Navigation -->
-    <NavMenu></NavMenu>
+    <NavMenu />
 
     <CascadingValue Value="this">
         <!-- Header Content -->
@@ -22,7 +22,7 @@
         </main>
     </CascadingValue>
 </div>
-<Footer></Footer>
+<Footer />
 
 @code {
     [CascadingParameter] protected Task<AuthenticationState>? AuthenticationStateTask { get; set; }
@@ -38,10 +38,4 @@
         LoginUrl = NavigationManager.GetLoginUrl();
         return base.OnParametersSetAsync();
     }
-
-    // async Task Logout()
-    // {
-    //     await AuthStateProvider.LogoutAsync();
-    //     NavigationManager.NavigateTo(LoginUrl, true);
-    // }
 }

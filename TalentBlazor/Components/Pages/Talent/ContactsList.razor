@@ -3,6 +3,17 @@
 @inherits AppComponentBase
 @rendermode RenderMode.InteractiveServer
 
+<SetHeader>
+    <div class="flex flex-col">
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
+            <div class="ml-4 mt-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Candidates</h3>
+                <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
+            </div>
+        </div>
+    </div>
+</SetHeader>
+
 <div class="flex-1 min-w-0">
         <nav class="flex" aria-label="Breadcrumb">
             @if (contacts.Count > 0)
@@ -12,13 +23,6 @@
                 </Breadcrumbs>
             }
         </nav>
-
-        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
-            <div class="ml-4 mt-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Candidates</h3>
-                <p class="mt-1 text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit quam corrupti consectetur.</p>
-            </div>
-        </div>
     </div>
 
 <main class="px-4 py-2 sm:p-6">

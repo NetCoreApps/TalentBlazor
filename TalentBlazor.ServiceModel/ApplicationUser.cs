@@ -5,8 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Identity;
+using TalentBlazor.ServiceModel;
 
-namespace TalentBlazor.ServiceModel;
+namespace TalentBlazor.Data;
 
 [Icon(Svg = Icons.AppUser)]
 [Alias("AspNetUsers")]
@@ -21,4 +22,3 @@ public class ApplicationUser : IdentityUser
     [Input(Type = "file"), UploadTo("users")]
     public string? ProfileUrl { get; set; }
 }
-

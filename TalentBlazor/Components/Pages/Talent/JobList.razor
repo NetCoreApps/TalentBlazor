@@ -3,12 +3,8 @@
 @layout MainLayout
 @rendermode RenderMode.InteractiveServer
 
-<div class="flex-1 min-w-0">
-        <nav class="flex" aria-label="Breadcrumb">
-            <Breadcrumbs>
-                <Breadcrumb href="/jobs">Jobs</Breadcrumb>
-            </Breadcrumbs>
-        </nav>
+<SetHeader>
+    <div class="flex flex-col">
         <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-8">
             <div class="ml-4 mt-4">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Job Postings</h3>
@@ -16,11 +12,20 @@
             </div>
         </div>
     </div>
-    <div class="mt-6 flex xl:mt-0 xl:ml-4">
+</SetHeader>
+
+<div class="flex-1 min-w-0">
+        <nav class="flex" aria-label="Breadcrumb">
+            <Breadcrumbs>
+                <Breadcrumb href="/jobs">Jobs</Breadcrumb>
+            </Breadcrumbs>
+        </nav>
+    </div>
+    <div class="mt-6">
         <!-- Actions -->
         <AuthorizeView>
             <Authorized>
-                <a href="/jobs/create" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create new job</a>
+                <PrimaryButton href="/jobs/create">Create new job</PrimaryButton>
             </Authorized>
         </AuthorizeView>
     </div>
