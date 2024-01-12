@@ -60,8 +60,8 @@ builder.Services.AddSwaggerGen();
 Console.WriteLine("services.AddServiceStack()");
 builder.Services.AddServiceStack(typeof(MyServices).Assembly, c => {
     c.AddSwagger(o => {
-        o.AddJwtBearer();
-        //o.AddBasicAuth();
+        //o.AddJwtBearer();
+        o.AddBasicAuth();
     });
 });
 
@@ -71,8 +71,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 else
 {
@@ -80,6 +78,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
