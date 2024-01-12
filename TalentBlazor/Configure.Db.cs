@@ -17,9 +17,10 @@ public class ConfigureDb : IHostingStartup
                 context.Configuration.GetConnectionString("DefaultConnection")
                 ?? ":memory:",
                 SqliteDialect.Provider));
+            // Enable built-in Database Admin UI at /admin-ui/database
+            // services.AddPlugin(new AdminDatabaseFeature());
         })
         .ConfigureAppHost(appHost => {
-            // Enable built-in Database Admin UI at /admin-ui/database
-            // appHost.Plugins.Add(new AdminDatabaseFeature());
+
         });
 }

@@ -17,15 +17,18 @@
         <PackageReference Include="Bogus" Version="34.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.*" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.*" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.*" />
         <PackageReference Include="Markdig" Version="0.33.0" />
         <PackageReference Include="ServiceStack" Version="8.*" />
+        <PackageReference Include="ServiceStack.AspNetCore.OpenApi" Version="8.0.1" />
         <PackageReference Include="ServiceStack.Blazor" Version="8.*" />
         <PackageReference Include="ServiceStack.Mvc" Version="8.*" />
         <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="8.*" />
         <PackageReference Include="ServiceStack.Extensions" Version="8.*" />
         <PackageReference Include="ServiceStack.Server" Version="8.*" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
 <!--    <ItemGroup>-->
@@ -64,6 +67,10 @@
         <Content Include="Migrations\seed\sample_resume.pdf">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Admin\Index.razor" />
     </ItemGroup>
     
     <Target Name="tailwind" BeforeTargets="Publish">

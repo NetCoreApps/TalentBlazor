@@ -7,8 +7,6 @@ namespace TalentBlazor.ServiceInterface;
 
 public class TalentServices : Service
 {
-    public IAutoQueryDb AutoQuery { get; set; }
-
     JobApplicationEvent CreateEvent(JobApplicationStatus status)
     {
         var userId = this.GetSession().UserAuthId;

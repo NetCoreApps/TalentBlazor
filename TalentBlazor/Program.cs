@@ -8,6 +8,7 @@ using ServiceStack.Blazor;
 using TalentBlazor.Data;
 using TalentBlazor.Identity;
 using TalentBlazor.Components;
+using TalentBlazor.ServiceInterface;
 using TalentBlazor.ServiceModel;
 
 ServiceStack.Licensing.RegisterLicense("OSS MIT 2023 https://github.com/NetCoreApps/TalentBlazorServer NdCmSFOfRpijw7CNjO4WXv4gYzeHjYSOaFRVlbp5rezlsB1FtDHUA34hYsJDMbxWDMiXqG29DPzPvJb6oXqLqkdCISRKOhhjZKb1KleG67PaHj9B2E/s65m9mB7Okq3uUHJzxpkn/3M0lvI4qL6Gb6jfmrx0+N0QxYsY41rjQpo=");
@@ -52,12 +53,26 @@ builder.Services.AddScoped(c => new HttpClient { BaseAddress = new Uri(baseUrl) 
 builder.Services.AddBlazorServerIdentityApiClient(baseUrl);
 builder.Services.AddLocalStorage();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Register all services
+Console.WriteLine("services.AddServiceStack()");
+builder.Services.AddServiceStack(typeof(MyServices).Assembly, c => {
+    c.AddSwagger(o => {
+        o.AddJwtBearer();
+        //o.AddBasicAuth();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -77,7 +92,11 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
-app.UseServiceStack(new AppHost());
+Console.WriteLine("app.UseServiceStack()");
+app.UseServiceStack(new AppHost(), options =>
+{
+    options.MapEndpoints();
+});
 
 BlazorConfig.Set(new()
 {
