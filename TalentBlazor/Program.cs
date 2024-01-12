@@ -11,7 +11,7 @@ using TalentBlazor.Components;
 using TalentBlazor.ServiceInterface;
 using TalentBlazor.ServiceModel;
 
-ServiceStack.Licensing.RegisterLicense("OSS MIT 2023 https://github.com/NetCoreApps/TalentBlazorServer NdCmSFOfRpijw7CNjO4WXv4gYzeHjYSOaFRVlbp5rezlsB1FtDHUA34hYsJDMbxWDMiXqG29DPzPvJb6oXqLqkdCISRKOhhjZKb1KleG67PaHj9B2E/s65m9mB7Okq3uUHJzxpkn/3M0lvI4qL6Gb6jfmrx0+N0QxYsY41rjQpo=");
+ServiceStack.Licensing.RegisterLicense("OSS GPL-3.0 2024 https://github.com/NetCoreApps/TalentBlazor Ed7tyPlTANoOB8+YQd+CG4To5kRnOtuV9AktLY3vdvx0fEn+gcWfDy8lPldYkBoiLXbAmrcfQQbysHeuz1C/VBBLE1r1/UVblt6swhFjjbCBhl/XvcjIxEt2vigmXiuNGEkreqFQHEh4ttyv3l2Jb6jm0iGE/dXgGEKIkj9obuc=");
 
 var builder = WebApplication.CreateBuilder(args);
 
