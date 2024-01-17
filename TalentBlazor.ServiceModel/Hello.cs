@@ -4,7 +4,7 @@ namespace TalentBlazor.ServiceModel;
 
 [Route("/hello")]
 [Route("/hello/{Name}")]
-public class Hello : IReturn<HelloResponse>
+public class Hello : IGet, IReturn<HelloResponse>
 {
     public string? Name { get; set; }
 }
