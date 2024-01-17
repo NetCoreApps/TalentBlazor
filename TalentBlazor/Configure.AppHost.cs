@@ -42,16 +42,13 @@ public class AppHost : AppHostBase, IHostingStartup
         });
 
     public AppHost() : base("TalentBlazor", typeof(MyServices).Assembly) { }
-
-    // Configure your AppHost with the necessary configuration and dependencies your App needs
-    public override void Configure(Container container)
+    
+    public override void Configure()
     {
         SetConfig(new HostConfig
         {
             AdminAuthSecret = "secretz",
         });
-
-
     }
 }
 
