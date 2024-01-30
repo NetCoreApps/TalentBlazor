@@ -17,6 +17,11 @@ public class IntegrationTest
 
         public override void Configure(Container container)
         {
+            container.AddPlugin(new AutoQueryFeature
+            {
+                MaxLimit = 1000,
+                //IncludeTotal = true,
+            });
         }
     }
 
