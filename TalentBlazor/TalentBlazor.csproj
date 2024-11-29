@@ -9,6 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ContainerLabel Include="service" Value="talent-blazor" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Using Include="TalentBlazor" />
         <Using Include="ServiceStack" />
     </ItemGroup>
